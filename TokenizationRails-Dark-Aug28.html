@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RWA Tokenization Rails</title>
+<style>
+
+/* ============================================================
+   1. COLORS — dark theme
+   Change any hex value below to re-color the whole page.
+   ============================================================ */
+:root{
+  --bg:        #141813;  /* page background */
+  --surface:   #1B211B;  /* card / table-row background */
+  --surface-2: #202721;  /* "elevated" surface: dossier cards, table frame, code box */
+  --border:    #34402E;  /* lines and table borders */
+  --ink:       #E9EAE0;  /* main text color */
+  --ink-soft:  #B7BFAF;  /* secondary / muted text */
+  --ink-faint: #838C7E;  /* captions, labels */
+  --accent:    #D3A05C;  /* links, headings accent, "bronze/gold" brand color */
+  --on-accent: #1B211B;  /* text color used ON TOP of the solid accent circle */
+
+  /* status badge colors used on chain "maturity" labels */
+  --mature:  #6BBF95;  --mature-bg:  #1E3327;
+  --early:   #94A3D6;  --early-bg:   #232A40;
+  --pending: #D9BB6E;  --pending-bg: #362D16;
+  --risk:    #E29082;  --risk-bg:    #3A211D;
+}
+
+/* ============================================================
+   2. FONTS
+   Uses fonts already on every computer, so the page always
+   looks right and never needs the internet to load a typeface.
+   Change the words below to try a different look.
+   ============================================================ */
+:root{
+  --font-display: Georgia, 'Times New Roman', serif;                 /* headings */
+  --font-body: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; /* paragraphs */
+  --font-mono: 'Courier New', Courier, monospace;                    /* numbers, code, data */
+}
+
+/* ============================================================
+   3. BASE PAGE
+   ============================================================ */
+*{ box-sizing: border-box; }
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+a{ color: var(--accent); }
+h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 700; margin: 0; color: var(--ink); }
+p{ margin: 0; }
+.mono{ font-family: var(--font-mono); }
+.page{ max-width: 1320px; margin: 0 auto; padding: 0 1.5rem 4rem; }  /* wide enough that the 8-column table below doesn't need to scroll */
+
+/* ============================================================
+   4. MASTHEAD (title block + byline at the very top)
+   ============================================================ */
+.masthead{ padding: 2.6rem 0 2rem; border-bottom: 3px solid var(--accent); }
+.masthead .kicker{
+  font-family: var(--font-mono); font-size: .75rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: .8rem;
+}
+.masthead h1{ font-size: 2.6rem; line-height: 1.05; }
+.masthead .sub{ margin-top: .8rem; font-size: 1.1rem; color: var(--ink-soft); font-style: italic; max-width: 38rem; }
+.masthead .meta{ margin-top: 1.2rem; font-family: var(--font-mono); font-size: .8rem; color: var(--ink-faint); }
+.masthead .meta b{ color: var(--ink-soft); }
+
+.byline{
+  margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: .9rem; flex-wrap: wrap;
+}
+.byline .initials{
+  width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: var(--on-accent);
+  display: flex; align-items: center; justify-content: center; font-family: var(--font-display);
+  font-weight: 700; font-size: 1rem; flex: 0 0 auto;
+}
+.byline .who{ font-size: .9rem; color: var(--ink-soft); }
+.byline .who b{ color: var(--ink); }
+.byline .who a{ color: var(--ink-soft); text-decoration: underline; }
+
+/* ============================================================
+   5. SIMPLE TOP NAVIGATION (plain links, not "sticky")
+   ============================================================ */
+.simplenav{ padding: 1rem 0; border-bottom: 1px solid var(--border); }
+.simplenav a{
+  font-family: var(--font-mono); font-size: .75rem; text-transform: uppercase; letter-spacing: .04em;
+  margin-right: 1.2rem; text-decoration: none; color: var(--ink-soft);
+}
+.simplenav a:hover{ color: var(--accent); }
+
+/* ============================================================
+   6. SECTIONS
+   ============================================================ */
+section{ padding: 2.6rem 0; border-bottom: 1px solid var(--border); }
+.eyebrow{
+  display: block; font-family: var(--font-mono); font-size: .75rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: .5rem;
+}
+.section-head{ max-width: 40rem; margin-bottom: 1.6rem; }
+.section-head h2{ font-size: 1.7rem; }
+.section-head .dek{ margin-top: .6rem; color: var(--ink-soft); }
+
+/* ============================================================
+   7. VERDICT CARDS (executive summary grid)
+   ============================================================ */
+.verdicts{ display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; }
+.verdict-card{ background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.1rem 1.2rem; }
+.verdict-card .label{ font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; color: var(--ink-faint); display: block; margin-bottom: .4rem; }
+.verdict-card h3{ font-size: 1.1rem; margin-bottom: .3rem; }
+.verdict-card p{ font-size: .9rem; color: var(--ink-soft); }
+.verdict-card .chains{ margin-top: .5rem; font-family: var(--font-mono); font-size: .78rem; color: var(--accent); }
+
+/* ============================================================
+   8. STATUS STAMPS (small colored labels: Mature / Early / etc.)
+   ============================================================ */
+.stamp{
+  display: inline-block; font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase;
+  letter-spacing: .05em; padding: .2rem .5rem; border-radius: 4px; font-weight: 700;
+}
+.stamp.mature{ color: var(--mature); background: var(--mature-bg); }
+.stamp.early{ color: var(--early); background: var(--early-bg); }
+.stamp.pending{ color: var(--pending); background: var(--pending-bg); }
+.stamp.risk{ color: var(--risk); background: var(--risk-bg); }
+
+/* ============================================================
+   9. TABLES
+   ============================================================ */
+.table-wrap{ overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; background: var(--surface-2); }
+table{ border-collapse: collapse; width: 100%; font-size: .84rem; }
+table.wide{ table-layout: fixed; }  /* use the column widths set in <colgroup> and wrap text instead of scrolling */
+th, td{ padding: .55rem .65rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; overflow-wrap: break-word; }
+thead th{ font-family: var(--font-mono); font-size: .66rem; text-transform: uppercase; color: var(--ink-faint); background: var(--surface); }
+tbody tr:last-child td{ border-bottom: none; }
+td.num, th.num{ font-family: var(--font-mono); }
+td.chain{ font-family: var(--font-display); font-weight: 700; }
+.note{ font-size: .8rem; color: var(--ink-faint); margin-top: .6rem; }
+
+/* ============================================================
+   10. BAR CHARTS
+   Each bar's length is set with a plain "width: NN%" you can
+   see and edit directly on the HTML row below.
+   ============================================================ */
+.bars{ display: flex; flex-direction: column; gap: .7rem; margin-top: 1.2rem; }
+.bar-row{ display: grid; grid-template-columns: 130px 1fr auto; gap: .8rem; align-items: center; }
+.bar-row .name{ font-size: .85rem; font-weight: 700; }
+.bar-track{ height: 10px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.bar-fill{ height: 100%; background: var(--accent); border-radius: 3px; }
+.bar-row .val{ font-family: var(--font-mono); font-size: .78rem; color: var(--ink-soft); white-space: nowrap; }
+
+/* ============================================================
+   11. STAT CARDS (cost grid)
+   ============================================================ */
+.stat-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .8rem; margin-top: 1.2rem; }
+.stat-card{ border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: .9rem 1rem; }
+.stat-card .chain{ font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; color: var(--ink-faint); }
+.stat-card .figure{ font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: var(--accent); margin: .25rem 0; }
+.stat-card .basis{ font-size: .8rem; color: var(--ink-soft); }
+
+/* ============================================================
+   12. CALCULATION BOXES
+   ============================================================ */
+.calc{ border: 1px solid var(--border); border-radius: 8px; background: var(--surface); padding: 1.2rem 1.3rem; margin-top: 1.2rem; }
+.calc h4{ font-size: 1.05rem; margin-bottom: .3rem; }
+.calc .setup{ font-size: .88rem; color: var(--ink-soft); margin-bottom: .9rem; }
+.calc .formula{ font-family: var(--font-mono); font-size: .8rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; padding: .6rem .8rem; margin-bottom: .9rem; overflow-x: auto; }
+
+/* ============================================================
+   13. CHAIN DOSSIER CARDS
+   ============================================================ */
+.dossier{ border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); padding: 1.4rem 1.5rem; margin-top: 1.4rem; }
+.dossier-head{ display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem; margin-bottom: .2rem; }
+.dossier-head h3{ font-size: 1.3rem; }
+.dossier .tagline{ font-style: italic; color: var(--ink-soft); font-size: .92rem; margin-bottom: 1rem; }
+.dossier-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .9rem 1.4rem; }
+.dossier-field .k{ font-family: var(--font-mono); font-size: .65rem; text-transform: uppercase; color: var(--ink-faint); margin-bottom: .2rem; }
+.dossier-field .v{ font-size: .86rem; line-height: 1.5; }
+
+/* ============================================================
+   14. CALLOUT BOX (used for the recommendation / footnote box)
+   ============================================================ */
+.callout{ margin-top: 1.2rem; padding: 1rem 1.2rem; border-left: 4px solid var(--accent); background: var(--surface); border-radius: 0 6px 6px 0; font-size: .92rem; }
+
+/* ============================================================
+   15. SOURCES (collapsible lists — click a chain name to expand)
+   ============================================================ */
+details.src{ border: 1px solid var(--border); border-radius: 6px; background: var(--surface); margin-top: .7rem; }
+details.src summary{ cursor: pointer; padding: .75rem 1rem; font-family: var(--font-mono); font-size: .82rem; font-weight: 700; }
+details.src .src-list{ padding: 0 1rem 1rem; display: grid; gap: .35rem; font-size: .82rem; }
+details.src .src-list a{ color: var(--ink-soft); word-break: break-word; }
+
+/* ============================================================
+   16. SIGN-OFF (branding footer at the bottom of the report)
+   ============================================================ */
+.signoff{ padding: 2.2rem 0 1rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.signoff .initials{
+  width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: var(--on-accent);
+  display: flex; align-items: center; justify-content: center; font-family: var(--font-display);
+  font-weight: 700; font-size: 1.2rem; flex: 0 0 auto;
+}
+.signoff .info b{ display: block; font-size: 1rem; color: var(--ink); }
+.signoff .info span{ display: block; font-size: .85rem; color: var(--ink-soft); margin-top: .1rem; }
+footer.fineprint{ padding-bottom: 3rem; color: var(--ink-faint); font-family: var(--font-mono); font-size: .78rem; }
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ============================================================
+       MASTHEAD — page title + byline. Edit the text directly.
+       ============================================================ -->
+  <header class="masthead">
+    <span class="kicker">RWA infrastructure evaluation</span>
+    <h1>Tokenization Rails</h1>
+    <p class="sub">Eight blockchains, one question: which rail should carry a real-world asset platform — private credit, treasuries, and equities alike?</p>
+    <p class="meta">
+      <b>Scope</b> broad, multi-asset RWA platform &nbsp;·&nbsp;
+      <b>Compiled</b> 2026-08-26 &nbsp;·&nbsp;
+      <b>Chains</b> 8
+    </p>
+
+    <div class="byline">
+      <div class="initials">SB</div>
+      <div class="who">
+        Prepared by <b>Somnath Banerjee</b> — Co-Founder & CTO, Mosaic AI Solutions &nbsp;·&nbsp;
+        <a href="mailto:sbanerjee@mosaicai.co">sbanerjee@mosaicai.co</a> &nbsp;·&nbsp;
+        <a href="https://www.linkedin.com/in/blockchainbanerjee/" target="_blank">linkedin.com/in/blockchainbanerjee</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       SIMPLE NAVIGATION — plain jump links, nothing fancy
+       ============================================================ -->
+  <nav class="simplenav">
+    <a href="#summary">Summary</a>
+    <a href="#maturity">Maturity</a>
+    <a href="#ledger">The Ledger</a>
+    <a href="#finality">Finality</a>
+    <a href="#cost">Cost</a>
+    <a href="#calculations">Calculations</a>
+    <a href="#security">Security</a>
+    <a href="#traction">Traction</a>
+    <a href="#dossiers">Dossiers</a>
+    <a href="#recommendation">Recommendation</a>
+    <a href="#sources">Sources</a>
+  </nav>
+
+  <!-- ============================================================
+       01 — EXECUTIVE SUMMARY
+       ============================================================ -->
+  <section id="summary">
+    <div class="section-head">
+      <span class="eyebrow">01 — Executive summary</span>
+      <h2>No single chain wins every dimension</h2>
+      <p class="dek">Ethereum still holds the deepest liquidity and strongest security budget. Two purpose-built institutional networks — Canton and Provenance — already move more real-world value than their DeFi dashboards suggest. Three 2025-launched fintech chains (Circle's Arc, Stripe's Tempo, Robinhood Chain) are fast and cheap on paper, but only Tempo and Robinhood Chain are actually live, and both are under a year old.</p>
+    </div>
+
+    <div class="verdicts">
+      <div class="verdict-card">
+        <span class="label">Deepest liquidity, today</span>
+        <h3>Ethereum Mainnet</h3>
+        <p>$49.1B DeFi TVL and $15.1B of RWA active market cap — roughly half of all tokenized RWA value sits here. The default for treasuries and funds.</p>
+        <div class="chains">BUIDL · BENJI · Ondo · Maple</div>
+      </div>
+      <div class="verdict-card">
+        <span class="label">Private credit at scale</span>
+        <h3>Provenance</h3>
+        <p>$20.1B of Figure's tokenized home-equity loans outstanding — bigger than all tokenized US Treasuries combined — with protocol-level KYC/AML baked into every token.</p>
+        <div class="chains">Figure Markets · YLDS</div>
+      </div>
+      <div class="verdict-card">
+        <span class="label">Institutional settlement</span>
+        <h3>Canton Network</h3>
+        <p>DeFi TVL looks tiny ($961K) but Broadridge alone runs ~$8T/month of repo through it, and JPMorgan, DTCC and Goldman Sachs are live participants.</p>
+        <div class="chains">JPM Coin · Broadridge DLR · DTCC</div>
+      </div>
+      <div class="verdict-card">
+        <span class="label">Consumer distribution</span>
+        <h3>Coinbase Base</h3>
+        <p>Sub-cent fees and Coinbase Prime's $350B+ institutional custody make Base the best reach-to-cost tradeoff, though the sequencer is fully centralized.</p>
+        <div class="chains">Centrifuge · Morpho</div>
+      </div>
+      <div class="verdict-card">
+        <span class="label">Watch, don't build on yet</span>
+        <h3>Arc · Tempo · Robinhood Chain</h3>
+        <p>Arc is still pre-mainnet. Tempo and Robinhood Chain are live but under 6 months old, with thin DeFi liquidity and, for Robinhood, an unresolved custody controversy.</p>
+        <div class="chains">Re-evaluate in 2027</div>
+      </div>
+      <div class="verdict-card">
+        <span class="label">Smallest footprint</span>
+        <h3>Kraken's Ink</h3>
+        <p>$153.6M DeFi TVL after a 65-70% drawdown from its January 2026 peak, triggered by a cross-chain exploit that hit its own lending market. Kraken's own tokenized-stock product runs on Solana, not Ink.</p>
+        <div class="chains">Tydro · Nado</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       02 — MATURITY (simple table instead of a positioned diagram,
+       so you can just edit the rows below)
+       ============================================================ -->
+  <section id="maturity">
+    <div class="section-head">
+      <span class="eyebrow">02 — Maturity spectrum</span>
+      <h2>Where each chain actually stands</h2>
+      <p class="dek">"Announced" and "live" get used loosely in crypto press. Here is what's actually shipped, ordered from newest to most established.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Chain</th><th>Stage</th><th>Live since</th></tr></thead>
+        <tbody>
+          <tr><td class="chain">Circle Arc</td><td><span class="stamp pending">Pre-launch</span></td><td>Mainnet scheduled Sept 16, 2026</td></tr>
+          <tr><td class="chain">Robinhood Chain</td><td><span class="stamp early">Early</span></td><td>~8 weeks (since July 1, 2026)</td></tr>
+          <tr><td class="chain">Stripe Tempo</td><td><span class="stamp early">Early</span></td><td>~5 months (since March 18, 2026)</td></tr>
+          <tr><td class="chain">Kraken Ink</td><td><span class="stamp early">Early</span></td><td>~20 months (since Dec 2024)</td></tr>
+          <tr><td class="chain">Canton Network</td><td><span class="stamp mature">Established</span></td><td>3+ years (since 2023)</td></tr>
+          <tr><td class="chain">Coinbase Base</td><td><span class="stamp mature">Established</span></td><td>3 years (since Aug 2023)</td></tr>
+          <tr><td class="chain">Provenance</td><td><span class="stamp mature">Mature</span></td><td>5+ years</td></tr>
+          <tr><td class="chain">Ethereum</td><td><span class="stamp mature">Mature</span></td><td>11 years (PoS since 2022)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Position is illustrative, based on time since public mainnet and scale of independently-verified activity — not a precision ranking.</p>
+  </section>
+
+  <!-- ============================================================
+       03 — THE LEDGER (full comparison matrix)
+       ============================================================ -->
+  <section id="ledger">
+    <div class="section-head">
+      <span class="eyebrow">03 — The ledger</span>
+      <h2>Full comparison matrix</h2>
+      <p class="dek">All eight chains, seven dimensions, condensed. Full detail and citations for every figure are in the dossiers and sources sections below.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="wide">
+        <colgroup>
+          <col style="width:9%">
+          <col style="width:15%">
+          <col style="width:8%">
+          <col style="width:15%">
+          <col style="width:11%">
+          <col style="width:11%">
+          <col style="width:9%">
+          <col style="width:22%">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Chain</th><th>Architecture</th><th>Status</th><th>Finality</th>
+            <th class="num">Throughput</th><th class="num">Typical cost</th><th class="num">DeFi TVL</th><th>RWA signal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="chain">Ethereum</td><td>L1 · PoS · EVM</td><td><span class="stamp mature">Mature</span></td>
+            <td>~13&ndash;24s soft / ~12.8 min economic</td><td class="num">~26 TPS L1</td><td class="num">$0.007&ndash;$0.07</td>
+            <td class="num">$49.1B</td><td>$15.07B RWA mcap (48% of global)</td>
+          </tr>
+          <tr>
+            <td class="chain">Base</td><td>L2 (OP Stack) on Ethereum</td><td><span class="stamp mature">Established</span></td>
+            <td>~0.2&ndash;2s soft / ~15&ndash;20 min L1</td><td class="num">~108 TPS</td><td class="num">$0.002&ndash;$0.06</td>
+            <td class="num">~$5.57B</td><td>Thin issuance; strong distribution</td>
+          </tr>
+          <tr>
+            <td class="chain">Kraken Ink</td><td>L2 (OP Stack) on Ethereum</td><td><span class="stamp early">Early</span></td>
+            <td>~1s soft / 3.5+ day withdrawal</td><td class="num">~10 TPS</td><td class="num">~$0.0003</td>
+            <td class="num">$153.6M</td><td>$16.3M RWA mcap; own xStocks not here</td>
+          </tr>
+          <tr>
+            <td class="chain">Robinhood Chain</td><td>L2 (Arbitrum Orbit) on Ethereum</td><td><span class="stamp early">Early</span></td>
+            <td>~100ms soft / ~12 min L1</td><td class="num">not independently benchmarked</td><td class="num">~$0.02</td>
+            <td class="num">$312M&ndash;$536M</td><td>&gt;80% memecoin; only ~6% tokenized stock</td>
+          </tr>
+          <tr>
+            <td class="chain">Circle Arc</td><td>L1 · PoA · EVM · USDC-gas</td><td><span class="stamp pending">Pre-launch</span></td>
+            <td>~0.35&ndash;0.5s (testnet)</td><td class="num">target ~3,000&ndash;10,000 TPS</td><td class="num">target ~$0.001&ndash;$0.01</td>
+            <td class="num">pre-production</td><td>BlackRock BUIDL committed at launch</td>
+          </tr>
+          <tr>
+            <td class="chain">Stripe Tempo</td><td>L1 · BFT · EVM · stablecoin-gas</td><td><span class="stamp early">Early</span></td>
+            <td>~0.5s deterministic (live)</td><td class="num">~20,000 TPS (testnet bench)</td><td class="num">&ldquo;low &amp; stable&rdquo; (no fixed figure)</td>
+            <td class="num">~$8.4M</td><td>Payments-first; RWA use unconfirmed</td>
+          </tr>
+          <tr>
+            <td class="chain">Canton Network</td><td>Permissioned network-of-networks · Daml</td><td><span class="stamp mature">Established</span></td>
+            <td>near-real-time atomic (no published sec figure)</td><td class="num">~7 TPS live / &gt;100,000 lab claim</td><td class="num">~$17&ndash;25/MB (&asymp;$1/transfer target)</td>
+            <td class="num">$961K <em>(misleading — see below)</em></td><td>~$6T notional across 600+ institutions</td>
+          </tr>
+          <tr>
+            <td class="chain">Provenance</td><td>L1 · Cosmos SDK · CometBFT PoS</td><td><span class="stamp mature">Mature</span></td>
+            <td>~4&ndash;5s deterministic</td><td class="num">not publicly benchmarked</td><td class="num">$0.025 flat + tiered bps</td>
+            <td class="num">~$1.2B&ndash;$1.75B</td><td>$20.1B Figure HELOC book outstanding</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Figures are point-in-time snapshots as of 2026-08-26 and move quickly, especially for the three chains under a year old. Full citations in the Sources section.</p>
+  </section>
+
+  <!-- ============================================================
+       04 — FINALITY & THROUGHPUT
+       ============================================================ -->
+  <section id="finality">
+    <div class="section-head">
+      <span class="eyebrow">04 — Finality &amp; throughput</span>
+      <h2>"Instant" usually means two different things</h2>
+      <p class="dek">Every Ethereum L2 (Base, Ink, Robinhood Chain) can confirm a transaction in under two seconds — but that's a <em>sequencer promise</em>, not irreversible settlement. True finality still depends on Ethereum's own ~12&ndash;20 minute window, or in Ink's case, a multi-day fraud-proof challenge period before funds can safely leave the chain.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Chain</th><th class="num">Soft / UX confirmation</th><th class="num">True settlement finality</th><th>Why they differ</th></tr></thead>
+        <tbody>
+          <tr><td class="chain">Ethereum</td><td class="num">~12&ndash;24s (LMD-GHOST)</td><td class="num">~12.8 min (2 justified epochs)</td><td>Base layer — no upstream chain to wait on</td></tr>
+          <tr><td class="chain">Base</td><td class="num">~0.2&ndash;2s (sequencer)</td><td class="num">~15&ndash;20 min</td><td>Waits for Ethereum blob posting + finality</td></tr>
+          <tr><td class="chain">Kraken Ink</td><td class="num">~1s (sequencer)</td><td class="num">3.5+ days</td><td>Optimistic rollup fraud-proof challenge window</td></tr>
+          <tr><td class="chain">Robinhood Chain</td><td class="num">~100ms (sequencer)</td><td class="num">~12 min</td><td>Arbitrum Orbit settling to Ethereum</td></tr>
+          <tr><td class="chain">Circle Arc</td><td class="num">~0.35&ndash;0.5s (testnet)</td><td class="num">same — deterministic BFT</td><td>PoA validator supermajority commit, no L1 wait</td></tr>
+          <tr><td class="chain">Stripe Tempo</td><td class="num">~0.5s (live)</td><td class="num">same — deterministic BFT</td><td>Simplex BFT consensus, no L1 wait</td></tr>
+          <tr><td class="chain">Canton</td><td class="num">near-real-time</td><td class="num">same — atomic commit</td><td>Synchronizer issues one all-or-nothing verdict</td></tr>
+          <tr><td class="chain">Provenance</td><td class="num">~4&ndash;5s (CometBFT)</td><td class="num">same — deterministic BFT</td><td>Own validator set, no upstream settlement layer</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:1.8rem; font-size:1.05rem;">Live throughput, where it's independently observable</h3>
+    <div class="bars">
+      <!-- Each bar's width below is a plain percentage: 0% = empty, 100% = full -->
+      <div class="bar-row"><span class="name">Base</span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><span class="val">~108 TPS</span></div>
+      <div class="bar-row"><span class="name">Ethereum L1</span><div class="bar-track"><div class="bar-fill" style="width:22%"></div></div><span class="val">~26 TPS</span></div>
+      <div class="bar-row"><span class="name">Kraken Ink</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span class="val">~10 TPS</span></div>
+      <div class="bar-row"><span class="name">Canton</span><div class="bar-track"><div class="bar-fill" style="width:6%"></div></div><span class="val">~7 TPS</span></div>
+    </div>
+    <p class="note">Robinhood Chain, Provenance, Circle Arc, and Stripe Tempo are left off this chart because there isn't a comparable live sustained-TPS figure for them yet — see individual dossiers.</p>
+  </section>
+
+  <!-- ============================================================
+       05 — COST
+       ============================================================ -->
+  <section id="cost">
+    <div class="section-head">
+      <span class="eyebrow">05 — Cost</span>
+      <h2>What a single transaction costs today</h2>
+      <p class="dek">All Ethereum-family chains (L1 and its rollups) are now sub-cent to low-cent for a simple transfer. Canton is the outlier — it prices in dollars-per-megabyte of bandwidth, built for large institutional settlement batches rather than micro-transactions.</p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><span class="chain">Kraken Ink</span><div class="figure">$0.0003</div><span class="basis">average transaction, live</span></div>
+      <div class="stat-card"><span class="chain">Base</span><div class="figure">$0.002&ndash;$0.06</div><span class="basis">execution + L1 blob fee, live</span></div>
+      <div class="stat-card"><span class="chain">Circle Arc</span><div class="figure">$0.001&ndash;$0.01</div><span class="basis">target, pre-launch</span></div>
+      <div class="stat-card"><span class="chain">Ethereum</span><div class="figure">$0.007&ndash;$0.07</div><span class="basis">transfer to complex swap, live</span></div>
+      <div class="stat-card"><span class="chain">Robinhood Chain</span><div class="figure">~$0.02</div><span class="basis">reported swap, live</span></div>
+      <div class="stat-card"><span class="chain">Provenance</span><div class="figure">$0.025</div><span class="basis">flat transfer fee, live</span></div>
+      <div class="stat-card"><span class="chain">Stripe Tempo</span><div class="figure">n/a</div><span class="basis">&ldquo;low &amp; stable,&rdquo; no fixed figure published</span></div>
+      <div class="stat-card"><span class="chain">Canton</span><div class="figure">~$1</div><span class="basis">per typical transfer, targeted via bandwidth pricing</span></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       06 — SAMPLE CALCULATIONS
+       Candidate asset: FT Vest Gold Strategy Target Income ETF (IGLD)
+       ============================================================ -->
+  <section id="calculations">
+    <div class="section-head">
+      <span class="eyebrow">06 — Sample calculations</span>
+      <h2>Turning the numbers above into dollars</h2>
+      <p class="dek">Grounded in a real candidate asset: the <strong>FT Vest Gold Strategy Target Income ETF (Cboe BZX: IGLD)</strong>, a First Trust/Vest Financial fund holding U.S. Treasuries and FLEX Options referencing the SPDR&reg; Gold Trust. As of August 25, 2026 it held <strong class="mono">$611,989,041</strong> in net assets across <strong class="mono">26,850,002</strong> shares outstanding, NAV <strong class="mono">$22.79</strong>/share, expense ratio <strong class="mono">0.85%</strong>. <a href="https://www.ftportfolios.com/retail/etf/etfsummary.aspx?Ticker=IGLD" target="_blank">First Trust — IGLD fund page</a></p>
+    </div>
+
+    <div class="calc">
+      <h4>A. The hidden cost of "soft" finality on an IGLD creation-unit redemption</h4>
+      <p class="setup">ETF shares move in and out of existence in fixed-size blocks called creation units, handled by Authorized Participants (APs) — a standard block size is 50,000 shares. At IGLD's August 25, 2026 NAV, one creation unit is worth <strong class="mono">50,000 &times; $22.79 = $1,139,500</strong>. Until that redemption reaches <em>true</em> settlement finality, the AP's capital is functionally locked up. At a 5% annual opportunity-cost rate, every second of waiting costs money.</p>
+      <div class="formula">opportunity cost = $1,139,500 &times; 5% &divide; 31,536,000 sec = $0.001807 / second</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Chain</th><th class="num">Wait time</th><th class="num">Cost of waiting</th></tr></thead>
+          <tbody>
+            <tr><td class="chain">Robinhood Chain (soft)</td><td class="num">0.1s</td><td class="num">$0.0002</td></tr>
+            <tr><td class="chain">Circle Arc (target)</td><td class="num">0.5s</td><td class="num">$0.0009</td></tr>
+            <tr><td class="chain">Stripe Tempo</td><td class="num">0.5s</td><td class="num">$0.0009</td></tr>
+            <tr><td class="chain">Canton (illustrative)</td><td class="num">~2s</td><td class="num">$0.0036</td></tr>
+            <tr><td class="chain">Base (soft)</td><td class="num">2s</td><td class="num">$0.0036</td></tr>
+            <tr><td class="chain">Provenance</td><td class="num">4.5s</td><td class="num">$0.0081</td></tr>
+            <tr><td class="chain">Robinhood Chain (true L1)</td><td class="num">720s (12 min)</td><td class="num">$1.30</td></tr>
+            <tr><td class="chain">Ethereum</td><td class="num">768s (12.8 min)</td><td class="num">$1.39</td></tr>
+            <tr><td class="chain">Base (true L1)</td><td class="num">1,080s (18 min)</td><td class="num">$1.95</td></tr>
+            <tr style="color:var(--risk)"><td class="chain">Kraken Ink (true withdrawal)</td><td class="num">302,400s (3.5 days)</td><td class="num">$546.34</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">At creation-unit scale, most chains are effectively free — the number that matters is the last row of any redemption path that actually needs irreversible settlement. An AP redeeming IGLD through Ink would carry roughly $546 of opportunity cost per creation unit, purely from the 3.5-day exit window. Scaled to a full-fund wind-down of IGLD's entire $611.99M AUM, the same 3.5-day Ink exit window costs approximately <strong class="mono">$293,556</strong>. Illustrative 5% rate; actual AP financing costs vary.</p>
+    </div>
+
+    <div class="calc">
+      <h4>B. Tokenizing IGLD, one token per share</h4>
+      <p class="setup">If IGLD's <strong class="mono">26,850,002</strong> outstanding shares were each minted 1:1 as an on-chain token, here's the one-time minting bill by chain — and what it represents as a share of the fund's $611.99M AUM.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Chain</th><th class="num">Per-token cost</th><th class="num">Total for 26.85M tokens</th><th class="num">% of AUM</th></tr></thead>
+          <tbody>
+            <tr><td class="chain">Kraken Ink</td><td class="num">$0.0003</td><td class="num">$8,055</td><td class="num">0.0013%</td></tr>
+            <tr><td class="chain">Circle Arc (target)</td><td class="num">~$0.005</td><td class="num">$134,250</td><td class="num">0.0219%</td></tr>
+            <tr><td class="chain">Base</td><td class="num">~$0.02</td><td class="num">$537,000</td><td class="num">0.0877%</td></tr>
+            <tr><td class="chain">Ethereum</td><td class="num">~$0.02</td><td class="num">$537,000</td><td class="num">0.0877%</td></tr>
+            <tr><td class="chain">Robinhood Chain</td><td class="num">~$0.02</td><td class="num">$537,000</td><td class="num">0.0877%</td></tr>
+            <tr><td class="chain">Provenance</td><td class="num">$0.025</td><td class="num">$671,250</td><td class="num">0.1097%</td></tr>
+            <tr><td class="chain">Stripe Tempo</td><td class="num">n/a</td><td class="num">n/a</td><td class="num">&mdash;</td></tr>
+            <tr style="color:var(--pending)"><td class="chain">Canton</td><td class="num">~$1</td><td class="num">$26,850,002</td><td class="num">4.3873%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">One token per share is the most granular — and least realistic — design: real issuers mint total supply in a handful of transactions and only transact at the creation-unit or secondary-trade level, so treat this as a worst-case ceiling, not an operating cost. Even so, the spread is instructive: minting every IGLD share individually on Canton's institutional bandwidth pricing would cost more than five years of the fund's entire expense-ratio revenue ($611.99M &times; 0.85% &asymp; $5.2M/year). On Base, Ethereum, or Robinhood Chain, the same exercise costs under 9 basis points of AUM.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       07 — SECURITY & COMPLIANCE
+       ============================================================ -->
+  <section id="security">
+    <div class="section-head">
+      <span class="eyebrow">07 — Security &amp; compliance</span>
+      <h2>Who's accountable, and what could go wrong</h2>
+      <p class="dek">For an RWA platform, the operator's regulatory standing often matters as much as the chain's cryptography. Below: the entity behind each chain, its compliance posture, and the one risk flag worth knowing before you build on it.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Chain</th><th>Operator's regulatory standing</th><th>Risk flag</th></tr></thead>
+        <tbody>
+          <tr><td class="chain">Ethereum</td><td>No single operator; ~902K validators, ~$70&ndash;80B staked. SEC's Jan 2026 statement: tokenized securities remain securities regardless of chain.</td><td>Compliance lives at the smart-contract layer only (ERC-3643 etc.), not the protocol.</td></tr>
+          <tr><td class="chain">Base</td><td>Coinbase Global (Nasdaq: COIN), SEC-reporting public company; MiCA-regulated EU entities.</td><td><span class="stamp risk">Risk</span> Sequencer fully centralized under Coinbase — two outages in 24 hours, June 2026.</td></tr>
+          <tr><td class="chain">Kraken Ink</td><td>Kraken: Wyoming SPDI bank charter, MiCA CASP license, CFTC/SEC-adjacent licenses.</td><td><span class="stamp risk">Risk</span> No delay/exit window on contract upgrades; its own lending market was hit by the April 2026 Kelp/rsETH exploit.</td></tr>
+          <tr><td class="chain">Robinhood Chain</td><td>Robinhood Markets (Nasdaq: HOOD); EU issuance via Robinhood Europe's Lithuanian broker license.</td><td><span class="stamp risk">Risk</span> Private-company tokens (OpenAI, SpaceX) are SPV derivatives, not equity — OpenAI publicly disavowed them; Lithuania's central bank opened an inquiry, unresolved.</td></tr>
+          <tr><td class="chain">Circle Arc</td><td>Circle (NYSE: CRCL), NYDFS trust charter, first MiCA-compliant stablecoin issuer, OCC conditional national trust approval.</td><td>Strong on paper, unproven — mainnet three weeks away as of this report.</td></tr>
+          <tr><td class="chain">Stripe Tempo</td><td>Stripe/Bridge: OCC conditional national trust charter, 42nd MiCA-registered stablecoin issuer.</td><td>Compliance primitives (TIP-403) are payments-oriented; no dedicated securities/RWA framework confirmed yet.</td></tr>
+          <tr><td class="chain">Canton</td><td>Backed by DTCC, Goldman Sachs, BNY Mellon, Deutsche B&ouml;rse — each independently regulated.</td><td>Sub-transaction privacy is the whole point — built specifically to satisfy bank-secrecy and best-execution rules public chains can't meet.</td></tr>
+          <tr><td class="chain">Provenance</td><td>Figure Technology Solutions (Nasdaq: FIGR), public company; YLDS is an SEC-registered public security.</td><td>KYC/AML and forced-transfer/clawback are enforced at the protocol level (Marker Module), not left to each issuer.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       08 — DEFI & RWA TRACTION
+       ============================================================ -->
+  <section id="traction">
+    <div class="section-head">
+      <span class="eyebrow">08 — DeFi &amp; RWA traction</span>
+      <h2>DeFi TVL, log scale</h2>
+      <p class="dek">The gap between Ethereum and everything else spans nearly four orders of magnitude, so this chart uses a log scale. Read the dollar figures, not just the bar lengths.</p>
+    </div>
+    <div class="bars">
+      <div class="bar-row"><span class="name">Ethereum</span><div class="bar-track"><div class="bar-fill" style="width:94%"></div></div><span class="val">$49.1B</span></div>
+      <div class="bar-row"><span class="name">Base</span><div class="bar-track"><div class="bar-fill" style="width:77%"></div></div><span class="val">$5.57B</span></div>
+      <div class="bar-row"><span class="name">Provenance</span><div class="bar-track"><div class="bar-fill" style="width:68%"></div></div><span class="val">$1.75B</span></div>
+      <div class="bar-row"><span class="name">Robinhood Chain</span><div class="bar-track"><div class="bar-fill" style="width:57%"></div></div><span class="val">~$424M</span></div>
+      <div class="bar-row"><span class="name">Kraken Ink</span><div class="bar-track"><div class="bar-fill" style="width:49%"></div></div><span class="val">$153.6M</span></div>
+      <div class="bar-row"><span class="name">Stripe Tempo</span><div class="bar-track"><div class="bar-fill" style="width:26%"></div></div><span class="val">$8.4M</span></div>
+      <div class="bar-row"><span class="name">Canton</span><div class="bar-track"><div class="bar-fill" style="width:9%"></div></div><span class="val">$961K*</span></div>
+      <div class="bar-row"><span class="name">Circle Arc</span><div class="bar-track"><div class="bar-fill" style="width:100%; background:repeating-linear-gradient(135deg, var(--early) 0 6px, transparent 6px 12px);"></div></div><span class="val">pre-launch</span></div>
+    </div>
+    <div class="callout">
+      *Canton's DeFi TVL badly understates its real footprint. DefiLlama-style TVL only counts DEX/lending pools — it misses Canton's actual business: Broadridge's repo platform alone settles an estimated <strong>$8 trillion per month</strong> in tokenized Treasury repo, and Canton led every chain in on-chain fee revenue ($60.2M over 30 days, ahead of Tron and Ethereum) in June 2026. For institutional settlement chains, watch fee revenue and named production volumes, not TVL.
+    </div>
+  </section>
+
+  <!-- ============================================================
+       09 — CHAIN DOSSIERS
+       ============================================================ -->
+  <section id="dossiers">
+    <div class="section-head">
+      <span class="eyebrow">09 — Chain dossiers</span>
+      <h2>The full picture, chain by chain</h2>
+    </div>
+
+    <article class="dossier">
+      <div class="dossier-head"><h3>Ethereum Mainnet</h3><span class="stamp mature">Mature</span></div>
+      <p class="tagline">The settlement layer everything else is judged against.</p>
+      <div class="dossier-grid">
+        <div class="dossier-field"><span class="k">Architecture</span><span class="v">L1, Proof-of-Stake since 2022. The 2025&ndash;26 Pectra and Fusaka upgrades raised the block gas limit from 45M to 150M and expanded blob capacity for L2 data — Ethereum now functions primarily as the settlement/data-availability layer beneath a large rollup ecosystem. <a href="https://blog.ethereum.org/2025/11/06/fusaka-mainnet-announcement" target="_blank">Ethereum Foundation</a></span></div>
+        <div class="dossier-field"><span class="k">Dev ecosystem</span><span class="v">1M+ lifetime developers, the largest of any chain by a wide margin. ERC-3643 (compliance-ready security tokens) and ERC-7540 (async vaults for real-world settlement cycles) are the RWA-relevant standards. <a href="https://blog.thirdweb.com/ethereum-crosses-1-million-developers-what-the-milestone-means-for-builders/" target="_blank">thirdweb</a></span></div>
+        <div class="dossier-field"><span class="k">Security</span><span class="v">~902,557 active validators, ~$70&ndash;80B in staked value. No successful consensus-layer attack since the 2022 Merge. <a href="https://beaconcha.in/validators" target="_blank">beaconcha.in</a></span></div>
+        <div class="dossier-field"><span class="k">RWA traction</span><span class="v">BlackRock BUIDL (~$2.78B), Franklin Templeton BENJI (~$828M), Ondo USDY (~$1.4B), Circle USYC (~$2.88B). <a href="https://defillama.com/rwa/chain/ethereum" target="_blank">DefiLlama</a></span></div>
+      </div>
+    </article>
+
+    <article class="dossier">
+      <div class="dossier-head"><h3>Coinbase Base</h3><span class="stamp mature">Established</span></div>
+      <p class="tagline">Cheap, fast, and one company controls the sequencer.</p>
+      <div class="dossier-grid">
+        <div class="dossier-field"><span class="k">Architecture</span><span class="v">Optimistic rollup on the OP Stack, reached "Stage 1" decentralization in April 2025 with permissionless fault proofs. Coinbase alone still runs the sequencer, and Base is migrating off the shared OP Stack onto its own Reth-based stack in 2026. <a href="https://blog.base.org/base-has-reached-stage-1-decentralization" target="_blank">Base Blog</a></span></div>
+        <div class="dossier-field"><span class="k">Dev ecosystem</span><span class="v">Full EVM tooling parity with Ethereum. Coinbase's Project Diamond and Coinbase Prime ($350B+ institutional AUM) anchor institutional access. <a href="https://www.coindesk.com/business/2023/12/12/coinbase-debuts-rwa-platform-built-on-base-under-abu-dhabi-regulators-oversight" target="_blank">CoinDesk</a></span></div>
+        <div class="dossier-field"><span class="k">Security</span><span class="v">Sequencer halted block production twice in 24 hours in June 2026. Upgrade authority sits with a 9-of-12 multisig, not a fully trustless system yet. <a href="https://ourcryptotalk.com/news/base-blockchain-outage-halts-network-twice" target="_blank">Our Crypto Talk</a></span></div>
+        <div class="dossier-field"><span class="k">RWA traction</span><span class="v">Largest L2 by stablecoin liquidity ($4.74B), but RWA issuance itself is thin — Centrifuge's Morpho market (Anemoy, Midas mTBILL, Hashnote USYC) is the concrete example. <a href="https://centrifuge.io/blog/institutional-rwa-morpho" target="_blank">Centrifuge</a></span></div>
+      </div>
+    </article>
+
+    <article class="dossier">
+      <div class="dossier-head"><h3>Kraken's Ink</h3><span class="stamp early">Early</span></div>
+      <p class="tagline">Fast and near-free, but small and recently bruised.</p>
+      <div class="dossier-grid">
+        <div class="dossier-field"><span class="k">Architecture</span><span class="v">OP Stack optimistic rollup, part of the Optimism Superchain, launched December 2024. L2BEAT flags no delay or exit window on contract upgrades. <a href="https://l2beat.com/scaling/projects/ink" target="_blank">L2BEAT</a></span></div>
+        <div class="dossier-field"><span class="k">Dev ecosystem</span><span class="v">Small: ~1.14M accounts, ~111K verified contracts. No dedicated RWA standard; Securitize's Apollo credit fund is the notable tenant. Kraken's own xStocks tokenized-equity product runs on Solana, not Ink. <a href="https://explorer.inkonchain.com/stats" target="_blank">Ink Blockscout</a></span></div>
+        <div class="dossier-field"><span class="k">Security</span><span class="v">April 2026: the KelpDAO/rsETH cross-chain bridge exploit (~$293M) hit Ink's own lending market Tydro hard, forcing a market pause and a multi-protocol bailout. <a href="https://www.coindesk.com/business/2026/04/19/the-usd292-million-kelp-exploit-how-it-happened-and-what-it-means-for-defi" target="_blank">CoinDesk</a></span></div>
+        <div class="dossier-field"><span class="k">RWA traction</span><span class="v">$16.3M RWA active market cap — genuinely thin. TVL is down 65&ndash;70% from its January 2026 peak. <a href="https://defillama.com/chain/Ink" target="_blank">DefiLlama</a></span></div>
+      </div>
+    </article>
+
+    <article class="dossier">
+      <div class="dossier-head"><h3>Robinhood Chain</h3><span class="stamp early">Early &middot; live 8 weeks</span></div>
+      <p class="tagline">High activity, but the flagship product's custody model is under regulatory scrutiny.</p>
+      <div class="dossier-grid">
+        <div class="dossier-field"><span class="k">Architecture</span><span class="v">Arbitrum Orbit L2, publicly testnet since Feb 2026, mainnet since July 1, 2026. Fully EVM-compatible, Robinhood-operated sequencer. <a href="https://blog.arbitrum.io/robinhood-chain-mainnet/" target="_blank">Arbitrum Blog</a></span></div>
+        <div class="dossier-field"><span class="k">Custody model — read carefully</span><span class="v">"Classic" stock tokens (2,000+ US equities/ETFs) are claimed to be 1:1 backed by custodied shares. Private-company tokens (OpenAI, SpaceX) are SPV-based derivatives, <em>not</em> equity. OpenAI publicly stated it had not authorized or endorsed the tokens. <a href="https://www.coindesk.com/markets/2025/07/09/robinhood-says-openai-stock-tokens-backed-by-special-purpose-vehicle" target="_blank">CoinDesk</a></span></div>
+        <div class="dossier-field"><span class="k">Regulatory status</span><span class="v">Robinhood Markets (Nasdaq: HOOD), FINRA broker-dealer. Lithuania's central bank opened an inquiry into the tokenized-stock structure in July 2025; resolution not yet found in public sources. <a href="https://www.cnbc.com/2025/07/07/robinhood-stock-tokens-face-scrutiny-in-the-eu-after-openai-warning.html" target="_blank">CNBC</a></span></div>
+        <div class="dossier-field"><span class="k">RWA traction</span><span class="v">Over 80% of on-chain volume is memecoin trading; tokenized-stock activity is only ~6% of TVL (~$32M), though cumulative stock-token volume via Uniswap has reached ~$250M. <a href="https://financefeeds.com/robinhood-chain-is-winning-on-memecoins-not-the-tokenized-stocks-it-was-built-for/" target="_blank">FinanceFeeds</a></span></div>
+      </div>
+    </article>
+
+    <article class="dossier">
+      <div class="dossier-head"><h3>Circle's Arc</h3><span class="stamp pending">Pre-launch</span></div>
+      <p class="tagline">The most institutionally-stacked validator set of any chain in this comparison — still three weeks from mainnet.</p>
+      <div class="dossier-grid">
+        <div class="dossier-field"><span class="k">Architecture</span><span class="v">L1, EVM-compatible, permissioned (PoA) validator set at launch, USDC as native gas. Public testnet since Oct 2025; public mainnet scheduled Sept 16, 2026. <a href="https://www.circle.com/blog/introducing-arc-an-open-layer-1-blockchain-purpose-built-for-stablecoin-finance" target="_blank">Circle</a></span></div>
+        <div class="dossier-field"><span class="k">Validators</span><span class="v">Founding cohort: BlackRock, DTCC, Fireblocks, ICE, Mastercard, Standard Chartered, Visa, and others — announced August 2026. <a href="https://www.circle.com/pressroom/circle-announces-founding-validator-cohort-and-major-integrations-for-arc-ahead-of-september-16-mainnet-launch" target="_blank">Circle Pressroom</a></span></div>
+        <div class="dossier-field"><span class="k">Compliance</span><span class="v">Circle (NYSE: CRCL) holds an NYDFS trust charter and was the first stablecoin issuer to achieve full MiCA compliance. <a href="https://www.circle.com/circle-eea" target="_blank">Circle</a></span></div>
+        <div class="dossier-field"><span class="k">RWA traction</span><span class="v">BlackRock has committed to deploying BUIDL on Arc at launch; DTCC's tokenization collaboration is scheduled for H2 2027 — notably later than Arc's own mainnet. <a href="https://www.circle.com/pressroom/circle-announces-founding-validator-cohort-and-major-integrations-for-arc-ahead-of-september-16-mainnet-launch" target="_blank">Circle Pressroom</a></span></div>
+      </div>
+    </article>
+
+    <article class="dossier">
+      <div class="dossier-head"><h3>Stripe's Tempo</h3><span class="stamp early">Early &middot; live 5 months</span></div>
+      <p class="tagline">Built for payments first; RWA-readiness is still a stated direction, not a shipped product.</p>
+      <div class="dossier-grid">
+        <div class="dossier-field"><span class="k">Architecture</span><span class="v">L1 built with Paradigm on the Reth SDK, Simplex BFT consensus, stablecoin-native gas via a Fee AMM. Mainnet live since March 18, 2026. <a href="https://www.coindesk.com/tech/2026/03/18/stripe-led-payments-blockchain-tempo-goes-live-with-protocol-for-ai-agents" target="_blank">CoinDesk</a></span></div>
+        <div class="dossier-field"><span class="k">Compliance tooling</span><span class="v">TIP-20 (stablecoin token standard) and TIP-403 (shared, reusable KYC/allowlist policy registry) — payments-oriented compliance primitives, not a dedicated securities-token framework. <a href="https://tempo.xyz/developers/docs/protocol/tip20/overview" target="_blank">Tempo Docs</a></span></div>
+        <div class="dossier-field"><span class="k">Backing</span><span class="v">$500M Series A at a $5B valuation; Visa and Zodia Custody (Standard Chartered) became external validators in April 2026. <a href="https://www.coindesk.com/business/2026/04/14/visa-throws-its-weight-behind-stripe-s-tempo-blockchain" target="_blank">CoinDesk</a></span></div>
+        <div class="dossier-field"><span class="k">RWA traction</span><span class="v">DeFi TVL is single-digit millions. Morpho lending integration went live May 2026; tokenized-deposit pilots with bank partners are a stated direction, not yet a named live product. <a href="https://www.coindesk.com/business/2026/05/18/stripe-backed-tempo-taps-usd7-5-billion-defi-lender-morpho-to-expand-beyond-payments" target="_blank">CoinDesk</a></span></div>
+      </div>
+    </article>
+
+    <article class="dossier">
+      <div class="dossier-head"><h3>Canton Network</h3><span class="stamp mature">Established</span></div>
+      <p class="tagline">Built by Digital Asset specifically so a bank never has to show its counterparties' data to a stranger.</p>
+      <div class="dossier-grid">
+        <div class="dossier-field"><span class="k">Architecture</span><span class="v">A permissioned "network of networks" using Daml. Sub-transaction privacy means each validator only ever sees the data relevant to its own parties — a fundamentally different model from public EVM chains. <a href="https://www.canton.network/blog/a-technical-primer" target="_blank">Canton</a></span></div>
+        <div class="dossier-field"><span class="k">Dev ecosystem</span><span class="v">Daml has a steeper learning curve than Solidity but stronger compile-time guarantees. 600+ institutions participate, including Goldman Sachs, BNY Mellon, Deutsche B&ouml;rse, and DTCC as Foundation co-chair. <a href="https://blockeden.xyz/blog/2026/01/27/canton-network-jpmorgan-wall-street-privacy-blockchain-institutional-defi/" target="_blank">BlockEden</a></span></div>
+        <div class="dossier-field"><span class="k">Live products</span><span class="v">JPM Coin deployed on Canton (Jan 2026); DTCC's Treasury-tokenization MVP targets H1 2026 production; Goldman Sachs + BNY Mellon's tokenized money-market fund launched July 2025. <a href="https://www.coinspeaker.com/jpmorgan-deploys-jpm-coin-on-canton-network-extending-blockchain-strategy/" target="_blank">Coinspeaker</a></span></div>
+        <div class="dossier-field"><span class="k">Scale</span><span class="v">Broadridge's Distributed Ledger Repo alone processes an estimated $8 trillion/month in tokenized Treasury repo. Daily transactions passed 600,000 in October 2025. <a href="https://www.coindesk.com/markets/2025/10/01/canton-network-activity-surges-as-exchanges-join-validators-copper-research" target="_blank">CoinDesk</a></span></div>
+      </div>
+    </article>
+
+    <article class="dossier">
+      <div class="dossier-head"><h3>Provenance Blockchain</h3><span class="stamp mature">Mature</span></div>
+      <p class="tagline">The chain that's already tokenizing more private credit than anyone tokenizes Treasuries.</p>
+      <div class="dossier-grid">
+        <div class="dossier-field"><span class="k">Architecture</span><span class="v">Cosmos SDK / CometBFT proof-of-stake L1 with IBC interoperability. Compliance is a native protocol module (the Marker Module), not a smart-contract add-on. <a href="https://www.sec.gov/Archives/edgar/data/1974395/000094787125000216/ss4476065_497.htm" target="_blank">SEC EDGAR</a></span></div>
+        <div class="dossier-field"><span class="k">Who runs it</span><span class="v">Driven by Figure Technology Solutions (Nasdaq: FIGR, IPO'd Sept 2025 raising $787.5M). Governance moved to Figure operational control in a January 2026 community vote. <a href="https://www.davispolk.com/experience/figure-technology-solutions-788-million-ipo" target="_blank">Davis Polk</a></span></div>
+        <div class="dossier-field"><span class="k">Regulated products</span><span class="v">YLDS — an SEC-registered public security paying SOFR-minus-50bps yield — is described as the first yield-bearing stablecoin registered as a public security. <a href="https://www.prnewswire.com/news-releases/figure-markets-launched-industry-first-yield-bearing-stablecoin-as-an-sec-registered-public-security-302381466.html" target="_blank">PR Newswire</a></span></div>
+        <div class="dossier-field"><span class="k">Scale</span><span class="v">Figure's tokenized home-equity book reached ~$20.1B outstanding by July 2026 — bigger than all tokenized US Treasuries combined — issuing roughly $650M/month, with ~20% of US HELOC issuers now using Provenance. <a href="https://finance.yahoo.com/markets/crypto/articles/3-surprising-tokenization-stats-reshaping-020000394.html" target="_blank">Yahoo Finance</a></span></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================================================
+       10 — RECOMMENDATION
+       ============================================================ -->
+  <section id="recommendation">
+    <div class="section-head">
+      <span class="eyebrow">10 — Decision framework</span>
+      <h2>Which chain, for which asset</h2>
+      <p class="dek">For a broad, multi-asset platform, the honest answer is a portfolio of chains, not one winner. Here's how to split by asset type.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Asset type</th><th>Best fit today</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Cash equivalents, tokenized treasuries, money-market funds</td><td class="chain">Ethereum</td><td>Deepest liquidity — BUIDL, BENJI, USYC all live here first</td></tr>
+          <tr><td>Private credit, real estate, structured lending</td><td class="chain">Provenance</td><td>Proven at $20B+ scale with protocol-level KYC/AML</td></tr>
+          <tr><td>Interbank settlement, bank-to-bank deposits, repo</td><td class="chain">Canton</td><td>JPM Coin, Broadridge DLR, DTCC — all live, all regulated</td></tr>
+          <tr><td>Public equities / ETFs</td><td class="chain">Ethereum / Base</td><td>Ondo Global Markets and Securitize infrastructure are mature; Robinhood Chain's custody model needs its EU inquiry resolved first</td></tr>
+          <tr><td>Consumer-facing distribution</td><td class="chain">Base</td><td>Coinbase Prime's reach ($350B+ AUM) plus sub-cent fees</td></tr>
+          <tr><td>Cross-border, stablecoin-native payments</td><td class="chain">Watch Arc / Tempo</td><td>Purpose-built for this, but both need 6&ndash;12 more months of live data</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <strong>Bottom line for a 2026 build:</strong> anchor primary rails on Ethereum for liquidity and Base for cost/reach, add Provenance or Canton for the private-credit and institutional-settlement legs, and treat Circle's Arc, Stripe's Tempo, and Robinhood Chain as re-evaluation candidates in 6&ndash;12 months rather than launch infrastructure.
+    </div>
+  </section>
+
+  <!-- ============================================================
+       11 — SOURCES (click a chain name to expand its citation list)
+       ============================================================ -->
+  <section id="sources">
+    <div class="section-head">
+      <span class="eyebrow">11 — Sources</span>
+      <h2>Citations, by chain</h2>
+      <p class="dek">Analytics dashboards, official docs/blogs, press coverage, and filings used to compile this report, plus the candidate asset used in the calculations above.</p>
+    </div>
+
+    <details class="src" open>
+      <summary>Candidate asset — IGLD ETF</summary>
+      <div class="src-list">
+        <a href="https://www.ftportfolios.com/retail/etf/etfsummary.aspx?Ticker=IGLD" target="_blank">First Trust — FT Vest Gold Strategy Target Income ETF (IGLD) fund page</a>
+      </div>
+    </details>
+
+    <details class="src">
+      <summary>Ethereum Mainnet</summary>
+      <div class="src-list">
+        <a href="https://etherscan.io/gastracker" target="_blank">Etherscan Gas Tracker</a>
+        <a href="https://defillama.com/chain/ethereum" target="_blank">DefiLlama — Ethereum Chain Overview</a>
+        <a href="https://defillama.com/rwa/chain/ethereum" target="_blank">DefiLlama — RWA by Chain: Ethereum</a>
+        <a href="https://beaconcha.in/validators" target="_blank">beaconcha.in — Validators</a>
+        <a href="https://www.kucoin.com/blog/blackrock-buidl-tokenized-treasury-multichain" target="_blank">KuCoin — BlackRock BUIDL Multichain AUM</a>
+        <a href="https://blog.ethereum.org/2025/11/06/fusaka-mainnet-announcement" target="_blank">Ethereum Foundation — Fusaka Mainnet Announcement</a>
+        <a href="https://blog.thirdweb.com/ethereum-crosses-1-million-developers-what-the-milestone-means-for-builders/" target="_blank">thirdweb — Ethereum Crosses 1 Million Developers</a>
+        <a href="https://www.lw.com/en/us-crypto-policy-tracker/regulatory-developments" target="_blank">Latham &amp; Watkins — US Crypto Policy Tracker</a>
+      </div>
+    </details>
+
+    <details class="src">
+      <summary>Coinbase Base</summary>
+      <div class="src-list">
+        <a href="https://blog.base.org/base-has-reached-stage-1-decentralization" target="_blank">Base Blog — Base Reaches Stage 1 Decentralization</a>
+        <a href="https://ourcryptotalk.com/news/base-blockchain-outage-halts-network-twice" target="_blank">Our Crypto Talk — Base Outage Halts Network Twice</a>
+        <a href="https://chainspect.app/chain/base" target="_blank">Chainspect — Base TPS, Finality, Fees</a>
+        <a href="https://defillama.com/chain/base" target="_blank">DefiLlama — Base Chain</a>
+        <a href="https://centrifuge.io/blog/institutional-rwa-morpho" target="_blank">Centrifuge — Institutional RWA Market on Morpho</a>
+        <a href="https://www.coinbase.com/en-fr/blog/coinbase-prime-the-institutional-os-ushering-in-the-next-era-of-crypto-trading" target="_blank">Coinbase — Coinbase Prime: The Institutional OS</a>
+        <a href="https://www.sec.gov/Archives/edgar/data/1679788/000167978826000015/coin-20251231.htm" target="_blank">SEC EDGAR — Coinbase Global 10-K</a>
+      </div>
+    </details>
+
+    <details class="src">
+      <summary>Kraken's Ink</summary>
+      <div class="src-list">
+        <a href="https://l2beat.com/scaling/projects/ink" target="_blank">L2BEAT — Ink</a>
+        <a href="https://defillama.com/chain/Ink" target="_blank">DefiLlama — Ink Chain</a>
+        <a href="https://explorer.inkonchain.com/stats" target="_blank">Ink Blockscout — Stats</a>
+        <a href="https://www.coindesk.com/business/2026/04/19/the-usd292-million-kelp-exploit-how-it-happened-and-what-it-means-for-defi" target="_blank">CoinDesk — The $292M Kelp Exploit</a>
+        <a href="https://www.kraken.com/learn/how-kraken-is-regulated" target="_blank">Kraken — How Kraken Is Regulated</a>
+        <a href="https://securitize.io/learn/press/apollo-and-securitize-announce-partnership-and-launch-tokenized-access-to-credit-fund" target="_blank">Securitize — Apollo Partnership Press Release</a>
+      </div>
+    </details>
+
+    <details class="src">
+      <summary>Robinhood Chain</summary>
+      <div class="src-list">
+        <a href="https://blog.arbitrum.io/robinhood-chain-mainnet/" target="_blank">Arbitrum Blog — Robinhood Chain Mainnet Is Live</a>
+        <a href="https://docs.robinhood.com/chain/" target="_blank">Robinhood Chain Documentation</a>
+        <a href="https://www.coindesk.com/markets/2025/07/09/robinhood-says-openai-stock-tokens-backed-by-special-purpose-vehicle" target="_blank">CoinDesk — OpenAI Tokens Backed by SPV</a>
+        <a href="https://www.cnbc.com/2025/07/07/robinhood-stock-tokens-face-scrutiny-in-the-eu-after-openai-warning.html" target="_blank">CNBC — EU Scrutiny After OpenAI Warning</a>
+        <a href="https://financefeeds.com/robinhood-chain-is-winning-on-memecoins-not-the-tokenized-stocks-it-was-built-for/" target="_blank">FinanceFeeds — Winning on Memecoins, Not Stocks</a>
+      </div>
+    </details>
+
+    <details class="src">
+      <summary>Circle's Arc</summary>
+      <div class="src-list">
+        <a href="https://www.circle.com/blog/introducing-arc-an-open-layer-1-blockchain-purpose-built-for-stablecoin-finance" target="_blank">Circle — Introducing Arc</a>
+        <a href="https://www.circle.com/pressroom/circle-announces-founding-validator-cohort-and-major-integrations-for-arc-ahead-of-september-16-mainnet-launch" target="_blank">Circle Pressroom — Founding Validator Cohort</a>
+        <a href="https://www.arc.io/blog/deterministic-finality-on-arc" target="_blank">Arc.io — Deterministic Finality on Arc</a>
+        <a href="https://www.circle.com/circle-eea" target="_blank">Circle — MiCA Compliant Stablecoins</a>
+      </div>
+    </details>
+
+    <details class="src">
+      <summary>Stripe's Tempo</summary>
+      <div class="src-list">
+        <a href="https://www.coindesk.com/tech/2026/03/18/stripe-led-payments-blockchain-tempo-goes-live-with-protocol-for-ai-agents" target="_blank">CoinDesk — Tempo Goes Live with AI Agent Protocol</a>
+        <a href="https://tempo.xyz/developers/docs/protocol/tip20/overview" target="_blank">Tempo Docs — TIP-20 Overview</a>
+        <a href="https://www.coindesk.com/business/2026/04/14/visa-throws-its-weight-behind-stripe-s-tempo-blockchain" target="_blank">CoinDesk — Visa Backs Tempo</a>
+        <a href="https://defillama.com/protocol/tempo-stablecoin-dex" target="_blank">DefiLlama — Tempo Stablecoin Dex</a>
+      </div>
+    </details>
+
+    <details class="src">
+      <summary>Canton Network</summary>
+      <div class="src-list">
+        <a href="https://www.canton.network/blog/a-technical-primer" target="_blank">Canton Network — A Technical Primer</a>
+        <a href="https://defillama.com/chain/canton" target="_blank">DefiLlama — Canton Chain</a>
+        <a href="https://thedefiant.io/converge/blockchains/canton-network-tops-blockchain-fee-rankings-60m-30-days" target="_blank">The Defiant — Canton Tops Fee Rankings</a>
+        <a href="https://blockeden.xyz/blog/2026/01/27/canton-network-jpmorgan-wall-street-privacy-blockchain-institutional-defi/" target="_blank">BlockEden — JPMorgan, Goldman Sachs, 600 Institutions</a>
+        <a href="https://www.dtcc.com/news/2025/december/17/dtcc-and-digital-asset-partner-to-tokenize-dtc-custodied-us-treasury-securities" target="_blank">DTCC News — DTCC and Digital Asset Partner</a>
+      </div>
+    </details>
+
+    <details class="src">
+      <summary>Provenance Blockchain</summary>
+      <div class="src-list">
+        <a href="https://www.kucoin.com/blog/what-is-provenance-blockchain" target="_blank">KuCoin — What Is Provenance Blockchain?</a>
+        <a href="https://www.sec.gov/Archives/edgar/data/1974395/000094787125000216/ss4476065_497.htm" target="_blank">SEC EDGAR — Marker Module / KYC-AML Detail</a>
+        <a href="https://www.davispolk.com/experience/figure-technology-solutions-788-million-ipo" target="_blank">Davis Polk — Figure Technology $788M IPO</a>
+        <a href="https://app.rwa.xyz/networks/provenance" target="_blank">RWA.xyz — Provenance Network Page</a>
+        <a href="https://finance.yahoo.com/markets/crypto/articles/3-surprising-tokenization-stats-reshaping-020000394.html" target="_blank">Yahoo Finance — 3 Surprising Tokenization Stats</a>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============================================================
+       SIGN-OFF — branding block at the very end of the report
+       ============================================================ -->
+  <div class="signoff">
+    <div class="initials">SB</div>
+    <div class="info">
+      <b>Somnath Banerjee</b>
+      <span>Co-Founder, Mosaic AI Solutions</span>
+      <span><a href="mailto:sbanerjee@mosaicai.co">sbanerjee@mosaicai.co</a> &nbsp;&middot;&nbsp; <a href="https://www.linkedin.com/in/blockchainbanerjee/" target="_blank">linkedin.com/in/blockchainbanerjee</a></span>
+    </div>
+  </div>
+
+  <footer class="fineprint">
+    Compiled 2026-08-26 for internal RWA platform evaluation. All figures are point-in-time snapshots — re-verify against DefiLlama, L2BEAT, Chainspect, and each chain's official docs before relying on them for a final build decision, especially for Circle's Arc, Stripe's Tempo, and Robinhood Chain.
+  </footer>
+
+</div>
+</body>
+</html>
