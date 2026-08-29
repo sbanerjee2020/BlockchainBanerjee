@@ -1,7 +1,189 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Somnath's Blockchain Blogs </title>
+  <title>Somnath's Blockchain Blogs </titlea
+style>
+
+  /* ---------------- 1. COLORS (edit here, nothing else) ---------------- */
+  :root {
+    --bg:        #0F1115;   /* page background */
+    --panel:     #171A20;   /* card / box background */
+    --panel-2:   #1D2129;   /* slightly lighter box background */
+    --line:      #2A2E37;   /* borders / rules */
+    --text:      #E7E9EE;   /* main text */
+    --text-dim:  #9BA1AD;   /* secondary text */
+    --blue:      #7C9AE8;   /* "classical / quantum-vulnerable" accent */
+    --copper:    #E3944F;   /* "post-quantum / hash-based" accent */
+    --green:     #6FBF95;   /* "verified" accent */
+  }
+
+  /* ---------------- 2. BASE ---------------- */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; line-height: 1.2; }
+  code, .mono, .calc, table { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+  a { color: var(--copper); }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------------- 3. TOP BYLINE BAR ---------------- */
+  .byline-bar {
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+  .byline-bar .wrap { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .byline-bar img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; vertical-align: middle; }
+  .byline-bar a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .byline-bar a:hover { color: var(--copper); border-color: var(--copper); }
+
+  /* ---------------- 4. HERO ---------------- */
+  .hero { padding: 56px 0 40px; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--copper); margin-bottom: 14px; font-weight: bold;
+  }
+  h1 { font-size: 2.4rem; margin: 0 0 18px; }
+  .hero p.lede { font-size: 1.1rem; color: var(--text-dim); max-width: 60ch; margin: 0 0 20px; }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--text-dim); }
+  .legend .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; }
+  .sw.blue { background: var(--blue); }
+  .sw.copper { background: var(--copper); }
+  .sw.green { background: var(--green); }
+
+  /* ---------------- 5. CONTENTS ROW ---------------- */
+  .contents {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    padding: 18px 0; border-bottom: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .contents a { color: var(--text-dim); text-decoration: none; }
+  .contents a:hover { color: var(--copper); }
+
+  /* ---------------- 6. SECTIONS ---------------- */
+  section { padding: 46px 0; border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: none; }
+  .kicker {
+    font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--blue); margin-bottom: 8px; font-weight: bold;
+  }
+  .kicker.pq { color: var(--copper); }
+  h2 { font-size: 1.7rem; margin: 0 0 18px; }
+  h3 { font-size: 1.2rem; margin: 28px 0 10px; }
+  p { margin: 0 0 15px; }
+  ul, ol { padding-left: 1.3em; margin: 0 0 15px; }
+  li { margin-bottom: 6px; }
+  .tag {
+    display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 3px;
+    background: var(--panel-2); border: 1px solid var(--line);
+  }
+  .tag.blue { color: var(--blue); }
+  .tag.copper { color: var(--copper); }
+
+  /* ---------------- 7. WORKED CALCULATION BOXES ---------------- */
+  .calc {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--copper);
+    border-radius: 4px;
+    padding: 18px 20px;
+    margin: 20px 0;
+    font-size: 14px;
+    overflow-x: auto;
+  }
+  .calc.blue-edge { border-left-color: var(--blue); }
+  .calc .label {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-weight: bold; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 10px; display: block;
+  }
+  .calc .line { white-space: pre; padding: 2px 0; }
+  .calc .dim { color: var(--text-dim); }
+  .result { color: var(--green); font-weight: bold; }
+  .hl-blue { color: var(--blue); font-weight: bold; }
+  .hl-copper { color: var(--copper); font-weight: bold; }
+  .ok { color: var(--green); font-weight: bold; }
+
+  /* ---------------- 8. CALLOUTS ---------------- */
+  .callout {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 15px;
+  }
+  .callout b.title { display: block; margin-bottom: 4px; color: var(--copper); }
+
+  /* ---------------- 9. TABLES ---------------- */
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 18px 0; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  th { color: var(--text-dim); text-transform: uppercase; font-size: 11px; letter-spacing: 0.04em; }
+  .table-scroll { overflow-x: auto; }
+
+  /* ---------------- 10. DIAGRAM BOXES ---------------- */
+  .diagram {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 16px 10px 6px;
+    margin: 20px 0;
+    overflow-x: auto;
+    text-align: center;
+  }
+  .diagram svg { max-width: 100%; height: auto; }
+  .diagram .cap { font-size: 12.5px; color: var(--text-dim); padding: 8px 12px 0; }
+
+  /* ---------------- 11. FAQ ---------------- */
+  details { border-bottom: 1px solid var(--line); padding: 14px 0; }
+  summary { cursor: pointer; font-weight: bold; font-size: 16px; }
+  summary::marker { color: var(--copper); }
+  details .a { padding-top: 8px; color: var(--text-dim); }
+
+  /* ---------------- 12. AUTHOR CARD ---------------- */
+  .author-card {
+    display: flex; gap: 22px; align-items: flex-start;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 26px;
+    margin: 22px 0;
+    flex-wrap: wrap;
+  }
+  .author-card img {
+    width: 96px; height: 96px; border-radius: 50%;
+    object-fit: cover; border: 2px solid var(--copper);
+    flex-shrink: 0;
+  }
+  .author-card h3 { margin: 0 0 2px; font-size: 1.25rem; }
+  .author-card .role { color: var(--copper); font-size: 14px; margin-bottom: 10px; }
+  .author-card .links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .author-card .links a {
+    font-size: 13.5px; text-decoration: none; color: var(--text);
+    background: var(--panel-2); border: 1px solid var(--line);
+    padding: 7px 12px; border-radius: 20px;
+  }
+  .author-card .links a:hover { border-color: var(--copper); color: var(--copper); }
+
+  /* ---------------- 13. FOOTER ---------------- */
+  footer { padding: 30px 0 60px; }
+  footer .wrap { border-top: 1px solid var(--line); padding-top: 24px; }
+  footer ol { color: var(--text-dim); font-size: 13.5px; }
+  footer li { margin-bottom: 6px; }
+  .fine { font-size: 12.5px; color: var(--text-dim); margin-top: 18px; }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 1.9rem; }
+    .author-card { flex-direction: column; align-items: center; text-align: center; }
+  }
+</style>
 </head>
 <body>
 <h1>Somnath's Blockchain Blogs</h1>
@@ -10,6 +192,21 @@
 <li><a href="https://sbanerjee2020.github.io/BlockchainBanerjee/pq-ethereum-simple.html">Post Quantum Readiness for Ethereum Blopckchain</a></li>
 <li><a href="https://sbanerjee2020.github.io/BlockchainBanerjee/quantum-compendium.html">Quantum Compendiumn</a></li>
 </ul>
-
+<section style="border-bottom:none; padding-bottom: 10px;">
+    <div class="kicker">About the author</div>
+    <div class="author-card">
+    <div>
+        <h3>Somnath Banerjee</h3>
+        <div class="role">Co-Founder, Mosaic AI Solutions</div>
+        <p style="margin:0; color:var(--text-dim); font-size:14.5px;">Writing at the intersection of crypto infrastructure and applied AI.</p>
+        <div class="links">
+          <a href="https://www.mosaicai.co/" target="_blank" rel="noopener">🌐 mosaicai.co</a>
+          <a href="mailto:sbanerjee@mosaicai.co">✉️ Email</a>
+          <a href="https://calendly.com/sbanerjee-mosaicai/30min" target="_blank" rel="noopener">📅 Book a call</a>
+          <a href="https://www.linkedin.com/in/blockchainbanerjee/" target="_blank" rel="noopener">in BlockchainBanerjee</a>
+        </div>
+      </div>
+    </div>
+  </section>
 </body>
 </html>
