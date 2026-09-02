@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Options Field Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    color-scheme: light dark;
+    --paper: #ECE9E1;
+    --surface: #F8F6F1;
+    --surface-2: #F1EEE6;
+    --ink: #201F1A;
+    --ink-soft: #5C594E;
+    --ink-faint: #8A8676;
+    --line: #D9D4C5;
+    --accent: #A0722C;
+    --accent-soft: #C99A55;
+    --accent-wash: rgba(160,114,44,0.10);
+    --profit: #2F7A5C;
+    --profit-fill: rgba(47,122,92,0.14);
+    --loss: #B03A2E;
+    --loss-fill: rgba(176,58,46,0.13);
+    --shadow: 0 1px 2px rgba(32,31,26,0.06), 0 6px 20px rgba(32,31,26,0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #15161B;
+      --surface: #1C1E25;
+      --surface-2: #21232B;
+      --ink: #ECE7DA;
+      --ink-soft: #A6A192;
+      --ink-faint: #6D6A5E;
+      --line: #34363F;
+      --accent: #DCAB5B;
+      --accent-soft: #B9863C;
+      --accent-wash: rgba(220,171,91,0.12);
+      --profit: #56B590;
+      --profit-fill: rgba(86,181,144,0.14);
+      --loss: #E17767;
+      --loss-fill: rgba(225,119,103,0.15);
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #15161B;
+    --surface: #1C1E25;
+    --surface-2: #21232B;
+    --ink: #ECE7DA;
+    --ink-soft: #A6A192;
+    --ink-faint: #6D6A5E;
+    --line: #34363F;
+    --accent: #DCAB5B;
+    --accent-soft: #B9863C;
+    --accent-wash: rgba(220,171,91,0.12);
+    --profit: #56B590;
+    --profit-fill: rgba(86,181,144,0.14);
+    --loss: #E17767;
+    --loss-fill: rgba(225,119,103,0.15);
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Public Sans', ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; text-wrap: balance; color: var(--ink); margin: 0; }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  a { color: var(--accent); }
+  ::selection { background: var(--accent-wash); }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 208px minmax(0,1fr);
+    gap: 56px;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 28px 96px;
+  }
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; padding: 0 20px 72px; }
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead {
+    grid-column: 1 / -1;
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 8px;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .masthead h1 { font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 600; max-width: 16ch; }
+  .masthead .lede { max-width: 62ch; color: var(--ink-soft); font-size: 1.05rem; margin-top: 18px; }
+  .masthead .context-card {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .context-card .stat {
+    flex: 1 1 140px;
+    padding: 14px 18px;
+    border-right: 1px solid var(--line);
+  }
+  .context-card .stat:last-child { border-right: none; }
+  .context-card .stat .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-faint); margin-bottom: 4px; }
+  .context-card .stat .v { font-family: 'IBM Plex Mono', monospace; font-size: 1.05rem; font-weight: 500; }
+
+  /* ---------- sidebar nav ---------- */
+  nav.toc { position: sticky; top: 28px; align-self: start; padding-top: 40px; }
+  nav.toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  nav.toc a {
+    display: block;
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    border-left: 2px solid transparent;
+  }
+  nav.toc a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.toc a.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-wash); font-weight: 500; }
+  nav.toc .num { font-family: 'IBM Plex Mono', monospace; color: var(--ink-faint); margin-right: 6px; }
+
+  @media (max-width: 880px) {
+    nav.toc {
+      position: sticky; top: 0; z-index: 5; padding: 10px 0;
+      background: var(--paper); border-bottom: 1px solid var(--line);
+      margin-bottom: 24px;
+    }
+    nav.toc ol { flex-direction: row; overflow-x: auto; gap: 4px; padding-bottom: 4px; }
+    nav.toc a { white-space: nowrap; border-left: none; border-bottom: 2px solid transparent; }
+    nav.toc a.active { border-left: none; border-bottom-color: var(--accent); }
+  }
+
+  /* ---------- chapters ---------- */
+  main { min-width: 0; }
+  .chapter { padding: 56px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+  .chapter:last-of-type { border-bottom: none; }
+  .chapter .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 10px;
+  }
+  .chapter h2 { font-size: clamp(1.5rem, 3vw, 1.9rem); font-weight: 600; }
+  .chapter .dek { color: var(--ink-soft); max-width: 66ch; margin-top: 10px; font-size: 1.02rem; }
+  .chapter .body-copy { max-width: 66ch; margin-top: 22px; }
+  .chapter .body-copy p { margin: 0 0 16px; }
+  .chapter .body-copy p:last-child { margin-bottom: 0; }
+  .chapter .body-copy strong { color: var(--ink); }
+
+  .analogy {
+    max-width: 66ch;
+    margin-top: 18px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border-left: 3px solid var(--accent-soft);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.96rem;
+    color: var(--ink-soft);
+  }
+  .analogy b { color: var(--ink); }
+
+  figure { margin: 28px 0 0; }
+  figure.wide { max-width: 100%; }
+  figcaption {
+    font-size: 13px; color: var(--ink-faint); margin-top: 10px;
+    max-width: 60ch;
+  }
+  .fig-frame {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 22px 14px;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+  .fig-frame svg { display: block; width: 100%; height: auto; }
+  .fig-label { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.04em; fill: var(--ink-faint); }
+
+  .fig-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 28px; }
+  @media (max-width: 640px) { .fig-row { grid-template-columns: 1fr; } }
+
+  /* ---------- callouts & formula blocks ---------- */
+  .callout {
+    max-width: 66ch;
+    margin-top: 22px;
+    padding: 16px 20px;
+    border: 1px solid var(--accent-soft);
+    background: var(--accent-wash);
+    border-radius: 10px;
+  }
+  .callout .tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 6px; display:block;
+  }
+  .callout p { margin: 0; font-size: 0.95rem; }
+  .callout p + p { margin-top: 8px; }
+
+  .formula {
+    max-width: 66ch;
+    margin-top: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .formula .fbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 16px; background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-faint);
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .formula pre {
+    margin: 0; padding: 16px 18px; background: var(--surface);
+    font-family: 'IBM Plex Mono', monospace; font-size: 13.2px; line-height: 1.65;
+    color: var(--ink); overflow-x: auto;
+  }
+  .formula .out {
+    padding: 14px 18px; background: var(--surface-2);
+    border-top: 1px dashed var(--line);
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+  }
+  .formula .out .line { color: var(--ink-soft); }
+  .formula .out .line b { color: var(--accent); font-weight: 600; }
+
+  /* ---------- tables ---------- */
+  .tbl-wrap { overflow-x: auto; margin-top: 22px; border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.6px; min-width: 560px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  thead th { background: var(--surface-2); font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color: var(--ink-faint); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td { font-family: 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+  tbody td:first-child { font-family: 'Public Sans', sans-serif; color: var(--ink); font-weight: 500; white-space: normal; }
+
+  /* ---------- strategy cards ---------- */
+  .strategy {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px dashed var(--line);
+  }
+  .strategy:first-of-type { border-top: none; margin-top: 24px; padding-top: 0; }
+  .strategy-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .strategy-head h3 { font-size: 1.25rem; font-weight: 600; }
+  .strategy-head .badge {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .05em;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 20px;
+    background: var(--surface-2); color: var(--ink-soft); border: 1px solid var(--line);
+  }
+  .strategy .mechanism { max-width: 66ch; margin-top: 10px; color: var(--ink-soft); }
+  .strategy .grid-2 { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 26px; margin-top: 18px; align-items: start; }
+  @media (max-width: 760px) { .strategy .grid-2 { grid-template-columns: 1fr; } }
+  .legend { display:flex; gap:18px; margin: 4px 0 26px; font-size:13px; color:var(--ink-soft); flex-wrap: wrap; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .legend i { width:12px; height:12px; border-radius:3px; display:inline-block; }
+
+  .source-note { font-size: 12.5px; color: var(--ink-faint); margin-top: 6px; }
+
+  /* ---------- glossary cards ---------- */
+  .glossary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+  @media (max-width: 760px) { .glossary { grid-template-columns: 1fr; } }
+  .gcard { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .gcard h4 { font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 600; margin: 0 0 8px; }
+  .gcard p { margin: 0; font-size: 0.93rem; color: var(--ink-soft); }
+  .gcard .see { display:block; margin-top:10px; font-size:12px; color: var(--accent); }
+
+  footer.page-foot {
+    grid-column: 1 / -1;
+    margin-top: 8px;
+    padding: 28px 0 10px;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    max-width: 70ch;
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <header class="masthead">
+    <div class="eyebrow">Options, plainly explained</div>
+    <h1>The Options Field Guide</h1>
+    <p class="lede">A term-by-term walkthrough of the volatility jargon and strategy logic behind the <code>/trade-options</code> skill — using the analysis it already generated for <strong>BAC</strong> as the running example, so every abstract idea has a real number attached to it.</p>
+    <div class="context-card mono">
+      <div class="stat"><div class="k">Ticker</div><div class="v">BAC</div></div>
+      <div class="stat"><div class="k">Price</div><div class="v">$62.32</div></div>
+      <div class="stat"><div class="k">30-Day IV</div><div class="v">~23.0%</div></div>
+      <div class="stat"><div class="k">IV Percentile</div><div class="v">51%</div></div>
+      <div class="stat"><div class="k">Next Earnings</div><div class="v">Oct 14, 2026</div></div>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <ol>
+      <li><a href="#bias"><span class="num">01</span>Directional Bias</a></li>
+      <li><a href="#iv"><span class="num">02</span>Implied Volatility</a></li>
+      <li><a href="#rankpct"><span class="num">03</span>IV Rank & Percentile</a></li>
+      <li><a href="#term"><span class="num">04</span>Term Structure</a></li>
+      <li><a href="#straddle"><span class="num">05</span>Straddle &amp; Expected Move</a></li>
+      <li><a href="#maxpain"><span class="num">06</span>Max Pain</a></li>
+      <li><a href="#strategies"><span class="num">07</span>Strategy Playbook</a></li>
+      <li><a href="#pop"><span class="num">08</span>Probability of Profit</a></li>
+      <li><a href="#more"><span class="num">09</span>More Terms</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- ============ 01 DIRECTIONAL BIAS ============ -->
+    <section class="chapter" id="bias">
+      <div class="kicker">01 — Setup</div>
+      <h2>What "directional bias" means</h2>
+      <p class="dek">The skill's command is <code>/trade options TICKER bullish|bearish|neutral</code>. That last word is your directional bias — your honest opinion about where the stock is headed. It's the single input that decides which family of strategies even makes sense to look at.</p>
+
+      <div class="body-copy">
+        <p>You don't need a model to have a bias — it's just your answer to "do I think this stock goes up, down, or nowhere for a while?" Everything downstream (which strategy, which strikes, which side of the trade you're on) branches from that one answer.</p>
+      </div>
+
+      <figure class="wide">
+        <div class="fig-frame">
+          <svg viewBox="0 0 620 190" role="img" aria-label="Three directional biases — bullish, neutral, bearish — each mapped to the strategy families that fit them">
+            <defs>
+              <marker id="ar1" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="context-fill" />
+              </marker>
+            </defs>
+            <!-- bullish -->
+            <g transform="translate(40,20)">
+              <line x1="60" y1="120" x2="60" y2="20" stroke="var(--profit)" stroke-width="4" marker-end="url(#ar1)" style="--sat-fill:var(--profit)" />
+              <text x="60" y="150" text-anchor="middle" font-family="Fraunces, serif" font-weight="600" font-size="16" fill="var(--profit)">Bullish</text>
+              <text x="60" y="168" text-anchor="middle" font-size="11.5" fill="currentColor" opacity="0.7">expect the stock to rise</text>
+              <text x="60" y="184" text-anchor="middle" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity="0.55">Bull Put · Bull Call · CSP</text>
+            </g>
+            <!-- neutral -->
+            <g transform="translate(250,20)">
+              <line x1="10" y1="70" x2="110" y2="70" stroke="var(--accent)" stroke-width="4" marker-end="url(#ar1)" marker-start="url(#ar1)" />
+              <text x="60" y="150" text-anchor="middle" font-family="Fraunces, serif" font-weight="600" font-size="16" fill="var(--accent)">Neutral</text>
+              <text x="60" y="168" text-anchor="middle" font-size="11.5" fill="currentColor" opacity="0.7">expect range-bound chop</text>
+              <text x="60" y="184" text-anchor="middle" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity="0.55">Condor · Butterfly · Strangle</text>
+            </g>
+            <!-- bearish -->
+            <g transform="translate(460,20)">
+              <line x1="60" y1="20" x2="60" y2="120" stroke="var(--loss)" stroke-width="4" marker-end="url(#ar1)" />
+              <text x="60" y="150" text-anchor="middle" font-family="Fraunces, serif" font-weight="600" font-size="16" fill="var(--loss)">Bearish</text>
+              <text x="60" y="168" text-anchor="middle" font-size="11.5" fill="currentColor" opacity="0.7">expect the stock to fall</text>
+              <text x="60" y="184" text-anchor="middle" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity="0.55">Bear Call · Bear Put · Long Put</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>The direction you supply to the skill filters an otherwise-identical volatility analysis down to only the strategies that fit your view.</figcaption>
+      </figure>
+
+      <div class="analogy"><b>Think of it like choosing a tool.</b> A hammer and a wrench can both be "correct" — the only question is what you're actually trying to do. Bullish, bearish and neutral just point you at the right drawer before you start picking a specific strategy.</div>
+    </section>
+
+    <!-- ============ 02 IMPLIED VOLATILITY ============ -->
+    <section class="chapter" id="iv">
+      <div class="kicker">02 — Volatility</div>
+      <h2>Implied Volatility (IV)</h2>
+      <p class="dek">IV is the market's built-in guess of <em>how much</em> a stock will move over the next year — not which direction, just how far. It's expressed as an annualized percentage, and it's baked into every option's price.</p>
+
+      <div class="body-copy">
+        <p>Every option has a theoretical "fair" price based on time to expiration, the strike, interest rates, and one unknown: how wild the stock's future swings will be. Traders don't know that number — so instead, they work it backwards from what people are actually willing to pay for the option today. <strong>That backed-out number is implied volatility.</strong> High IV = expensive options because the market expects big swings. Low IV = cheap options because the market expects calm.</p>
+        <p>BAC's 30-day IV of <strong>~23%</strong> means: if this rate held for a full year, the stock would be expected to move roughly ±23% (up <em>or</em> down) from today's price, about two-thirds of the time. Shrunk down to one month, that works out to the <strong>±4.9%</strong> expected move you'll see in Section 05.</p>
+      </div>
+
+      <div class="analogy"><b>The umbrella-price analogy.</b> If forecasters expect a storm this weekend, umbrellas at the corner store suddenly cost more — even though nobody actually knows if it will rain. IV is the "storm premium" priced into an option. It reflects <em>expected</em> turbulence, not a promise of it.</div>
+
+      <figure class="wide">
+        <div class="fig-frame">
+          <svg viewBox="0 0 640 250" role="img" aria-label="Bell curve showing BAC's implied one-month price range, from $59.28 to $65.36, centered on the current price of $62.32">
+            <line x1="40" y1="218" x2="600" y2="218" stroke="currentColor" opacity="0.35" stroke-width="1"/>
+            <path d="M199.7,218 C230,92 260,44 320,38 C380,44 410,92 440.3,218 Z" fill="var(--accent-wash)" stroke="none"/>
+            <path d="M40,218 C120,214 165,58 320,38 C475,58 520,214 600,218" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.75"/>
+            <line x1="320" y1="218" x2="320" y2="38" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4 4"/>
+            <circle cx="320" cy="38" r="3.5" fill="var(--accent)"/>
+            <line x1="199.7" y1="218" x2="199.7" y2="150" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+            <line x1="440.3" y1="218" x2="440.3" y2="150" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+            <text x="320" y="26" text-anchor="middle" font-size="12.5" fill="var(--accent)" font-family="IBM Plex Mono, monospace" font-weight="600">$62.32 today</text>
+            <text x="199.7" y="236" text-anchor="middle" class="fig-label">$59.28</text>
+            <text x="440.3" y="236" text-anchor="middle" class="fig-label">$65.36</text>
+            <text x="320" y="120" text-anchor="middle" class="fig-label" fill="var(--accent)" opacity="0.9">±4.9% expected move</text>
+          </svg>
+        </div>
+        <figcaption>The shaded band is the range BAC's options are priced to imply for the next ~30 days — one standard deviation, roughly a two-thirds-confidence range, not a hard ceiling or floor.</figcaption>
+      </figure>
+    </section>
+
+    <!-- ============ 03 IV RANK & PERCENTILE ============ -->
+    <section class="chapter" id="rankpct">
+      <div class="kicker">03 — Volatility, in context</div>
+      <h2>IV Rank vs. IV Percentile</h2>
+      <p class="dek">A raw IV number is meaningless on its own — 23% could be sky-high for a sleepy utility or dirt-cheap for a biotech. Rank and Percentile both answer "is today's IV high or low <em>for this specific stock</em>?" — but they answer it two different ways.</p>
+
+      <div class="body-copy">
+        <p><strong>IV Rank</strong> asks: where does today's IV sit between the highest and lowest readings of the past 52 weeks?</p>
+      </div>
+      <div class="formula">
+        <div class="fbar"><span>iv_rank.py</span><span>formula</span></div>
+        <pre>iv_rank = (current_iv - iv_52wk_low) / (iv_52wk_high - iv_52wk_low) * 100</pre>
+      </div>
+
+      <div class="body-copy" style="margin-top:22px">
+        <p><strong>IV Percentile</strong> asks a subtly different question: out of the last 252 trading days, what percentage had IV <em>lower</em> than today's?</p>
+      </div>
+      <div class="formula">
+        <div class="fbar"><span>iv_percentile.py</span><span>formula</span></div>
+        <pre>iv_percentile = (days_with_lower_iv / total_trading_days) * 100</pre>
+      </div>
+
+      <div class="analogy" style="margin-top:24px"><b>The weather analogy.</b> Say this year's temperatures ranged from 30°F to 90°F, but the stock spent 300 of those days sitting near 32°F and only spiked to 90°F once, briefly. Today it's 60°F.<br/><br/>
+      <b>Rank</b> only cares about the two extremes: (60−30)/(90−30) = <b>50%</b> — "dead center," even though 60°F was actually a much warmer day than almost the entire year.<br/>
+      <b>Percentile</b> counts every day: if 90% of days were colder than 60°F, percentile reads <b>90%</b> — "unusually warm," which is the more honest read of how that day actually felt.</div>
+
+      <div class="fig-row">
+        <figure>
+          <div class="fig-frame">
+            <svg viewBox="0 0 320 150" role="img" aria-label="IV Rank gauge, a track from the 52-week low to the 52-week high with today's reading marked near the middle">
+              <text x="0" y="18" class="fig-label" font-weight="600">IV Rank — extremes only</text>
+              <rect x="10" y="60" width="300" height="14" rx="7" fill="var(--surface-2)" stroke="var(--line)"/>
+              <rect x="10" y="60" width="150" height="14" rx="7" fill="var(--accent-wash)"/>
+              <circle cx="160" cy="67" r="7" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>
+              <text x="10" y="100" class="fig-label">52-wk low</text>
+              <text x="310" y="100" text-anchor="end" class="fig-label">52-wk high</text>
+              <text x="160" y="42" text-anchor="middle" font-size="13" font-family="IBM Plex Mono, monospace" fill="var(--accent)" font-weight="600">≈ 50% rank</text>
+              <text x="160" y="122" text-anchor="middle" class="fig-label" opacity="0.7">only 2 data points feed this</text>
+            </svg>
+          </div>
+          <figcaption>BAC's estimated IV Rank (~48–52%) sits right at the midpoint of its own 52-week range.</figcaption>
+        </figure>
+        <figure>
+          <div class="fig-frame">
+            <svg viewBox="0 0 320 150" role="img" aria-label="IV Percentile histogram, showing the distribution of IV readings over the past year with today's line marking that 51 percent of days were lower">
+              <text x="0" y="18" class="fig-label" font-weight="600">IV Percentile — whole year</text>
+              <g stroke="none">
+                <rect x="10"  y="90" width="10" height="35" fill="var(--ink-faint)" opacity="0.55"/>
+                <rect x="24"  y="80" width="10" height="45" fill="var(--ink-faint)" opacity="0.55"/>
+                <rect x="38"  y="70" width="10" height="55" fill="var(--ink-faint)" opacity="0.55"/>
+                <rect x="52"  y="60" width="10" height="65" fill="var(--ink-faint)" opacity="0.55"/>
+                <rect x="66"  y="66" width="10" height="59" fill="var(--ink-faint)" opacity="0.55"/>
+                <rect x="80"  y="75" width="10" height="50" fill="var(--ink-faint)" opacity="0.55"/>
+                <rect x="94"  y="55" width="10" height="70" fill="var(--ink-faint)" opacity="0.55"/>
+                <rect x="108" y="48" width="10" height="77" fill="var(--ink-faint)" opacity="0.55"/>
+                <rect x="122" y="62" width="10" height="63" fill="var(--ink-faint)" opacity="0.55"/>
+                <rect x="136" y="40" width="10" height="85" fill="var(--ink-faint)" opacity="0.55"/>
+                <rect x="150" y="52" width="10" height="73" fill="var(--ink-faint)" opacity="0.55"/>
+                <rect x="164" y="58" width="10" height="67" fill="var(--accent)"/>
+                <rect x="178" y="45" width="10" height="80" fill="var(--accent)"/>
+                <rect x="192" y="65" width="10" height="60" fill="var(--accent)"/>
+                <rect x="206" y="38" width="10" height="87" fill="var(--accent)"/>
+                <rect x="220" y="55" width="10" height="70" fill="var(--accent)"/>
+                <rect x="234" y="30" width="10" height="95" fill="var(--accent)"/>
+                <rect x="248" y="48" width="10" height="77" fill="var(--accent)"/>
+                <rect x="262" y="20" width="10" height="105" fill="var(--accent)"/>
+                <rect x="276" y="42" width="10" height="83" fill="var(--accent)"/>
+                <rect x="290" y="35" width="10" height="90" fill="var(--accent)"/>
+              </g>
+              <line x1="160" y1="10" x2="160" y2="128" stroke="var(--ink)" stroke-width="1.4" stroke-dasharray="3 3"/>
+              <text x="160" y="8" text-anchor="middle" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="var(--ink)">today</text>
+              <text x="80" y="140" text-anchor="middle" class="fig-label" opacity="0.75">51% of days here</text>
+            </svg>
+          </div>
+          <figcaption>BAC's sourced IV Percentile is 51% — a genuine reading of the whole year's distribution, not just its two extremes.</figcaption>
+        </figure>
+      </div>
+
+      <div class="callout">
+        <span class="tag">Reading BAC's numbers</span>
+        <p>Rank (~50%) and Percentile (51%) happen to roughly agree here — which is itself informative. When both metrics land near the middle, it reinforces the report's own read: <em>"no strong volatility mispricing to exploit either direction."</em> When they disagree sharply, that's usually a sign one lone spike (often an old earnings event) is distorting the Rank number, and Percentile is the one to trust more.</p>
+      </div>
+    </section>
+
+    <!-- ============ 04 TERM STRUCTURE ============ -->
+    <section class="chapter" id="term">
+      <div class="kicker">04 — Volatility across time</div>
+      <h2>Term Structure (Contango &amp; Backwardation)</h2>
+      <p class="dek">IV isn't one number — a stock has a <em>different</em> IV for every expiration date. Plot IV against days-to-expiration and you get the term structure: the volatility equivalent of a bond yield curve.</p>
+
+      <div class="body-copy">
+        <p><strong>Contango (the "normal" shape):</strong> near-term IV is lower, and IV gently rises the further out you look. This makes intuitive sense — more time means more opportunity for something to happen, so the market prices in a bit more uncertainty.</p>
+        <p><strong>Backwardation (the inverted shape):</strong> near-term IV is <em>higher</em> than longer-term IV. This shows up when a specific, dated event — earnings, an FDA ruling, a court decision — sits just before that near expiration. The option covering the event is bid up; the ones beyond it settle back down once that risk has passed.</p>
+      </div>
+
+      <figure class="wide">
+        <div class="fig-frame">
+          <svg viewBox="0 0 580 280" role="img" aria-label="BAC's implied volatility term structure across four expirations, showing a bump at the October 16 expiry right after earnings, compared against a smooth contango reference line">
+            <line x1="60" y1="220" x2="540" y2="220" stroke="currentColor" opacity="0.35"/>
+            <line x1="60" y1="220" x2="60" y2="30" stroke="currentColor" opacity="0.35"/>
+            <text x="52" y="204" text-anchor="end" class="fig-label">18%</text>
+            <text x="52" y="128" text-anchor="end" class="fig-label">23%</text>
+            <text x="52" y="52" text-anchor="end" class="fig-label">28%</text>
+            <polyline points="80,178 220,158 360,78 500,134" fill="none" stroke="var(--ink-faint)" stroke-width="1.4" stroke-dasharray="5 4" opacity="0.6"/>
+            <polyline points="80,160 220,136 360,56 500,112" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
+            <g fill="var(--accent)">
+              <circle cx="80" cy="160" r="4"/><circle cx="220" cy="136" r="4"/>
+              <circle cx="360" cy="56" r="5.5"/><circle cx="500" cy="112" r="4"/>
+            </g>
+            <text x="80" y="242" text-anchor="middle" class="fig-label">Sep 11<tspan x="80" dy="12">11 DTE · 20.5%</tspan></text>
+            <text x="220" y="242" text-anchor="middle" class="fig-label">Sep 18<tspan x="220" dy="12">18 DTE · 22.0%</tspan></text>
+            <text x="360" y="242" text-anchor="middle" class="fig-label" fill="var(--accent)">Oct 16<tspan x="360" dy="12" fill="var(--accent)">46 DTE · 27.0%</tspan></text>
+            <text x="500" y="242" text-anchor="middle" class="fig-label">Dec 18<tspan x="500" dy="12">109 DTE · 23.5%</tspan></text>
+            <text x="360" y="36" text-anchor="middle" font-size="11" fill="var(--accent)" font-family="IBM Plex Mono, monospace">first expiry after Oct 14 earnings</text>
+          </svg>
+        </div>
+        <figcaption>Solid line: BAC's actual term structure. Dashed line: a hypothetical smooth contango for comparison. The hump is the market pricing in extra uncertainty specifically around the earnings date — a small, localized pocket of backwardation inside an otherwise normal curve.</figcaption>
+      </figure>
+
+      <div class="callout">
+        <span class="tag">Why it matters</span>
+        <p>Term structure tells you <em>where</em> the expensive volatility is parked. It's also the entire logic behind the Calendar Spread strategy in Section 07 — you sell the option sitting on the bump and buy the one that isn't.</p>
+      </div>
+    </section>
+
+    <!-- ============ 05 STRADDLE & EXPECTED MOVE ============ -->
+    <section class="chapter" id="straddle">
+      <div class="kicker">05 — Sizing the move</div>
+      <h2>Straddle &amp; Expected Move</h2>
+      <p class="dek">A <strong>straddle</strong> is buying (or selling) a call <em>and</em> a put at the same strike and expiration. It's a pure bet on how far the stock moves — direction doesn't matter.</p>
+
+      <div class="body-copy">
+        <p>A <strong>long straddle</strong> (buying both legs) makes money if the stock moves far enough in <em>either</em> direction to cover what you paid for both options combined. It loses the most if the stock does nothing and both options expire worthless at the strike. A <strong>short straddle</strong> is the mirror image — sold for that same combined premium — and profits if the stock stays pinned near the strike.</p>
+        <p>The reason a straddle gets its own section here: <strong>the price of an at-the-money straddle <em>is</em> the market's expected move.</strong> Add and subtract that dollar figure from the current price, and you get the range options are pricing in.</p>
+      </div>
+
+      <figure class="wide">
+        <div class="fig-frame">
+          <svg viewBox="0 0 560 230" role="img" aria-label="Payoff diagram of a long straddle: a V shape with maximum loss at the strike price and profit ramping up on either side beyond the breakeven points">
+            <line x1="20" y1="115" x2="540" y2="115" stroke="currentColor" opacity="0.3"/>
+            <text x="14" y="119" text-anchor="end" class="fig-label">0</text>
+            <polygon points="20,115 165,115 280,190 20,190" fill="var(--loss-fill)"/>
+            <polygon points="395,115 540,115 540,20 395,20" fill="none"/>
+            <polygon points="165,115 280,190 395,115 165,115" fill="var(--loss-fill)"/>
+            <polygon points="20,115 165,115 280,20 20,20" fill="var(--profit-fill)"/>
+            <polygon points="395,115 540,115 425,20 540,20" fill="var(--profit-fill)"/>
+            <polyline points="20,20 280,190 540,20" fill="none" stroke="currentColor" stroke-width="2.2"/>
+            <line x1="165" y1="115" x2="165" y2="205" stroke="var(--ink-faint)" stroke-dasharray="3 3"/>
+            <line x1="395" y1="115" x2="395" y2="205" stroke="var(--ink-faint)" stroke-dasharray="3 3"/>
+            <line x1="280" y1="190" x2="280" y2="215" stroke="var(--accent)" stroke-dasharray="3 3"/>
+            <text x="165" y="222" text-anchor="middle" class="fig-label">BE low<tspan x="165" dy="12">$58.96</tspan></text>
+            <text x="395" y="222" text-anchor="middle" class="fig-label">BE high<tspan x="395" dy="12">$65.04</tspan></text>
+            <text x="280" y="207" text-anchor="middle" font-size="11" font-family="IBM Plex Mono, monospace" fill="var(--accent)">strike $62 · max loss = premium</text>
+          </svg>
+        </div>
+        <figcaption>Long straddle payoff at expiration. The premium paid (the vertex) is also the straddle's price — the same number used to back out the expected move below.</figcaption>
+      </figure>
+
+      <div class="body-copy" style="margin-top:24px">
+        <p><strong>Worked example — expected move from a straddle price.</strong> BAC's report doesn't quote a raw straddle price directly, but its published ±4.9% monthly expected move implies one: about <strong>$3.04</strong>. Running it through the skill's own formula recovers exactly the range the report lists.</p>
+      </div>
+
+      <div class="formula">
+        <div class="fbar"><span>expected_move.py</span><span>sample calculation</span></div>
+        <pre>stock_price = 62.32
+atm_straddle_price = 3.04   # combined call + put premium, at the money
+
+expected_move_pct = (atm_straddle_price / stock_price) * 100
+expected_move_high = stock_price + atm_straddle_price
+expected_move_low  = stock_price - atm_straddle_price</pre>
+        <div class="out">
+          <div class="line">Expected Move: <b>±$3.04 (4.9%)</b></div>
+          <div class="line">Range: <b>$59.28 — $65.36</b></div>
+        </div>
+      </div>
+      <p class="source-note">Matches the "Next Month" row of BAC's Expected Move table exactly — the report built it the other direction (from IV to move), this walks it the way the skill's calculation guidance describes: straddle price → expected move.</p>
+    </section>
+
+    <!-- ============ 06 MAX PAIN ============ -->
+    <section class="chapter" id="maxpain">
+      <div class="kicker">06 — Where the crowd is positioned</div>
+      <h2>Max Pain</h2>
+      <p class="dek">Max Pain is the single strike price at which the largest total dollar value of outstanding options — calls and puts combined — would expire worthless.</p>
+
+      <div class="body-copy">
+        <p>Because that's also the price where option <em>sellers</em> (often larger, better-hedged players like market makers) lose the least, some traders believe stocks have a mild gravitational pull toward max pain as expiration approaches — especially in quiet weeks with no news to override it. <strong>It's a crowd-behavior theory, not a law of physics</strong> — it's at its weakest right before something like earnings, when a real catalyst can easily overwhelm any "pull."</p>
+      </div>
+
+      <figure class="wide">
+        <div class="fig-frame">
+          <svg viewBox="0 0 600 260" role="img" aria-label="Open interest by strike price for BAC, with the tallest concentration near the estimated sixty dollar max pain level and current price marked at sixty two thirty two">
+            <line x1="30" y1="220" x2="580" y2="220" stroke="currentColor" opacity="0.35"/>
+            <g>
+              <rect x="45"  y="185" width="30" height="35" fill="var(--ink-faint)" opacity="0.5"/>
+              <rect x="115" y="140" width="30" height="80" fill="var(--ink-faint)" opacity="0.6"/>
+              <rect x="185" y="45"  width="30" height="175" fill="var(--accent)"/>
+              <rect x="255" y="100" width="30" height="120" fill="var(--accent-soft)"/>
+              <rect x="325" y="65"  width="30" height="155" fill="var(--ink-faint)" opacity="0.7"/>
+              <rect x="395" y="155" width="30" height="65" fill="var(--ink-faint)" opacity="0.5"/>
+              <rect x="465" y="190" width="30" height="30" fill="var(--ink-faint)" opacity="0.4"/>
+            </g>
+            <text x="60"  y="235" text-anchor="middle" class="fig-label">$55</text>
+            <text x="130" y="235" text-anchor="middle" class="fig-label">$58</text>
+            <text x="200" y="235" text-anchor="middle" class="fig-label" fill="var(--accent)" font-weight="600">$60</text>
+            <text x="270" y="235" text-anchor="middle" class="fig-label">$62.32</text>
+            <text x="340" y="235" text-anchor="middle" class="fig-label">$65</text>
+            <text x="410" y="235" text-anchor="middle" class="fig-label">$67</text>
+            <text x="480" y="235" text-anchor="middle" class="fig-label">$70</text>
+            <line x1="270" y1="100" x2="270" y2="220" stroke="var(--ink)" stroke-dasharray="2 3" opacity="0.6"/>
+            <text x="270" y="90" text-anchor="middle" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor">current price</text>
+            <path d="M200,40 L200,20" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#mp-arrow)"/>
+            <defs><marker id="mp-arrow" viewBox="0 0 10 10" refX="5" refY="8" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,0 L5,10 z" fill="var(--accent)"/></marker></defs>
+            <text x="200" y="16" text-anchor="middle" font-size="11.5" font-family="IBM Plex Mono, monospace" fill="var(--accent)" font-weight="600">max pain ≈ $60–62</text>
+          </svg>
+        </div>
+        <figcaption>Illustrative open-interest profile matching BAC's report: a put-heavy concentration near $60 (the estimated max pain / "put wall") and a secondary call-heavy strike near $65 (the "call wall").</figcaption>
+      </figure>
+
+      <div class="callout">
+        <span class="tag">An honest limitation</span>
+        <p>BAC's own report couldn't pull a live max-pain figure — the data lives behind JS-rendered pages the research tools can't reach — so it estimated $60–62 from the put/call open-interest skew instead, and flagged it explicitly as an estimate rather than a sourced number. That's the right instinct: treat max pain as directional color, and confirm it on a live options-chain tool (a broker, or a site like a max-pain calculator) before it influences an actual trade.</p>
+      </div>
+    </section>
+
+    <!-- ============ 07 STRATEGY PLAYBOOK ============ -->
+    <section class="chapter" id="strategies">
+      <div class="kicker">07 — Putting it together</div>
+      <h2>The Neutral / Income Strategy Playbook</h2>
+      <p class="dek">These five structures are the ones the skill reaches for when IV is high-ish and your bias is neutral or income-oriented — exactly BAC's situation. Three of the four strategies in the actual BAC report are variations on these.</p>
+
+      <div class="legend">
+        <span><i style="background:var(--profit-fill); border:1px solid var(--profit)"></i>profit zone</span>
+        <span><i style="background:var(--loss-fill); border:1px solid var(--loss)"></i>loss zone</span>
+        <span><i style="background:var(--accent)"></i>strike / key level</span>
+      </div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Strategy</th><th>When to Use</th><th>Max Profit</th><th>Max Loss</th><th>Breakeven</th></tr></thead>
+          <tbody>
+            <tr><td>Iron Condor</td><td>High IV + range-bound</td><td>Net credit</td><td>Width − credit</td><td>Short strikes ± credit</td></tr>
+            <tr><td>Short Strangle</td><td>Very high IV + range-bound (undefined risk)</td><td>Total credit</td><td>Unlimited</td><td>Strikes ± credit</td></tr>
+            <tr><td>Iron Butterfly</td><td>High IV + pinning near a strike</td><td>Net credit</td><td>Width − credit</td><td>Center ± credit</td></tr>
+            <tr><td>Covered Call</td><td>Own shares + high IV</td><td>Premium + upside to strike</td><td>Stock's downside</td><td>Purchase price − premium</td></tr>
+            <tr><td>Calendar Spread</td><td>IV term structure steep</td><td>Variable</td><td>Net debit</td><td>Near short strike, at front expiration</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- IRON CONDOR -->
+      <div class="strategy">
+        <div class="strategy-head"><h3>Iron Condor</h3><span class="badge">neutral · defined risk</span></div>
+        <p class="mechanism">Sell a put spread <em>and</em> a call spread at the same time, both out of the money. You collect two credits and profit if the stock stays between your two short strikes through expiration — the wings you bought cap the loss on either side.</p>
+        <div class="grid-2">
+          <div>
+            <div class="formula">
+              <div class="fbar"><span>bac — actual strategy 3</span><span>from your report</span></div>
+              <pre>Sell $60 put   ·  Buy $58 put
+Sell $65 call  ·  Buy $67 call
+Net credit: $52/contract
+Max loss:   $148/contract
+Breakevens: $59.48 / $65.52</pre>
+              <div class="out"><div class="line">Profit if BAC finishes between <b>$59.48 and $65.52</b> at the Sep 18 expiration.</div></div>
+            </div>
+          </div>
+          <figure>
+            <div class="fig-frame">
+              <svg viewBox="0 0 300 170" role="img" aria-label="Iron condor payoff: flat maximum loss on both ends, rising to a flat maximum profit plateau in the middle">
+                <line x1="10" y1="100" x2="290" y2="100" stroke="currentColor" opacity="0.3"/>
+                <polygon points="20,150 20,100 70,100 110,50 190,50 230,100 280,100 280,150" fill="var(--loss-fill)"/>
+                <polygon points="110,50 190,50 230,100 70,100" fill="var(--profit-fill)"/>
+                <polyline points="20,150 70,150 110,50 190,50 230,150 280,150" fill="none" stroke="currentColor" stroke-width="2"/>
+                <line x1="110" y1="50" x2="110" y2="160" stroke="var(--accent)" stroke-dasharray="3 3"/>
+                <line x1="190" y1="50" x2="190" y2="160" stroke="var(--accent)" stroke-dasharray="3 3"/>
+                <text x="110" y="168" text-anchor="middle" class="fig-label">$60</text>
+                <text x="190" y="168" text-anchor="middle" class="fig-label">$65</text>
+                <text x="150" y="42" text-anchor="middle" class="fig-label" fill="var(--profit)">+$52</text>
+                <text x="45" y="163" text-anchor="middle" class="fig-label" fill="var(--loss)">−$148</text>
+              </svg>
+            </div>
+            <figcaption>The classic "mesa" shape — capped profit, capped loss, both sides.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- SHORT STRANGLE -->
+      <div class="strategy">
+        <div class="strategy-head"><h3>Short Strangle</h3><span class="badge">neutral · undefined risk</span></div>
+        <p class="mechanism">Sell an out-of-the-money call <em>and</em> an out-of-the-money put — same idea as an iron condor's middle, but with <strong>no protective wings bought</strong>. That missing insurance is the whole difference: losses are theoretically unlimited on the call side and very large (down to $0) on the put side.</p>
+        <div class="grid-2">
+          <div>
+            <div class="formula">
+              <div class="fbar"><span>illustrative — not from your BAC file</span><span>worked example</span></div>
+              <pre>Sell $60 put for $0.36
+Sell $65 call for $0.35
+Total credit: $71/contract
+Breakevens:   $58.29 / $66.71
+Max loss:     uncapped beyond breakevens</pre>
+            </div>
+          </div>
+          <figure>
+            <div class="fig-frame">
+              <svg viewBox="0 0 300 170" role="img" aria-label="Short strangle payoff: same profit plateau as an iron condor, but losses continue downward with no floor on either side">
+                <line x1="10" y1="100" x2="290" y2="100" stroke="currentColor" opacity="0.3"/>
+                <polygon points="20,178 20,100 70,100 110,50 190,50 230,100 280,100 280,178" fill="var(--loss-fill)"/>
+                <polygon points="110,50 190,50 230,100 70,100" fill="var(--profit-fill)"/>
+                <polyline points="20,178 70,100 110,50 190,50 230,100 280,178" fill="none" stroke="currentColor" stroke-width="2"/>
+                <line x1="110" y1="50" x2="110" y2="160" stroke="var(--accent)" stroke-dasharray="3 3"/>
+                <line x1="190" y1="50" x2="190" y2="160" stroke="var(--accent)" stroke-dasharray="3 3"/>
+                <text x="110" y="168" text-anchor="middle" class="fig-label">$60</text>
+                <text x="190" y="168" text-anchor="middle" class="fig-label">$65</text>
+                <text x="150" y="42" text-anchor="middle" class="fig-label" fill="var(--profit)">+$71</text>
+                <text x="20" y="18" text-anchor="middle" class="fig-label" fill="var(--loss)">↓ unlimited</text>
+                <text x="280" y="18" text-anchor="middle" class="fig-label" fill="var(--loss)">↓ unlimited</text>
+              </svg>
+            </div>
+            <figcaption>Same middle shape as the condor — but the sides never flatten out into a floor.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- IRON BUTTERFLY -->
+      <div class="strategy">
+        <div class="strategy-head"><h3>Iron Butterfly</h3><span class="badge">neutral · defined risk · narrow</span></div>
+        <p class="mechanism">Structurally identical to an iron condor, except <strong>both short strikes sit at the same price</strong> — usually right at the money — with wings still bought further out for protection. You're betting the stock pins almost exactly at one level, not merely "somewhere in a range."</p>
+        <div class="grid-2">
+          <div>
+            <div class="formula">
+              <div class="fbar"><span>illustrative — not from your BAC file</span><span>worked example</span></div>
+              <pre>Sell $62 call + $62 put (combined ~$1.70)
+Buy  $58 put + $66 call (combined ~$0.20)
+Net credit: $1.50/contract
+Width: $4.00 → Max loss: $2.50/contract
+Breakevens: $60.50 / $63.50</pre>
+            </div>
+          </div>
+          <figure>
+            <div class="fig-frame">
+              <svg viewBox="0 0 300 170" role="img" aria-label="Iron butterfly payoff: a single sharp profit peak at the center strike, tapering symmetrically down to a floor on both sides">
+                <line x1="10" y1="100" x2="290" y2="100" stroke="currentColor" opacity="0.3"/>
+                <polygon points="20,150 20,100 90,100 150,50 210,100 280,100 280,150" fill="var(--loss-fill)"/>
+                <polygon points="90,100 150,50 210,100" fill="var(--profit-fill)"/>
+                <polyline points="20,150 90,150 150,50 210,150 280,150" fill="none" stroke="currentColor" stroke-width="2"/>
+                <line x1="150" y1="50" x2="150" y2="160" stroke="var(--accent)" stroke-dasharray="3 3"/>
+                <text x="150" y="168" text-anchor="middle" class="fig-label">$62 (center)</text>
+                <text x="150" y="42" text-anchor="middle" class="fig-label" fill="var(--profit)">+$150 peak</text>
+                <text x="45" y="163" text-anchor="middle" class="fig-label" fill="var(--loss)">−$250</text>
+              </svg>
+            </div>
+            <figcaption>A tent, not a mesa — narrower and taller than a condor's plateau.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- COVERED CALL -->
+      <div class="strategy">
+        <div class="strategy-head"><h3>Covered Call</h3><span class="badge">bullish-to-neutral · income</span></div>
+        <p class="mechanism">Own 100 shares, then sell a call against them. You already carry the stock's full upside and downside; selling the call trades away upside <em>above</em> the strike in exchange for premium collected today. Downside is still the stock's downside, just cushioned slightly by that premium.</p>
+        <div class="grid-2">
+          <div>
+            <div class="formula">
+              <div class="fbar"><span>illustrative — not from your BAC file</span><span>worked example</span></div>
+              <pre>Own 100 BAC @ $62.32
+Sell $65 call for $0.35 → collect $35
+
+If BAC ≥ $65: shares called away.
+Max profit: (65-62.32)*100 + 35 = $303
+If BAC falls: cushioned only by the $35 collected.
+Effective cost basis: $61.97</pre>
+            </div>
+          </div>
+          <figure>
+            <div class="fig-frame">
+              <svg viewBox="0 0 300 170" role="img" aria-label="Covered call payoff: a rising diagonal line that flattens out once the price passes the strike, capping further upside">
+                <line x1="10" y1="100" x2="290" y2="100" stroke="currentColor" opacity="0.3"/>
+                <polygon points="20,160 20,100 190,50 280,50 280,160" fill="var(--loss-fill)"/>
+                <polygon points="20,100 190,50 280,50 280,100" fill="var(--profit-fill)"/>
+                <polyline points="20,160 190,50 280,50" fill="none" stroke="currentColor" stroke-width="2"/>
+                <line x1="190" y1="50" x2="190" y2="160" stroke="var(--accent)" stroke-dasharray="3 3"/>
+                <text x="190" y="168" text-anchor="middle" class="fig-label">$65 strike</text>
+                <text x="255" y="42" text-anchor="middle" class="fig-label" fill="var(--profit)">capped: +$303</text>
+                <text x="30" y="20" text-anchor="middle" class="fig-label" fill="var(--loss)">↓ stock's downside</text>
+              </svg>
+            </div>
+            <figcaption>Same shape as owning the stock — until the strike, where the sold call caps it flat.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- CALENDAR SPREAD -->
+      <div class="strategy">
+        <div class="strategy-head"><h3>Calendar Spread</h3><span class="badge">neutral · term-structure play</span></div>
+        <p class="mechanism">Sell a near-term option and buy a longer-term option at the <em>same strike</em>. It profits as the near-term leg loses time value faster than the far leg — provided the stock stays near that strike. This is the direct payoff of a steep term structure: sell the expensive, bumped IV; buy the cheaper IV sitting behind it.</p>
+        <div class="grid-2">
+          <div>
+            <div class="formula">
+              <div class="fbar"><span>illustrative — uses BAC's own term structure</span><span>worked example</span></div>
+              <pre>Sell Oct 16 $62 call (27.0% IV — earnings bump)
+Buy  Dec 18 $62 call (23.5% IV — post-earnings baseline)
+Net debit paid upfront.
+
+Profitable if BAC pins near $62 AND
+the Oct IV bump collapses back down
+after earnings, as term structure implies it should.</pre>
+            </div>
+          </div>
+          <figure>
+            <div class="fig-frame">
+              <svg viewBox="0 0 300 170" role="img" aria-label="Calendar spread payoff: a smooth hill shape peaking at the shared strike price, unlike the sharp linear payoffs of the other strategies">
+                <line x1="10" y1="100" x2="290" y2="100" stroke="currentColor" opacity="0.3"/>
+                <path d="M30,140 C90,140 110,60 150,55 C190,60 210,140 270,140 L270,100 C210,100 190,60 150,65 C110,60 90,100 30,100 Z" fill="var(--profit-fill)"/>
+                <path d="M30,140 C90,140 110,60 150,55 C190,60 210,140 270,140" fill="none" stroke="currentColor" stroke-width="2"/>
+                <line x1="150" y1="55" x2="150" y2="160" stroke="var(--accent)" stroke-dasharray="3 3"/>
+                <text x="150" y="168" text-anchor="middle" class="fig-label">$62 shared strike</text>
+                <text x="150" y="45" text-anchor="middle" class="fig-label" fill="var(--profit)">peak near strike</text>
+              </svg>
+            </div>
+            <figcaption>Curved, not kinked — the payoff depends on both time <em>and</em> where implied vol settles, hence "variable" in the table above.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 08 PROBABILITY OF PROFIT ============ -->
+    <section class="chapter" id="pop">
+      <div class="kicker">08 — Sample calculation</div>
+      <h2>Estimating Probability of Profit</h2>
+      <p class="dek">Once a credit spread is built, the natural next question is: how likely is it to actually work? There are two very different ways to estimate that — and they can disagree by a lot.</p>
+
+      <div class="body-copy">
+        <p>The quick, rough heuristic just compares the credit collected to the total width of the strikes:</p>
+      </div>
+
+      <div class="formula">
+        <div class="fbar"><span>credit_spread_pop.py</span><span>using BAC's actual Bull Put Spread</span></div>
+        <pre>credit_received = 0.44   # $61 put sold minus $59 put bought
+width = 2.00              # distance between the two strikes
+
+max_loss = width - credit_received
+risk_reward = credit_received / max_loss
+prob_of_profit_estimate = credit_received / width   # rough heuristic</pre>
+        <div class="out">
+          <div class="line">Credit: <b>$0.44</b> &nbsp;·&nbsp; Max Loss: <b>$1.56</b> &nbsp;·&nbsp; Risk/Reward: <b>1 : 3.5</b></div>
+          <div class="line">Rough heuristic POP: <b>≈ 22%</b></div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="tag">Why this doesn't match your report</span>
+        <p>BAC's own analysis lists this exact spread's probability of profit as <strong>~69%</strong> — estimated from the short strike's <em>delta</em> instead. That's not a contradiction; it's two different questions. The credit/width ratio (22%) is a rough sanity check on how "cheap" the premium was relative to the max possible loss — it tends to run low for tight, low-credit spreads regardless of how likely they are to actually win. <strong>Delta-based POP</strong> (69%) approximates the market's own odds that the short option finishes in the money, which is much closer to a true statistical probability.</p>
+        <p>The rule of thumb: <strong>prefer delta when you have it, and only fall back to credit/width as a rough floor-level sanity check</strong> — never treat credit/width as the real probability.</p>
+      </div>
+    </section>
+
+    <!-- ============ 09 MORE TERMS ============ -->
+    <section class="chapter" id="more">
+      <div class="kicker">09 — Loose ends</div>
+      <h2>A Few More Terms</h2>
+      <p class="dek">Three words that show up around volatility discussions but aren't strategy-specific.</p>
+
+      <div class="glossary">
+        <div class="gcard">
+          <h4>Backwardation</h4>
+          <p>When near-term implied volatility is priced <em>higher</em> than longer-term IV — the inverted, "something's coming soon" shape of the term structure curve.</p>
+          <a class="see" href="#term">↑ See Section 04</a>
+        </div>
+        <div class="gcard">
+          <h4>Contagion</h4>
+          <p>When volatility or fear in one asset spreads to others that aren't directly related. A troubled regional bank can spike IV across <em>every</em> bank stock — BAC included — even though BAC's own fundamentals didn't change. Your IV can move for reasons that have nothing to do with your stock.</p>
+        </div>
+        <div class="gcard">
+          <h4>Baseline</h4>
+          <p>The reference point everything else in a comparison is measured against. In the term-structure table, the front monthly IV is often the baseline — other expirations get described as a premium above it or a discount below it.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="page-foot">
+      Educational reference only, generated to accompany the <code>/trade-options</code> skill's BAC analysis. Not financial advice — always confirm live quotes, IV, and open interest with your own broker before trading.
+    </footer>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+  var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  if (!('IntersectionObserver' in window) || !sections.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) {
+        var id = '#' + entry.target.id;
+        links.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href') === id); });
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s){ io.observe(s); });
+})();
+</script>
+</body>
+</html>
