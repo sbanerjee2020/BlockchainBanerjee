@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MosaicAI on Robinhood Chain: Technical Deep Dive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F6F1;
+    --surface:#FFFFFF;
+    --surface-2:#ECEEE6;
+    --text:#161A20;
+    --text-muted:#565E68;
+    --border:#DBDCD3;
+    --gold:#9C7327;
+    --gold-ink:#5B4212;
+    --gold-soft:#F0E3C4;
+    --teal:#1B6E66;
+    --teal-soft:#DEEEEA;
+    --warn:#9A4413;
+    --warn-ink:#7A3610;
+    --warn-soft:#F4E1CE;
+    --shadow: 0 1px 2px rgba(22,26,32,0.05), 0 8px 24px rgba(22,26,32,0.06);
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D1117; --surface:#141A22; --surface-2:#1A222C;
+      --text:#EAEBE4; --text-muted:#9BA2AC; --border:#2A323C;
+      --gold:#D9AE5C; --gold-ink:#F3DFAF; --gold-soft:#3A2E17;
+      --teal:#5EBBAE; --teal-soft:#123230;
+      --warn:#E08A55; --warn-ink:#F4C39A; --warn-soft:#3A2013;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D1117; --surface:#141A22; --surface-2:#1A222C;
+    --text:#EAEBE4; --text-muted:#9BA2AC; --border:#2A323C;
+    --gold:#D9AE5C; --gold-ink:#F3DFAF; --gold-soft:#3A2E17;
+    --teal:#5EBBAE; --teal-soft:#123230;
+    --warn:#E08A55; --warn-ink:#F4C39A; --warn-soft:#3A2013;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px rgba(0,0,0,0.4);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size:16.5px; line-height:1.65; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:880px; margin:0 auto; padding:56px 24px 96px; }
+
+  .kicker{
+    font-family:"IBM Plex Mono", monospace; font-size:12.5px; letter-spacing:0.09em;
+    text-transform:uppercase; color:var(--teal); font-weight:600;
+    display:flex; align-items:center; gap:10px;
+  }
+  .kicker::before{ content:""; width:22px; height:2px; background:var(--teal); display:inline-block; }
+
+  h1{
+    font-family:"Fraunces", Georgia, serif; font-weight:600;
+    font-size:clamp(2.1rem, 4.6vw, 2.9rem); line-height:1.1; letter-spacing:-0.01em;
+    margin:18px 0 14px; text-wrap:balance;
+  }
+  .dek{ font-size:1.12rem; color:var(--text-muted); max-width:68ch; margin:0 0 30px; text-wrap:balance; }
+
+  nav.toc{
+    display:flex; flex-wrap:wrap; gap:8px; margin:0 0 40px; padding:16px 18px;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  }
+  nav.toc span.tlabel{
+    font-family:"IBM Plex Mono", monospace; font-size:0.7rem; text-transform:uppercase;
+    letter-spacing:0.08em; color:var(--text-muted); width:100%; margin-bottom:4px;
+  }
+  nav.toc a{
+    font-size:0.82rem; color:var(--text); background:var(--surface-2); border:1px solid var(--border);
+    padding:5px 11px; border-radius:20px; text-decoration:none;
+  }
+  nav.toc a:hover{ color:var(--teal); border-color:var(--teal); }
+
+  h2{
+    font-family:"Fraunces", Georgia, serif; font-weight:600; font-size:1.55rem;
+    margin:52px 0 6px; letter-spacing:-0.005em; scroll-margin-top:20px;
+    display:flex; align-items:baseline; gap:10px;
+  }
+  h2 .secnum{
+    font-family:"IBM Plex Mono", monospace; font-size:0.95rem; color:var(--gold);
+    font-weight:600;
+  }
+  h3{ font-size:1.05rem; margin:26px 0 8px; font-weight:600; }
+  .section-dek{ color:var(--text-muted); font-size:0.92rem; margin:0 0 20px; }
+  p{ margin:0 0 18px; max-width:72ch; }
+  a{ color:var(--teal); text-decoration-thickness:1px; text-underline-offset:2px; }
+  a:hover{ color:var(--gold); }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+  code{ font-family:"IBM Plex Mono", monospace; font-size:0.88em; background:var(--surface-2); padding:1px 5px; border-radius:4px; }
+
+  figure{ margin:32px 0; }
+  figcaption{ font-size:0.85rem; color:var(--text-muted); margin-top:10px; max-width:72ch; }
+  svg{ width:100%; height:auto; display:block; }
+  .diagram-frame{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px; box-shadow:var(--shadow);
+  }
+
+  /* tables */
+  .table-scroll{ overflow-x:auto; margin:20px 0 8px; border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+  table{ border-collapse:collapse; width:100%; font-size:0.9rem; background:var(--surface); }
+  thead th{
+    text-align:left; font-family:"IBM Plex Mono", monospace; font-size:0.72rem; text-transform:uppercase;
+    letter-spacing:0.06em; color:var(--text-muted); background:var(--surface-2);
+    padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  tbody td{ padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tbody tr:last-child td{ border-bottom:none; }
+  td.num, th.num{ font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  td.src a{ font-size:0.85em; }
+
+  /* stat tiles */
+  .stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:32px 0; }
+  .stat{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 15px; box-shadow:var(--shadow); }
+  .stat .num{ font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums; font-size:1.3rem; font-weight:600; color:var(--gold-ink); }
+  .stat .label{ font-size:0.78rem; color:var(--text-muted); margin-top:4px; line-height:1.35; }
+  .stat .src{ font-size:0.68rem; color:var(--text-muted); margin-top:6px; }
+  .stat .src a{ color:var(--text-muted); }
+
+  /* proportion bar */
+  .propbar-wrap{ margin:28px 0; }
+  .propbar{ display:flex; width:100%; height:34px; border-radius:8px; overflow:hidden; border:1px solid var(--border); }
+  .propbar .seg-rwa{ background:var(--teal); }
+  .propbar .seg-other{ background:var(--surface-2); }
+  .propbar-legend{ display:flex; justify-content:space-between; margin-top:10px; font-family:"IBM Plex Mono", monospace; font-size:0.8rem; color:var(--text-muted); }
+  .propbar-legend .lg{ display:flex; align-items:center; gap:6px; }
+  .swatch{ width:10px; height:10px; border-radius:2px; display:inline-block; }
+
+  /* ledger panel */
+  .ledger{ background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--gold); border-radius:var(--radius); padding:20px 22px; margin:24px 0; box-shadow:var(--shadow); }
+  .ledger .title{ font-family:"IBM Plex Mono", monospace; font-size:0.76rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold-ink); font-weight:600; margin-bottom:12px; }
+  .ledger-row{ display:flex; justify-content:space-between; gap:16px; padding:7px 0; border-top:1px dashed var(--border); font-size:0.92rem; }
+  .ledger-row:first-of-type{ border-top:none; }
+  .ledger-row .v{ font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums; font-weight:600; white-space:nowrap; }
+  .ledger-result{ margin-top:12px; padding-top:12px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:baseline; gap:16px; }
+  .ledger-result .v{ font-family:"IBM Plex Mono", monospace; font-size:1.2rem; font-weight:700; color:var(--gold-ink); }
+  .ledger .note{ font-size:0.76rem; color:var(--text-muted); margin-top:10px; font-style:italic; }
+  .ledger-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+
+  /* offerings */
+  .offerings{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:22px 0 8px; }
+  .offer{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); }
+  .offer .name{ font-weight:600; margin-bottom:6px; }
+  .offer .name .tag{ font-family:"IBM Plex Mono", monospace; font-size:0.7rem; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:4px; }
+  .offer p{ font-size:0.9rem; color:var(--text-muted); margin:0; max-width:none; }
+
+  /* warning / risk callouts */
+  .risk{ background:var(--warn-soft); border:1px solid var(--warn); border-left:4px solid var(--warn); border-radius:var(--radius); padding:16px 18px; margin:16px 0; }
+  .risk .rtitle{ font-weight:700; color:var(--warn-ink); margin-bottom:5px; font-size:0.95rem; }
+  .risk p{ margin:0; font-size:0.9rem; color:var(--text); max-width:none; }
+
+  .sources-strip{ display:flex; flex-wrap:wrap; gap:10px; margin:22px 0 8px; }
+  .sources-strip a{
+    font-family:"IBM Plex Mono", monospace; font-size:0.78rem; background:var(--teal-soft); color:var(--teal);
+    padding:7px 12px; border-radius:20px; text-decoration:none; border:1px solid var(--border);
+  }
+  .sources-strip a:hover{ background:var(--gold-soft); color:var(--gold-ink); }
+
+  .cta{ margin:52px 0 20px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius); padding:28px 26px; }
+  .cta h3{ font-family:"Fraunces", Georgia, serif; font-size:1.35rem; margin:0 0 8px; font-weight:600; }
+  .cta p{ margin:0 0 16px; color:var(--text-muted); }
+  .cta-btn{ display:inline-flex; align-items:center; gap:8px; background:var(--gold); color:#1B1204; font-weight:600; padding:11px 18px; border-radius:8px; text-decoration:none; font-size:0.95rem; }
+  .cta-btn:hover{ background:var(--gold-ink); color:var(--bg); }
+
+  footer{ margin-top:56px; padding-top:24px; border-top:1px solid var(--border); }
+  footer .flabel{ font-family:"IBM Plex Mono", monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:10px; }
+  ol.footnotes{ padding-left:20px; margin:0; font-size:0.8rem; color:var(--text-muted); columns:2; column-gap:32px; }
+  ol.footnotes li{ margin-bottom:8px; break-inside:avoid; }
+  ol.footnotes a{ color:var(--text-muted); }
+  ol.footnotes a:hover{ color:var(--teal); }
+  sup a{ font-size:0.72em; text-decoration:none; }
+
+  @media (max-width:700px){
+    .stats{ grid-template-columns:1fr 1fr; }
+    .offerings{ grid-template-columns:1fr; }
+    .ledger-grid{ grid-template-columns:1fr; }
+    ol.footnotes{ columns:1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">MosaicAI Technical Brief &middot; September 2026</div>
+  <h1>MosaicAI on Robinhood Chain: Technical Deep Dive</h1>
+  <p class="dek">A sourced walkthrough of what Robinhood Chain actually is, what it's doing two months into mainnet, and where MosaicAI's engineering plugs into its stack &mdash; for the technical and business teams deciding whether to build here.</p>
+
+  <nav class="toc" aria-label="Table of contents">
+    <span class="tlabel">On this page</span>
+    <a href="#s1">1. What Robinhood Chain Is</a>
+    <a href="#s2">2. Traction &amp; Metrics</a>
+    <a href="#s3">3. Competitive Landscape</a>
+    <a href="#s4">4. Architecture</a>
+    <a href="#s5">5. Product Offerings</a>
+    <a href="#s6">6. Sample Calculations</a>
+    <a href="#s7">7. Barriers to Entry</a>
+    <a href="#s8">8. Risks &amp; Open Questions</a>
+  </nav>
+
+  <h2 id="s1"><span class="secnum">01</span> What Robinhood Chain Is</h2>
+  <p>Robinhood Chain went live on mainnet on <strong>July&nbsp;1, 2026</strong>, announced at Robinhood's &ldquo;The World Is Flat&rdquo; keynote in London, following a public testnet that had already processed more than 200&nbsp;million transactions.<sup><a href="#fn1" id="ref1">1</a></sup><sup><a href="#fn2" id="ref2">2</a></sup> Technically, it's a dedicated Arbitrum deployment &mdash; an &ldquo;Arbitrum Dedicated Blockchain,&rdquo; built on the Nitro/Orbit stack &mdash; that settles to Ethereum for security and data availability.<sup><a href="#fn3" id="ref3">3</a></sup> It is fully EVM&#8209;compatible: Solidity and Vyper contracts, standard tooling (Hardhat, Foundry, ethers.js, viem, Wagmi), and JSON&#8209;RPC all work unmodified, with native <strong>ERC&#8209;4337</strong> account abstraction for smart&#8209;contract wallets.<sup><a href="#fn3">3</a></sup></p>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Spec</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Chain ID</td><td class="num">4663 (testnet 46630)</td></tr>
+        <tr><td>Block time</td><td class="num">~100ms</td></tr>
+        <tr><td>Execution</td><td>EVM (Arbitrum Nitro/Orbit)</td></tr>
+        <tr><td>Gas token</td><td class="num">ETH</td></tr>
+        <tr><td>Settlement</td><td>Ethereum L1, via Arbitrum</td></tr>
+        <tr><td>Account abstraction</td><td>ERC&#8209;4337 smart accounts</td></tr>
+        <tr><td>RPC / Explorer</td><td><code>rpc.mainnet.chain.robinhood.com</code> &middot; <code>robinhoodchain.blockscout.com</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The chain runs three things: 24/7 trading of tokenized stocks and ETFs, a self&#8209;custody Robinhood Wallet, and &ldquo;Agentic Accounts&rdquo; that let a connected AI model execute crypto trades on a user's behalf, with the human retaining control of capital and safety limits.<sup><a href="#fn2">2</a></sup> Stock tokens are issued as <strong>tokenized debt securities by Robinhood Assets (Jersey) Limited</strong> &mdash; economic exposure to the underlying equity, not legal share ownership &mdash; a structure carried over from Robinhood's June 2025 &ldquo;Classic Stock Tokens&rdquo; launch on Arbitrum One for EU users.<sup><a href="#fn4" id="ref4">4</a></sup> They're live in 120+ countries through DEXs including Uniswap, Rialto, Lighter, 1inch, and Arcus &mdash; not yet in the US, Canada, UK, Switzerland, or UAE.<sup><a href="#fn2">2</a></sup> Launch partners span Uniswap (a dedicated public AMM), Pleiades (a proprietary&#8209;trading AMM), Chainlink (oracles), Alchemy, BitGo, Morpho (lending), and Lighter (perpetuals).<sup><a href="#fn2">2</a></sup></p>
+
+  <h2 id="s2"><span class="secnum">02</span> Traction &amp; Metrics</h2>
+  <p class="section-dek">Two months post&#8209;launch, on&#8209;chain numbers are large by any measure. Read them precisely: growth is real, but its composition matters.</p>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>Total value locked</td><td class="num">~$683M&ndash;$750M <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(from ~$4M pre&#8209;mainnet)</span></td><td class="src"><a href="https://defillama.com/chain/robinhood-chain" target="_blank" rel="noopener">DefiLlama</a><sup><a href="#fn5" id="ref5">5</a></sup></td></tr>
+        <tr><td>Stablecoin supply</td><td class="num">~$942M</td><td class="src"><a href="https://insights4vc.substack.com/p/robinhood-chain-two-months-in" target="_blank" rel="noopener">insights4vc</a><sup><a href="#fn7" id="ref7">7</a></sup></td></tr>
+        <tr><td>Peak daily DEX volume</td><td class="num">$1.6B+</td><td class="src"><sup><a href="#fn7">7</a></sup></td></tr>
+        <tr><td>Cumulative DEX volume</td><td class="num">~$4B+ <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(some estimates higher)</span></td><td class="src"><a href="https://www.odaily.news/en/newsflash/513857" target="_blank" rel="noopener">Odaily</a><sup><a href="#fn7">7</a></sup></td></tr>
+        <tr><td>Daily transactions</td><td class="num">~10.6M <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(#2 of 27 tracked chains)</span></td><td class="src"><a href="https://www.growthepie.com/chains/robinhood" target="_blank" rel="noopener">growthepie</a><sup><a href="#fn6" id="ref6">6</a></sup></td></tr>
+        <tr><td>Daily active addresses</td><td class="num">~345.5K</td><td class="src"><sup><a href="#fn6">6</a></sup></td></tr>
+        <tr><td>Daily fee revenue</td><td class="num">~$6.18M <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(#1 of tracked chains)</span></td><td class="src"><sup><a href="#fn6">6</a></sup></td></tr>
+        <tr><td>Fee retention</td><td class="num">~89&ndash;98% <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(~10% to Arbitrum)</span></td><td class="src"><sup><a href="#fn6">6</a></sup></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Independent analysis complicates the RWA narrative: CryptoSlate and CryptoBriefing both estimate tokenized&#8209;equity activity at roughly <strong>4% of on&#8209;chain volume</strong>, with the bulk driven by memecoin and speculative&#8209;token trading &mdash; the same dynamic that hit Coinbase's Base at launch, including reports of scam and honeypot tokens.<sup><a href="#fn8" id="ref8">8</a></sup> For a business built on the tokenization thesis, that's a signal to track, not a reason to dismiss the chain: fee revenue, TVL, and active addresses are real and growing regardless of what's driving them today.</p>
+
+  <div class="propbar-wrap">
+    <div class="propbar"><div class="seg-rwa" style="width:4%"></div><div class="seg-other" style="width:96%"></div></div>
+    <div class="propbar-legend">
+      <div class="lg"><span class="swatch" style="background:var(--teal)"></span>~4% tokenized equities</div>
+      <div class="lg"><span class="swatch" style="background:var(--surface-2); border:1px solid var(--border)"></span>~96% speculative crypto activity</div>
+    </div>
+  </div>
+
+  <h2 id="s3"><span class="secnum">03</span> Competitive Landscape</h2>
+  <p>Robinhood isn't alone in tokenizing equities on&#8209;chain. Coinbase is building toward 1:1 asset&#8209;backed tokenized stocks on Base, where tokenization is one use case among many rather than the chain's reason for existing.<sup><a href="#fn9" id="ref9">9</a></sup> Kraken acquired Backed Finance &mdash; issuer of the xStocks tokenized&#8209;equity product &mdash; in December 2025, favoring multi&#8209;chain distribution over a dedicated L2.<sup><a href="#fn9">9</a></sup> Robinhood's bet is structurally different: a chain purpose&#8209;built around its own brokerage distribution and regulatory relationships, rather than tokenization layered onto a general&#8209;purpose chain.</p>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Player</th><th>Chain strategy</th><th>Tokenization approach</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Robinhood</strong></td><td>Dedicated L2 (Robinhood Chain)</td><td>Native stock tokens, brokerage&#8209;native distribution</td></tr>
+        <tr><td>Coinbase</td><td>Base (general&#8209;purpose L2)</td><td>1:1 asset&#8209;backed tokenized stocks, one of many use cases</td></tr>
+        <tr><td>Kraken</td><td>Multi&#8209;chain, via Backed Finance</td><td>xStocks, distributed across existing chains</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="s4"><span class="secnum">04</span> Architecture &amp; Where MosaicAI Plugs In</h2>
+  <p>Ethereum anchors settlement and data availability. Arbitrum's Nitro/Orbit stack sequences transactions and posts fraud proofs for the dedicated chain. Robinhood Chain itself hosts the application layer &mdash; Stock Tokens, the self&#8209;custody Wallet built on ERC&#8209;4337 smart accounts, DeFi primitives (Uniswap and Pleiades AMMs, Morpho lending paying roughly 7% APY on USDG, Lighter perpetuals), and Chainlink oracles for price feeds.<sup><a href="#fn2">2</a></sup> MosaicAI's service layer sits directly on top of &mdash; and wires into &mdash; specific components in that stack.</p>
+
+  <figure class="diagram-frame">
+    <svg viewBox="0 0 900 560" role="img" aria-label="Layered architecture: Ethereum settles Arbitrum's rollup, which sequences Robinhood Chain's stock tokens, wallet, DeFi and oracle components; MosaicAI's Agentic Diligence, Agent Identity and Payments, Contract Engineering, and Analytics services attach directly above the matching component.">
+      <defs>
+        <marker id="arrow2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+      <g font-family="IBM Plex Sans, sans-serif" fill="currentColor">
+
+        <!-- MosaicAI band -->
+        <rect x="50" y="40" width="800" height="90" rx="10" fill="none" stroke="var(--gold)" stroke-width="2.5"/>
+        <text x="450" y="65" text-anchor="middle" font-size="17" font-weight="700" fill="var(--gold-ink)">MosaicAI Service Layer</text>
+
+        <!-- MosaicAI chips -->
+        <g font-size="12" font-weight="600">
+          <rect x="50" y="90" width="191" height="40" rx="8" fill="var(--gold-soft)" stroke="var(--gold)" stroke-width="1"/>
+          <text x="145.5" y="114" text-anchor="middle">Agentic Diligence</text>
+          <rect x="253" y="90" width="191" height="40" rx="8" fill="var(--gold-soft)" stroke="var(--gold)" stroke-width="1"/>
+          <text x="348.5" y="108" text-anchor="middle">Agent Identity</text>
+          <text x="348.5" y="122" text-anchor="middle">&amp; Payments</text>
+          <rect x="456" y="90" width="191" height="40" rx="8" fill="var(--gold-soft)" stroke="var(--gold)" stroke-width="1"/>
+          <text x="551.5" y="114" text-anchor="middle">Contract Engineering</text>
+          <rect x="659" y="90" width="191" height="40" rx="8" fill="var(--gold-soft)" stroke="var(--gold)" stroke-width="1"/>
+          <text x="754.5" y="114" text-anchor="middle">Analytics</text>
+        </g>
+
+        <!-- connectors MosaicAI -> Robinhood Chain, labeled -->
+        <g font-size="10.5" opacity="0.8">
+          <line x1="145.5" y1="130" x2="145.5" y2="250" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow2)"/>
+          <rect x="90" y="184" width="112" height="15" fill="var(--surface)"/>
+          <text x="145.5" y="195" text-anchor="middle">screens issuers</text>
+
+          <line x1="348.5" y1="130" x2="348.5" y2="250" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow2)"/>
+          <rect x="288" y="184" width="121" height="15" fill="var(--surface)"/>
+          <text x="348.5" y="195" text-anchor="middle">guardrails agents</text>
+
+          <line x1="551.5" y1="130" x2="551.5" y2="250" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow2)"/>
+          <rect x="497" y="184" width="109" height="15" fill="var(--surface)"/>
+          <text x="551.5" y="195" text-anchor="middle">audits contracts</text>
+
+          <line x1="754.5" y1="130" x2="754.5" y2="250" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow2)"/>
+          <rect x="702" y="184" width="105" height="15" fill="var(--surface)"/>
+          <text x="754.5" y="195" text-anchor="middle">monitors feeds</text>
+        </g>
+
+        <!-- Robinhood Chain band -->
+        <rect x="50" y="200" width="800" height="160" rx="10" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"/>
+        <text x="450" y="225" text-anchor="middle" font-size="17" font-weight="700">Robinhood Chain</text>
+        <text x="450" y="243" text-anchor="middle" font-size="12" font-family="IBM Plex Mono, monospace" opacity="0.75">Chain ID 4663 &middot; ~100ms blocks &middot; EVM&#8209;compatible &middot; gas: ETH</text>
+
+        <g font-size="12" font-weight="600">
+          <rect x="50" y="260" width="191" height="40" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+          <text x="145.5" y="284" text-anchor="middle">Stock Tokens</text>
+          <rect x="253" y="260" width="191" height="40" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+          <text x="348.5" y="284" text-anchor="middle">Wallet (ERC&#8209;4337)</text>
+          <rect x="456" y="260" width="191" height="40" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+          <text x="551.5" y="278" text-anchor="middle">DeFi (Uniswap,</text>
+          <text x="551.5" y="292" text-anchor="middle">Morpho, Lighter)</text>
+          <rect x="659" y="260" width="191" height="40" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+          <text x="754.5" y="284" text-anchor="middle">Chainlink Oracles</text>
+        </g>
+        <text x="450" y="340" text-anchor="middle" font-size="11.5" opacity="0.6">issuer: Robinhood Assets (Jersey) Limited &middot; settlement to Ethereum via Arbitrum</text>
+
+        <!-- connector RH Chain -> Arbitrum -->
+        <line x1="450" y1="360" x2="450" y2="378" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow2)"/>
+        <text x="466" y="373" font-size="11" opacity="0.65">sequenced via</text>
+
+        <!-- Arbitrum band -->
+        <rect x="50" y="380" width="800" height="70" rx="10" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"/>
+        <text x="450" y="408" text-anchor="middle" font-size="15" font-weight="600">Arbitrum Nitro / Orbit</text>
+        <text x="450" y="428" text-anchor="middle" font-size="11.5" opacity="0.65">dedicated rollup &middot; sequencing &amp; fraud proofs &middot; ~10% fee share</text>
+
+        <!-- connector Arbitrum -> Ethereum -->
+        <line x1="450" y1="450" x2="450" y2="468" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow2)"/>
+        <text x="466" y="463" font-size="11" opacity="0.65">settles + posts data</text>
+
+        <!-- Ethereum band -->
+        <rect x="50" y="470" width="800" height="60" rx="10" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"/>
+        <text x="450" y="496" text-anchor="middle" font-size="15" font-weight="600">Ethereum L1</text>
+        <text x="450" y="516" text-anchor="middle" font-size="11.5" opacity="0.65">settlement &amp; data availability</text>
+      </g>
+    </svg>
+    <figcaption>Full stack: Ethereum settles Arbitrum's rollup, which sequences Robinhood Chain's stock tokens, wallet, DeFi, and oracle layer. MosaicAI's four service lines attach directly above the component each one serves.</figcaption>
+  </figure>
+
+  <h2 id="s5"><span class="secnum">05</span> Product Offerings</h2>
+
+  <div class="offerings">
+    <div class="offer">
+      <div class="name"><span class="tag">Diligence</span>Agentic Diligence</div>
+      <p>Extends our Agentic Data Room ingestion pipeline to parse a stock token's offering documents and issuer disclosures, cross&#8209;referencing them against the on&#8209;chain collateral and liquidity actually backing the token (Morpho positions, AMM depth), producing a structured risk score before capital commits &mdash; not after.</p>
+    </div>
+    <div class="offer">
+      <div class="name"><span class="tag">Agents</span>Agent Identity &amp; Payments</div>
+      <p>Robinhood Chain's native ERC&#8209;4337 support means an Agentic Account can be a smart&#8209;contract wallet with session keys and spend limits. We add agent identity/reputation aligned with <strong>ERC&#8209;8004</strong> and agent&#8209;to&#8209;agent settlement aligned with <strong>x402</strong> &mdash; live Ethereum&#8209;ecosystem standards, not something the chain ships natively today &mdash; plus a sandboxed AI decision layer on GCP/Vertex/Claude with human&#8209;in&#8209;the&#8209;loop approval.</p>
+    </div>
+    <div class="offer">
+      <div class="name"><span class="tag">Contracts</span>Contract Engineering</div>
+      <p>Solidity/Vyper development and audits for tokenization, custody, and DeFi integration. Standard EVM tooling means our existing Ethereum practice ports to Robinhood Chain and its Arbitrum Orbit siblings without a new toolchain.</p>
+    </div>
+    <div class="offer">
+      <div class="name"><span class="tag">Analytics</span>Analytics&#8209;as&#8209;a&#8209;Service</div>
+      <p>Rather than issuers building Dune queries from scratch, we package chain&#8209;level data &mdash; TVL, fee flow, stablecoin supply, DEX depth &mdash; from DefiLlama, growthepie, Token Terminal, and Dune, alongside our own diligence output, into one operational dashboard.</p>
+    </div>
+  </div>
+
+  <div class="sources-strip">
+    <a href="https://defillama.com/chains" target="_blank" rel="noopener">DefiLlama &#8594;</a>
+    <a href="https://www.growthepie.com/" target="_blank" rel="noopener">growthepie &#8594;</a>
+    <a href="https://tokenterminal.com/explorer/metrics/fees" target="_blank" rel="noopener">Token Terminal (fees) &#8594;</a>
+    <a href="https://dune.com/home" target="_blank" rel="noopener">Dune Analytics &#8594;</a>
+  </div>
+
+  <h2 id="s6"><span class="secnum">06</span> Sample Calculations</h2>
+  <p class="section-dek">All figures below are illustrative planning estimates built on the sourced metrics above &mdash; not forecasts or client data.</p>
+
+  <div class="ledger">
+    <div class="title">1 &middot; Fee&#8209;linked opportunity</div>
+    <div class="ledger-row"><span>Chain&#8209;wide fee revenue, annualized (from $6.18M/day)</span><span class="v">~$2.26B</span></div>
+    <div class="ledger-row"><span>Tokenized&#8209;equity share today</span><span class="v">~4%</span></div>
+    <div class="ledger-row"><span>Illustrative shift to 15% share (+11pp)</span><span class="v">&mdash;</span></div>
+    <div class="ledger-result"><span>Additional annualized volume through the settlement/compliance layer we build</span><span class="v">~$250M</span></div>
+    <div class="note">11% &times; $2.26B &asymp; $249M. Sourced inputs: growthepie<sup><a href="#fn6">6</a></sup>, CryptoSlate<sup><a href="#fn8">8</a></sup>.</div>
+  </div>
+
+  <div class="ledger">
+    <div class="title">2 &middot; Diligence time &amp; cost, per issuer review</div>
+    <div class="ledger-row"><span>Manual review (~20 analyst&#8209;hrs @ ~$150/hr)</span><span class="v">~$3,000</span></div>
+    <div class="ledger-row"><span>Agentic Data Room&#8209;assisted review (~2 hrs human oversight)</span><span class="v">~$300&ndash;400</span></div>
+    <div class="ledger-result"><span>Cost/time reduction per review</span><span class="v">~85&ndash;90%</span></div>
+    <div class="note">At 50 issuers/quarter: manual &asymp; 1,000 hrs / $150K; agentic &asymp; 100 hrs / $15&ndash;20K. Illustrative, based on comparable diligence workloads.</div>
+  </div>
+
+  <div class="ledger">
+    <div class="title">3 &middot; Analytics subscription, illustrative unit economics</div>
+    <div class="ledger-row"><span>25 institutional subscribers &times; $2,500/mo</span><span class="v">$62,500 MRR</span></div>
+    <div class="ledger-result"><span>Annualized, single product line</span><span class="v">~$750K ARR</span></div>
+    <div class="note">A beachhead sizing example, not a projection for any specific client base.</div>
+  </div>
+
+  <h2 id="s7"><span class="secnum">07</span> Barriers to Entry</h2>
+  <p>Two skill sets rarely live in the same team. Blockchain shops rarely carry AI&#8209;safety expertise; AI shops rarely ship audited Solidity or reason well about securities&#8209;adjacent compliance. MosaicAI already operates at the GCP/Vertex/Gemini/Claude level for secure, sandboxed AI, and at the Ethereum/Solidity/DeFi level for smart contracts &mdash; the combination is the moat, not either half alone.</p>
+  <p>Second, Agentic Data Room is a shipped product, not a roadmap slide; extending it into RWA diligence is incremental engineering against a working pipeline, not a cold start. Third, building against emerging standards &mdash; ERC&#8209;8004, x402 &mdash; before they're a customer requirement means our agent&#8209;infrastructure offering is ready when issuers start demanding verifiable agent identity for anything touching custody, not after.</p>
+
+  <h2 id="s8"><span class="secnum">08</span> Risks &amp; Open Questions</h2>
+
+  <div class="risk">
+    <div class="rtitle">Speculation, not tokenization, drives current volume</div>
+    <p>~4% of on&#8209;chain activity is tokenized equities; the rest is memecoin and speculative&#8209;token trading, echoing Base's early days.<sup><a href="#fn8">8</a></sup> The tokenization thesis is a bet on trajectory, not a description of today's chain.</p>
+  </div>
+  <div class="risk">
+    <div class="rtitle">Regulatory framework is incomplete</div>
+    <p>The SEC's January 2026 guidance applies existing securities law to tokenized instruments and flags bankruptcy/issuer risk for synthetic tokens.<sup><a href="#fn10" id="ref10">10</a></sup> Robinhood's proposed federal tokenization framework and a reported 24/7&#8209;trading &ldquo;innovation exemption&rdquo; are not finalized.<sup><a href="#fn11" id="ref11">11</a></sup></p>
+  </div>
+  <div class="risk">
+    <div class="rtitle">x402 / ERC&#8209;8004 are not natively confirmed on Robinhood Chain</div>
+    <p>Both are real, live Ethereum&#8209;ecosystem standards, but claims of native integration on Robinhood Chain specifically trace to unofficial or promotional sources &mdash; not Robinhood or Arbitrum. We build against these standards as infrastructure we deliver; we don't assume the chain ships them.</p>
+  </div>
+  <div class="risk">
+    <div class="rtitle">Issuers don't always welcome tokenization</div>
+    <p>AMC's CEO publicly objected to an AMC&#8209;linked tokenized stock and ordered a legal review<sup><a href="#fn12" id="ref12">12</a></sup> &mdash; a reminder with real implications for anyone building issuer&#8209;facing diligence tooling.</p>
+  </div>
+  <div class="risk">
+    <div class="rtitle">Base&#8209;layer direction is still moving</div>
+    <p>Ethereum's &ldquo;Lean Ethereum&rdquo; roadmap (July 2026) points toward a multi&#8209;year overhaul favoring a RISC&#8209;V&#8209;style execution path, while Arbitrum's team has favored WASM/Stylus.<sup><a href="#fn13" id="ref13">13</a></sup> Worth watching; no direct bearing on Robinhood Chain today.</p>
+  </div>
+
+  <div class="cta">
+    <h3>Build for where the chain is headed, not just where it is</h3>
+    <p>Robinhood Chain is two months old, already the highest fee&#8209;generating chain we track, and still mostly speculative volume. That gap is a build window for issuer diligence, agent guardrails, audited contracts, and the analytics layer underneath all of it.</p>
+    <a class="cta-btn" href="https://www.mosaicai.co/products/agentic-data-room" target="_blank" rel="noopener">See Agentic Data Room &rarr;</a>
+  </div>
+
+  <footer>
+    <div class="flabel">Sources</div>
+    <ol class="footnotes">
+      <li id="fn1">Robinhood Newsroom, mainnet launch announcement, Jul 1, 2026. <a href="https://robinhood.com/us/en/newsroom/robinhood-accelerates-global-expansion-robinhood-chain-mainnet-stock-tokens-agentic-trading/" target="_blank" rel="noopener">robinhood.com/newsroom</a> &middot; <a href="#ref1">&uarr;</a></li>
+      <li id="fn2">The Block, &ldquo;Robinhood Chain goes live on mainnet&hellip;,&rdquo; Jul 1, 2026. <a href="https://www.theblock.co/news/business/2026-07-01-robinhood-chain-goes-live-mainnet-alongside-24-7-tokenized-stocks-lighter-perps-planned-crypto-agentic-trading-406918" target="_blank" rel="noopener">theblock.co</a> &middot; <a href="#ref2">&uarr;</a></li>
+      <li id="fn3">Arbitrum blog &amp; Robinhood Chain docs (tech stack, chain ID, RPC/explorer). <a href="https://blog.arbitrum.io/robinhood-chain-mainnet/" target="_blank" rel="noopener">blog.arbitrum.io</a>, <a href="https://docs.robinhood.com/chain/" target="_blank" rel="noopener">docs.robinhood.com/chain</a> &middot; <a href="#ref3">&uarr;</a></li>
+      <li id="fn4">CoinDesk, on Classic Stock Tokens and the Jersey Ltd issuer structure, Jun 30, 2025. <a href="https://www.coindesk.com/business/2025/06/30/robinhood-pushes-deeper-into-crypto-with-own-blockchain-tokenized-stock-launch" target="_blank" rel="noopener">coindesk.com</a> &middot; <a href="#ref4">&uarr;</a></li>
+      <li id="fn5">DefiLlama, Robinhood Chain chain page (TVL). <a href="https://defillama.com/chain/robinhood-chain" target="_blank" rel="noopener">defillama.com/chain/robinhood-chain</a> &middot; <a href="#ref5">&uarr;</a></li>
+      <li id="fn6">growthepie, Robinhood Chain metrics (fees, transactions, active addresses). <a href="https://www.growthepie.com/chains/robinhood" target="_blank" rel="noopener">growthepie.com/chains/robinhood</a> &middot; <a href="#ref6">&uarr;</a></li>
+      <li id="fn7">Odaily / insights4vc, on stablecoin supply and DEX volume, early Sept 2026. <a href="https://www.odaily.news/en/newsflash/513857" target="_blank" rel="noopener">odaily.news</a>, <a href="https://insights4vc.substack.com/p/robinhood-chain-two-months-in" target="_blank" rel="noopener">insights4vc.substack.com</a> &middot; <a href="#ref7">&uarr;</a></li>
+      <li id="fn8">CryptoSlate &amp; CryptoBriefing, on memecoin&#8209;driven volume and scam tokens. <a href="https://cryptoslate.com/robinhood-took-on-coinbase-and-immediately-inherited-bases-biggest-problem/" target="_blank" rel="noopener">cryptoslate.com</a>, <a href="https://cryptobriefing.com/robinhood-crypto-chain-memecoin-scams-volume/" target="_blank" rel="noopener">cryptobriefing.com</a> &middot; <a href="#ref8">&uarr;</a></li>
+      <li id="fn9">crypto.news &amp; Cointribune, on Base and Kraken's competing tokenization approaches. <a href="https://crypto.news/base-coinbase-near-11-tokenized-stocks-as-robinhood-leads/" target="_blank" rel="noopener">crypto.news</a>, <a href="https://www.cointribune.com/en/tokenization-coinbase-goes-on-the-offensive-against-robinhood-and-kraken/" target="_blank" rel="noopener">cointribune.com</a> &middot; <a href="#ref9">&uarr;</a></li>
+      <li id="fn10">Norton Rose Fulbright, &ldquo;SEC issues guidance on tokenized securities,&rdquo; Jan 28, 2026. <a href="https://www.nortonrosefulbright.com/en/knowledge/publications/f587fc3c/sec-issues-guidance-on-tokenized-securities" target="_blank" rel="noopener">nortonrosefulbright.com</a> &middot; <a href="#ref10">&uarr;</a></li>
+      <li id="fn11">Benzinga, on Robinhood's proposal to the SEC for a federal tokenization framework. <a href="https://www.benzinga.com/25/05/45537142/robinhoods-push-to-bring-wall-street-on-blockchainbrokerage-firm-submits-proposal-to-sec-to-regulate-tokenized-assets" target="_blank" rel="noopener">benzinga.com</a> &middot; <a href="#ref11">&uarr;</a></li>
+      <li id="fn12">Cryptopolitan, on AMC's CEO objecting to an AMC&#8209;linked tokenized stock. <a href="https://www.cryptopolitan.com/amc-ceo-robinhood-tokenized-stock-legal/" target="_blank" rel="noopener">cryptopolitan.com</a> &middot; <a href="#ref12">&uarr;</a></li>
+      <li id="fn13">The Defiant, &ldquo;Vitalik Buterin outlines Lean Ethereum roadmap,&rdquo; Jul 5, 2026. <a href="https://thedefiant.io/news/blockchains/vitalik-buterin-outlines-lean-ethereum-roadmap-a-three-to-four-year-protocol-overhaul" target="_blank" rel="noopener">thedefiant.io</a> &middot; <a href="#ref13">&uarr;</a></li>
+    </ol>
+  </footer>
+
+</div>
+</body>
+</html>
