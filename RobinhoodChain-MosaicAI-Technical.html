@@ -9,40 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F5F6F1;
-    --surface:#FFFFFF;
-    --surface-2:#ECEEE6;
-    --text:#161A20;
-    --text-muted:#565E68;
-    --border:#DBDCD3;
-    --gold:#9C7327;
-    --gold-ink:#5B4212;
-    --gold-soft:#F0E3C4;
-    --teal:#1B6E66;
-    --teal-soft:#DEEEEA;
-    --warn:#9A4413;
-    --warn-ink:#7A3610;
-    --warn-soft:#F4E1CE;
-    --shadow: 0 1px 2px rgba(22,26,32,0.05), 0 8px 24px rgba(22,26,32,0.06);
-    --radius: 14px;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#0D1117; --surface:#141A22; --surface-2:#1A222C;
-      --text:#EAEBE4; --text-muted:#9BA2AC; --border:#2A323C;
-      --gold:#D9AE5C; --gold-ink:#F3DFAF; --gold-soft:#3A2E17;
-      --teal:#5EBBAE; --teal-soft:#123230;
-      --warn:#E08A55; --warn-ink:#F4C39A; --warn-soft:#3A2013;
-      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px rgba(0,0,0,0.4);
-    }
-  }
-  :root[data-theme="dark"]{
     --bg:#0D1117; --surface:#141A22; --surface-2:#1A222C;
     --text:#EAEBE4; --text-muted:#9BA2AC; --border:#2A323C;
     --gold:#D9AE5C; --gold-ink:#F3DFAF; --gold-soft:#3A2E17;
     --teal:#5EBBAE; --teal-soft:#123230;
     --warn:#E08A55; --warn-ink:#F4C39A; --warn-soft:#3A2013;
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px rgba(0,0,0,0.4);
+    --radius: 14px;
   }
 
   *{box-sizing:border-box;}
@@ -208,7 +181,7 @@
   </nav>
 
   <h2 id="s1"><span class="secnum">01</span> What Robinhood Chain Is</h2>
-  <p>Robinhood Chain went live on mainnet on <strong>July&nbsp;1, 2026</strong>, announced at Robinhood's &ldquo;The World Is Flat&rdquo; keynote in London, following a public testnet that had already processed more than 200&nbsp;million transactions.<sup><a href="#fn1" id="ref1">1</a></sup><sup><a href="#fn2" id="ref2">2</a></sup> Technically, it's a dedicated Arbitrum deployment &mdash; an &ldquo;Arbitrum Dedicated Blockchain,&rdquo; built on the Nitro/Orbit stack &mdash; that settles to Ethereum for security and data availability.<sup><a href="#fn3" id="ref3">3</a></sup> It is fully EVM&#8209;compatible: Solidity and Vyper contracts, standard tooling (Hardhat, Foundry, ethers.js, viem, Wagmi), and JSON&#8209;RPC all work unmodified, with native <strong>ERC&#8209;4337</strong> account abstraction for smart&#8209;contract wallets.<sup><a href="#fn3">3</a></sup></p>
+  <p>Robinhood Chain went live on mainnet on <strong>July&nbsp;1, 2026</strong>, announced at Robinhood's &ldquo;The World Is Flat&rdquo; keynote at the Old Royal Naval College in London, following a public testnet that had already processed more than 200&nbsp;million transactions.<sup><a href="#fn1" id="ref1">1</a></sup><sup><a href="#fn2" id="ref2">2</a></sup> It reaches Robinhood's own distribution &mdash; roughly 28&ndash;30 million funded accounts across 38 countries.<sup><a href="#fn14" id="ref14">14</a></sup> Technically, it's a dedicated Arbitrum deployment &mdash; an &ldquo;Arbitrum Dedicated Blockchain,&rdquo; built on the Nitro/Orbit stack &mdash; that settles to Ethereum for security and data availability via EIP&#8209;4844 blobs.<sup><a href="#fn3" id="ref3">3</a></sup> It is fully EVM&#8209;compatible: Solidity and Vyper contracts, standard tooling (Hardhat, Foundry, ethers.js, viem, Wagmi), and JSON&#8209;RPC all work unmodified, with native <strong>ERC&#8209;4337</strong> account abstraction for smart&#8209;contract wallets.<sup><a href="#fn3">3</a></sup></p>
 
   <div class="table-scroll">
     <table>
@@ -225,7 +198,9 @@
     </table>
   </div>
 
-  <p>The chain runs three things: 24/7 trading of tokenized stocks and ETFs, a self&#8209;custody Robinhood Wallet, and &ldquo;Agentic Accounts&rdquo; that let a connected AI model execute crypto trades on a user's behalf, with the human retaining control of capital and safety limits.<sup><a href="#fn2">2</a></sup> Stock tokens are issued as <strong>tokenized debt securities by Robinhood Assets (Jersey) Limited</strong> &mdash; economic exposure to the underlying equity, not legal share ownership &mdash; a structure carried over from Robinhood's June 2025 &ldquo;Classic Stock Tokens&rdquo; launch on Arbitrum One for EU users.<sup><a href="#fn4" id="ref4">4</a></sup> They're live in 120+ countries through DEXs including Uniswap, Rialto, Lighter, 1inch, and Arcus &mdash; not yet in the US, Canada, UK, Switzerland, or UAE.<sup><a href="#fn2">2</a></sup> Launch partners span Uniswap (a dedicated public AMM), Pleiades (a proprietary&#8209;trading AMM), Chainlink (oracles), Alchemy, BitGo, Morpho (lending), and Lighter (perpetuals).<sup><a href="#fn2">2</a></sup></p>
+  <p>Deployment itself is permissionless &mdash; no KYC or allowlist gate exists to put a contract on&#8209;chain: <code>forge create HelloRobinhood --rpc-url $RH_RPC_URL --private-key $PRIVATE_KEY --broadcast</code>, or <code>npx hardhat run scripts/deploy.js --network robinhood</code>, with Blockscout API verification support.<sup><a href="#fn3">3</a></sup> Bridging in works via LayerZero natively, or through third&#8209;party bridges like Across Protocol and Uniswap's cross&#8209;chain swap. Sequencing is first&#8209;come&#8209;first&#8209;served &mdash; there's no priority&#8209;fee auction the way most L1s/L2s work. One centralization detail worth flagging for builders: compliance screening is applied at the sequencer level.<sup><a href="#fn19" id="ref19">19</a></sup></p>
+
+  <p>The chain runs three things: 24/7 trading of tokenized stocks and ETFs, a self&#8209;custody Robinhood Wallet, and &mdash; new this quarter &mdash; <strong>Agentic Trading</strong> and an <strong>Agentic Credit Card</strong>, which let a connected AI agent trade equities (in beta; options, crypto, event contracts, and futures are &ldquo;coming soon&rdquo;) or spend from a virtual Gold Card under owner&#8209;set limits.<sup><a href="#fn15" id="ref15">15</a></sup> Both run on Robinhood's own <strong>&ldquo;Trading&rdquo; and &ldquo;Banking&rdquo; MCP servers</strong> &mdash; not a third&#8209;party or open agent&#8209;identity standard &mdash; with safety rails including isolated sub&#8209;accounts, manual approval, instant disable, and trade preview.<sup><a href="#fn15">15</a></sup> This supersedes the crypto&#8209;only &ldquo;Agentic Accounts&rdquo; framing from launch day: equities, via Robinhood's own proprietary rails, are now the beta focus. Stock tokens are issued as <strong>tokenized debt securities by Robinhood Assets (Jersey) Limited</strong> &mdash; economic exposure to the underlying equity, not legal share ownership, with corporate actions like dividends and splits handled via an onchain multiplier mechanism<sup><a href="#fn19">19</a></sup> &mdash; a structure carried over from Robinhood's June 2025 &ldquo;Classic Stock Tokens&rdquo; launch on Arbitrum One for EU users.<sup><a href="#fn4" id="ref4">4</a></sup> They're live in 120+ countries through DEXs including Uniswap, Rialto, Lighter, 1inch, and Arcus &mdash; not yet in the US, Canada, UK, Switzerland, or UAE.<sup><a href="#fn2">2</a></sup> Launch partners span Uniswap (a dedicated public AMM), Pleiades (a proprietary&#8209;trading AMM), Chainlink (oracles), Alchemy, BitGo, Morpho (lending), and Lighter (perpetuals).<sup><a href="#fn2">2</a></sup></p>
 
   <h2 id="s2"><span class="secnum">02</span> Traction &amp; Metrics</h2>
   <p class="section-dek">Two months post&#8209;launch, on&#8209;chain numbers are large by any measure. Read them precisely: growth is real, but its composition matters.</p>
@@ -234,19 +209,22 @@
     <table>
       <thead><tr><th>Metric</th><th>Value</th><th>Source</th></tr></thead>
       <tbody>
-        <tr><td>Total value locked</td><td class="num">~$683M&ndash;$750M <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(from ~$4M pre&#8209;mainnet)</span></td><td class="src"><a href="https://defillama.com/chain/robinhood-chain" target="_blank" rel="noopener">DefiLlama</a><sup><a href="#fn5" id="ref5">5</a></sup></td></tr>
-        <tr><td>Stablecoin supply</td><td class="num">~$942M</td><td class="src"><a href="https://insights4vc.substack.com/p/robinhood-chain-two-months-in" target="_blank" rel="noopener">insights4vc</a><sup><a href="#fn7" id="ref7">7</a></sup></td></tr>
-        <tr><td>Peak daily DEX volume</td><td class="num">$1.6B+</td><td class="src"><sup><a href="#fn7">7</a></sup></td></tr>
-        <tr><td>Cumulative DEX volume</td><td class="num">~$4B+ <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(some estimates higher)</span></td><td class="src"><a href="https://www.odaily.news/en/newsflash/513857" target="_blank" rel="noopener">Odaily</a><sup><a href="#fn7">7</a></sup></td></tr>
-        <tr><td>Daily transactions</td><td class="num">~10.6M <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(#2 of 27 tracked chains)</span></td><td class="src"><a href="https://www.growthepie.com/chains/robinhood" target="_blank" rel="noopener">growthepie</a><sup><a href="#fn6" id="ref6">6</a></sup></td></tr>
+        <tr><td>Total value locked</td><td class="num">~$683M&ndash;$1B <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(peaked &gt;$1B; ~$750M+ Sept 1; from ~$4M pre&#8209;mainnet)</span></td><td class="src"><a href="https://defillama.com/chain/robinhood-chain" target="_blank" rel="noopener">DefiLlama</a><sup><a href="#fn5" id="ref5">5</a></sup></td></tr>
+        <tr><td>Stablecoin supply</td><td class="num">~$942M</td><td class="src"><sup><a href="#fn7" id="ref7">7</a></sup></td></tr>
+        <tr><td>Daily fees (chain&#8209;wide)</td><td class="num">~$6.18M/day <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(#1 of tracked chains, early Sept)</span></td><td class="src"><a href="https://www.growthepie.com/chains/robinhood" target="_blank" rel="noopener">growthepie</a><sup><a href="#fn6" id="ref6">6</a></sup></td></tr>
+        <tr><td>Daily revenue</td><td class="num">$4.01M <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(#1 tracked, late Aug; vs. Canton $1.69M, Tron $874K)</span></td><td class="src"><a href="https://defillama.com/revenue/chain/robinhood-chain" target="_blank" rel="noopener">DefiLlama (revenue)</a><sup><a href="#fn5">5</a></sup></td></tr>
+        <tr><td>24h app revenue</td><td class="num">$2.66M <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(#2 behind Solana $5.07M; 2&times; Ethereum, 6&times; Base)</span></td><td class="src"><a href="https://www.coindesk.com/markets/2026/08/31/robinhood-chain-beats-ethereum-in-daily-revenue-as-memecoin-trading-takes-over" target="_blank" rel="noopener">CoinDesk</a>, Aug 30<sup><a href="#fn16" id="ref16">16</a></sup></td></tr>
+        <tr><td>Daily transactions</td><td class="num">~10.6M <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(#2 of 27 chains); ATH 5.52M on Aug 30</span></td><td class="src"><sup><a href="#fn6">6</a></sup>, <sup><a href="#fn16">16</a></sup></td></tr>
         <tr><td>Daily active addresses</td><td class="num">~345.5K</td><td class="src"><sup><a href="#fn6">6</a></sup></td></tr>
-        <tr><td>Daily fee revenue</td><td class="num">~$6.18M <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(#1 of tracked chains)</span></td><td class="src"><sup><a href="#fn6">6</a></sup></td></tr>
-        <tr><td>Fee retention</td><td class="num">~89&ndash;98% <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(~10% to Arbitrum)</span></td><td class="src"><sup><a href="#fn6">6</a></sup></td></tr>
+        <tr><td>Sequencer fees, peak day</td><td class="num">$3.75M <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(Sept 1 &mdash; largest single day since launch)</span></td><td class="src"><sup><a href="#fn7">7</a></sup></td></tr>
+        <tr><td>Fee retention</td><td class="num">~89&ndash;98% <span style="color:var(--text-muted); font-family:'IBM Plex Sans'">(~10% to Arbitrum, DAO/dev guild split for the rest)</span></td><td class="src"><sup><a href="#fn6">6</a></sup>, <sup><a href="#fn7">7</a></sup></td></tr>
       </tbody>
     </table>
   </div>
 
-  <p>Independent analysis complicates the RWA narrative: CryptoSlate and CryptoBriefing both estimate tokenized&#8209;equity activity at roughly <strong>4% of on&#8209;chain volume</strong>, with the bulk driven by memecoin and speculative&#8209;token trading &mdash; the same dynamic that hit Coinbase's Base at launch, including reports of scam and honeypot tokens.<sup><a href="#fn8" id="ref8">8</a></sup> For a business built on the tokenization thesis, that's a signal to track, not a reason to dismiss the chain: fee revenue, TVL, and active addresses are real and growing regardless of what's driving them today.</p>
+  <p><strong>These are not interchangeable metrics.</strong> growthepie's $6.18M/day is total <em>fees</em> users pay; DefiLlama's $4.01M is <em>revenue</em> the protocol actually retains; CoinDesk's $2.66M is a narrower, dated <em>app&#8209;revenue</em> snapshot from Aug 30. Compare only like metrics from like sources and like dates &mdash; and note the &ldquo;beats Ethereum&rdquo; headline is a daily spike, not a settled ranking: the same reporting has Robinhood Chain slipping to roughly 5th place on a trailing 30&#8209;day basis.<sup><a href="#fn16">16</a></sup></p>
+
+  <p>Independent analysis complicates the RWA narrative further: CryptoSlate and CryptoBriefing both estimate tokenized&#8209;equity activity at roughly <strong>4% of on&#8209;chain volume</strong>, with GMGN and Pons &mdash; two independent, permissionless meme&#8209;token platforms built on top of the chain, not Robinhood products<sup><a href="#fn18" id="ref18">18</a></sup> &mdash; together with Uniswap driving roughly 88&ndash;90% of daily revenue &mdash; echoing Base's own early speculation problem, scam tokens included.<sup><a href="#fn8" id="ref8">8</a></sup><sup><a href="#fn16">16</a></sup> For a business built on the tokenization thesis, that's a signal to track, not a reason to dismiss the chain: stock&#8209;token trading itself is real and growing &mdash; Uniswap alone processed <strong>$1.5B</strong> in stock&#8209;token trades in the chain's first six weeks, up from a reported ~$13M in the earliest days<sup><a href="#fn20" id="ref20">20</a></sup> &mdash; and CEO Vlad Tenev cites on&#8209;chain equity trading volume reaching <strong>$9B in 2026</strong>, up 800%+ year&#8209;to&#8209;date, across Robinhood's tokenized&#8209;equity products.<sup><a href="#fn17" id="ref17">17</a></sup> Fee revenue, TVL, and active addresses are real and growing regardless of what's driving them today.</p>
 
   <div class="propbar-wrap">
     <div class="propbar"><div class="seg-rwa" style="width:4%"></div><div class="seg-other" style="width:96%"></div></div>
@@ -257,15 +235,15 @@
   </div>
 
   <h2 id="s3"><span class="secnum">03</span> Competitive Landscape</h2>
-  <p>Robinhood isn't alone in tokenizing equities on&#8209;chain. Coinbase is building toward 1:1 asset&#8209;backed tokenized stocks on Base, where tokenization is one use case among many rather than the chain's reason for existing.<sup><a href="#fn9" id="ref9">9</a></sup> Kraken acquired Backed Finance &mdash; issuer of the xStocks tokenized&#8209;equity product &mdash; in December 2025, favoring multi&#8209;chain distribution over a dedicated L2.<sup><a href="#fn9">9</a></sup> Robinhood's bet is structurally different: a chain purpose&#8209;built around its own brokerage distribution and regulatory relationships, rather than tokenization layered onto a general&#8209;purpose chain.</p>
+  <p>Robinhood isn't alone in tokenizing equities on&#8209;chain. Coinbase is building toward 1:1 asset&#8209;backed tokenized stocks on Base, where tokenization is one use case among many rather than the chain's reason for existing.<sup><a href="#fn9" id="ref9">9</a></sup> Kraken acquired Backed Finance &mdash; issuer of the xStocks tokenized&#8209;equity product &mdash; in December 2025, favoring multi&#8209;chain distribution over a dedicated L2.<sup><a href="#fn9">9</a></sup> Robinhood's bet is structurally different: a chain purpose&#8209;built around its own brokerage distribution and regulatory relationships, rather than tokenization layered onto a general&#8209;purpose chain &mdash; and the distribution numbers in the table below back that up.<sup><a href="#fn14">14</a></sup></p>
 
   <div class="table-scroll">
     <table>
-      <thead><tr><th>Player</th><th>Chain strategy</th><th>Tokenization approach</th></tr></thead>
+      <thead><tr><th>Player</th><th>Chain strategy</th><th>Tokenization approach</th><th>Distribution / scale</th></tr></thead>
       <tbody>
-        <tr><td><strong>Robinhood</strong></td><td>Dedicated L2 (Robinhood Chain)</td><td>Native stock tokens, brokerage&#8209;native distribution</td></tr>
-        <tr><td>Coinbase</td><td>Base (general&#8209;purpose L2)</td><td>1:1 asset&#8209;backed tokenized stocks, one of many use cases</td></tr>
-        <tr><td>Kraken</td><td>Multi&#8209;chain, via Backed Finance</td><td>xStocks, distributed across existing chains</td></tr>
+        <tr><td><strong>Robinhood</strong></td><td>Dedicated L2 (Robinhood Chain)</td><td>Native stock tokens, brokerage&#8209;native distribution</td><td>~29.9M accounts, $369B assets, ~92% non&#8209;crypto revenue</td></tr>
+        <tr><td>Coinbase</td><td>Base (general&#8209;purpose L2)</td><td>1:1 asset&#8209;backed tokenized stocks, one of many use cases</td><td>$13.07B bridged TVL, ~60% crypto&#8209;dependent revenue</td></tr>
+        <tr><td>Kraken</td><td>Multi&#8209;chain, via Backed Finance</td><td>xStocks, distributed across existing chains</td><td>&mdash;</td></tr>
       </tbody>
     </table>
   </div>
@@ -367,7 +345,7 @@
     </div>
     <div class="offer">
       <div class="name"><span class="tag">Agents</span>Agent Identity &amp; Payments</div>
-      <p>Robinhood Chain's native ERC&#8209;4337 support means an Agentic Account can be a smart&#8209;contract wallet with session keys and spend limits. We add agent identity/reputation aligned with <strong>ERC&#8209;8004</strong> and agent&#8209;to&#8209;agent settlement aligned with <strong>x402</strong> &mdash; live Ethereum&#8209;ecosystem standards, not something the chain ships natively today &mdash; plus a sandboxed AI decision layer on GCP/Vertex/Claude with human&#8209;in&#8209;the&#8209;loop approval.</p>
+      <p>Robinhood's own Agentic Trading runs on proprietary Trading/Banking MCP servers, built for its own retail app &mdash; not an interoperable standard. The chain's native ERC&#8209;4337 support still lets any builder create a smart&#8209;contract wallet with session keys and spend limits; we layer on agent identity/reputation aligned with <strong>ERC&#8209;8004</strong> and agent&#8209;to&#8209;agent settlement aligned with <strong>x402</strong>, plus a sandboxed AI decision layer on GCP/Vertex/Claude with human&#8209;in&#8209;the&#8209;loop approval &mdash; for the funds, issuers, and institutional agents operating outside Robinhood's own app.</p>
     </div>
     <div class="offer">
       <div class="name"><span class="tag">Contracts</span>Contract Engineering</div>
@@ -415,21 +393,25 @@
 
   <h2 id="s7"><span class="secnum">07</span> Barriers to Entry</h2>
   <p>Two skill sets rarely live in the same team. Blockchain shops rarely carry AI&#8209;safety expertise; AI shops rarely ship audited Solidity or reason well about securities&#8209;adjacent compliance. MosaicAI already operates at the GCP/Vertex/Gemini/Claude level for secure, sandboxed AI, and at the Ethereum/Solidity/DeFi level for smart contracts &mdash; the combination is the moat, not either half alone.</p>
-  <p>Second, Agentic Data Room is a shipped product, not a roadmap slide; extending it into RWA diligence is incremental engineering against a working pipeline, not a cold start. Third, building against emerging standards &mdash; ERC&#8209;8004, x402 &mdash; before they're a customer requirement means our agent&#8209;infrastructure offering is ready when issuers start demanding verifiable agent identity for anything touching custody, not after.</p>
+  <p>Second, Agentic Data Room is a shipped product, not a roadmap slide; extending it into RWA diligence is incremental engineering against a working pipeline, not a cold start. Third, Robinhood just confirmed it's building its own proprietary agent rails (Trading/Banking MCP servers) rather than adopting open standards &mdash; which means our bet on open, interoperable agent infrastructure (ERC&#8209;8004, x402) isn't competing with Robinhood's roadmap, it's serving everyone Robinhood's consumer&#8209;app rails don't reach: third&#8209;party funds, issuers, and institutional agents.</p>
 
   <h2 id="s8"><span class="secnum">08</span> Risks &amp; Open Questions</h2>
 
   <div class="risk">
     <div class="rtitle">Speculation, not tokenization, drives current volume</div>
-    <p>~4% of on&#8209;chain activity is tokenized equities; the rest is memecoin and speculative&#8209;token trading, echoing Base's early days.<sup><a href="#fn8">8</a></sup> The tokenization thesis is a bet on trajectory, not a description of today's chain.</p>
+    <p>~4% of on&#8209;chain activity is tokenized equities; GMGN, Pons, and Uniswap together drive ~88&ndash;90% of daily revenue, echoing Base's early days.<sup><a href="#fn8">8</a></sup><sup><a href="#fn16">16</a></sup> The tokenization thesis is a bet on trajectory, not a description of today's chain &mdash; though stock&#8209;token volume itself is growing quickly underneath it.</p>
+  </div>
+  <div class="risk">
+    <div class="rtitle">Metrics are easy to misquote</div>
+    <p>Fees (growthepie), revenue (DefiLlama), and app&#8209;revenue (CoinDesk) are different metrics from different snapshots and dates. The &ldquo;beats Ethereum&rdquo; headline is a daily spike; on a trailing 30&#8209;day basis Robinhood Chain reportedly ranks closer to 5th.<sup><a href="#fn16">16</a></sup></p>
   </div>
   <div class="risk">
     <div class="rtitle">Regulatory framework is incomplete</div>
     <p>The SEC's January 2026 guidance applies existing securities law to tokenized instruments and flags bankruptcy/issuer risk for synthetic tokens.<sup><a href="#fn10" id="ref10">10</a></sup> Robinhood's proposed federal tokenization framework and a reported 24/7&#8209;trading &ldquo;innovation exemption&rdquo; are not finalized.<sup><a href="#fn11" id="ref11">11</a></sup></p>
   </div>
   <div class="risk">
-    <div class="rtitle">x402 / ERC&#8209;8004 are not natively confirmed on Robinhood Chain</div>
-    <p>Both are real, live Ethereum&#8209;ecosystem standards, but claims of native integration on Robinhood Chain specifically trace to unofficial or promotional sources &mdash; not Robinhood or Arbitrum. We build against these standards as infrastructure we deliver; we don't assume the chain ships them.</p>
+    <div class="rtitle">Robinhood chose proprietary agent rails over open standards</div>
+    <p>Agentic Trading and the Agentic Credit Card run on Robinhood's own Trading/Banking MCP servers, not ERC&#8209;8004 or x402.<sup><a href="#fn15">15</a></sup> That's now confirmed, not speculative &mdash; our agent&#8209;infrastructure thesis bets on outside&#8209;builder demand for an interoperable alternative, not on Robinhood adopting open standards itself.</p>
   </div>
   <div class="risk">
     <div class="rtitle">Issuers don't always welcome tokenization</div>
@@ -442,7 +424,7 @@
 
   <div class="cta">
     <h3>Build for where the chain is headed, not just where it is</h3>
-    <p>Robinhood Chain is two months old, already the highest fee&#8209;generating chain we track, and still mostly speculative volume. That gap is a build window for issuer diligence, agent guardrails, audited contracts, and the analytics layer underneath all of it.</p>
+    <p>Robinhood Chain is two months old, briefly outearned Ethereum on daily revenue, and just opened itself to AI agents &mdash; on its own proprietary terms. The gap between today's speculative volume and the tokenization thesis, and between Robinhood's closed agent rails and an open one, is a build window for issuer diligence, agent guardrails, audited contracts, and the analytics layer underneath all of it.</p>
     <a class="cta-btn" href="https://www.mosaicai.co/products/agentic-data-room" target="_blank" rel="noopener">See Agentic Data Room &rarr;</a>
   </div>
 
@@ -451,17 +433,24 @@
     <ol class="footnotes">
       <li id="fn1">Robinhood Newsroom, mainnet launch announcement, Jul 1, 2026. <a href="https://robinhood.com/us/en/newsroom/robinhood-accelerates-global-expansion-robinhood-chain-mainnet-stock-tokens-agentic-trading/" target="_blank" rel="noopener">robinhood.com/newsroom</a> &middot; <a href="#ref1">&uarr;</a></li>
       <li id="fn2">The Block, &ldquo;Robinhood Chain goes live on mainnet&hellip;,&rdquo; Jul 1, 2026. <a href="https://www.theblock.co/news/business/2026-07-01-robinhood-chain-goes-live-mainnet-alongside-24-7-tokenized-stocks-lighter-perps-planned-crypto-agentic-trading-406918" target="_blank" rel="noopener">theblock.co</a> &middot; <a href="#ref2">&uarr;</a></li>
-      <li id="fn3">Arbitrum blog &amp; Robinhood Chain docs (tech stack, chain ID, RPC/explorer). <a href="https://blog.arbitrum.io/robinhood-chain-mainnet/" target="_blank" rel="noopener">blog.arbitrum.io</a>, <a href="https://docs.robinhood.com/chain/" target="_blank" rel="noopener">docs.robinhood.com/chain</a> &middot; <a href="#ref3">&uarr;</a></li>
+      <li id="fn3">Arbitrum blog &amp; Robinhood Chain docs (tech stack, chain ID, RPC/explorer, deploy commands). <a href="https://blog.arbitrum.io/robinhood-chain-mainnet/" target="_blank" rel="noopener">blog.arbitrum.io</a>, <a href="https://docs.robinhood.com/chain/" target="_blank" rel="noopener">docs.robinhood.com/chain</a>, <a href="https://docs.robinhood.com/chain/deploy-smart-contracts/" target="_blank" rel="noopener">docs.robinhood.com/chain/deploy-smart-contracts</a> &middot; <a href="#ref3">&uarr;</a></li>
       <li id="fn4">CoinDesk, on Classic Stock Tokens and the Jersey Ltd issuer structure, Jun 30, 2025. <a href="https://www.coindesk.com/business/2025/06/30/robinhood-pushes-deeper-into-crypto-with-own-blockchain-tokenized-stock-launch" target="_blank" rel="noopener">coindesk.com</a> &middot; <a href="#ref4">&uarr;</a></li>
       <li id="fn5">DefiLlama, Robinhood Chain chain page (TVL). <a href="https://defillama.com/chain/robinhood-chain" target="_blank" rel="noopener">defillama.com/chain/robinhood-chain</a> &middot; <a href="#ref5">&uarr;</a></li>
       <li id="fn6">growthepie, Robinhood Chain metrics (fees, transactions, active addresses). <a href="https://www.growthepie.com/chains/robinhood" target="_blank" rel="noopener">growthepie.com/chains/robinhood</a> &middot; <a href="#ref6">&uarr;</a></li>
-      <li id="fn7">Odaily / insights4vc, on stablecoin supply and DEX volume, early Sept 2026. <a href="https://www.odaily.news/en/newsflash/513857" target="_blank" rel="noopener">odaily.news</a>, <a href="https://insights4vc.substack.com/p/robinhood-chain-two-months-in" target="_blank" rel="noopener">insights4vc.substack.com</a> &middot; <a href="#ref7">&uarr;</a></li>
+      <li id="fn7">arbdata.com, Odaily &amp; insights4vc, on TVL, sequencer fees, stablecoin supply, and DEX volume, late Aug&ndash;Sept 1 2026. <a href="https://arbdata.com/robinhood" target="_blank" rel="noopener">arbdata.com/robinhood</a>, <a href="https://www.odaily.news/en/newsflash/513857" target="_blank" rel="noopener">odaily.news</a>, <a href="https://insights4vc.substack.com/p/robinhood-chain-two-months-in" target="_blank" rel="noopener">insights4vc.substack.com</a> &middot; <a href="#ref7">&uarr;</a></li>
       <li id="fn8">CryptoSlate &amp; CryptoBriefing, on memecoin&#8209;driven volume and scam tokens. <a href="https://cryptoslate.com/robinhood-took-on-coinbase-and-immediately-inherited-bases-biggest-problem/" target="_blank" rel="noopener">cryptoslate.com</a>, <a href="https://cryptobriefing.com/robinhood-crypto-chain-memecoin-scams-volume/" target="_blank" rel="noopener">cryptobriefing.com</a> &middot; <a href="#ref8">&uarr;</a></li>
       <li id="fn9">crypto.news &amp; Cointribune, on Base and Kraken's competing tokenization approaches. <a href="https://crypto.news/base-coinbase-near-11-tokenized-stocks-as-robinhood-leads/" target="_blank" rel="noopener">crypto.news</a>, <a href="https://www.cointribune.com/en/tokenization-coinbase-goes-on-the-offensive-against-robinhood-and-kraken/" target="_blank" rel="noopener">cointribune.com</a> &middot; <a href="#ref9">&uarr;</a></li>
       <li id="fn10">Norton Rose Fulbright, &ldquo;SEC issues guidance on tokenized securities,&rdquo; Jan 28, 2026. <a href="https://www.nortonrosefulbright.com/en/knowledge/publications/f587fc3c/sec-issues-guidance-on-tokenized-securities" target="_blank" rel="noopener">nortonrosefulbright.com</a> &middot; <a href="#ref10">&uarr;</a></li>
       <li id="fn11">Benzinga, on Robinhood's proposal to the SEC for a federal tokenization framework. <a href="https://www.benzinga.com/25/05/45537142/robinhoods-push-to-bring-wall-street-on-blockchainbrokerage-firm-submits-proposal-to-sec-to-regulate-tokenized-assets" target="_blank" rel="noopener">benzinga.com</a> &middot; <a href="#ref11">&uarr;</a></li>
       <li id="fn12">Cryptopolitan, on AMC's CEO objecting to an AMC&#8209;linked tokenized stock. <a href="https://www.cryptopolitan.com/amc-ceo-robinhood-tokenized-stock-legal/" target="_blank" rel="noopener">cryptopolitan.com</a> &middot; <a href="#ref12">&uarr;</a></li>
       <li id="fn13">The Defiant, &ldquo;Vitalik Buterin outlines Lean Ethereum roadmap,&rdquo; Jul 5, 2026. <a href="https://thedefiant.io/news/blockchains/vitalik-buterin-outlines-lean-ethereum-roadmap-a-three-to-four-year-protocol-overhaul" target="_blank" rel="noopener">thedefiant.io</a> &middot; <a href="#ref13">&uarr;</a></li>
+      <li id="fn14">MEXC, &ldquo;Robinhood Chain Investment Thesis&rdquo; (accounts, platform assets, revenue mix, Base comparison), 2026. <a href="https://www.mexc.com/en-GB/crypto-pulse/article/robinhood-chain-investment-thesis-139674" target="_blank" rel="noopener">mexc.com</a> &middot; <a href="#ref14">&uarr;</a></li>
+      <li id="fn15">Robinhood Newsroom, &ldquo;Robinhood is now open to agents,&rdquo; 2026. <a href="https://robinhood.com/us/en/newsroom/robinhood-is-now-open-to-agents/" target="_blank" rel="noopener">robinhood.com/newsroom</a> &middot; <a href="#ref15">&uarr;</a></li>
+      <li id="fn16">CoinDesk, &ldquo;Robinhood Chain beats Ethereum in daily revenue as memecoin trading takes over,&rdquo; Aug 31, 2026 (incl. trailing 30&#8209;day ranking). <a href="https://www.coindesk.com/markets/2026/08/31/robinhood-chain-beats-ethereum-in-daily-revenue-as-memecoin-trading-takes-over" target="_blank" rel="noopener">coindesk.com</a> &middot; <a href="#ref16">&uarr;</a></li>
+      <li id="fn17">Yahoo Finance, Robinhood CEO Vlad Tenev quotes and on&#8209;chain equity volume stat, Aug 18, 2026. <a href="https://finance.yahoo.com/markets/stocks/articles/robinhood-ceo-vlad-tenev-says-043633057.html" target="_blank" rel="noopener">finance.yahoo.com</a> &middot; <a href="#ref17">&uarr;</a></li>
+      <li id="fn18">CoinMarketCap, on Pons as an independent, permissionless meme&#8209;token launchpad built on Robinhood Chain, not a Robinhood product. <a href="https://coinmarketcap.com/cmc-ai/pons/what-is/" target="_blank" rel="noopener">coinmarketcap.com</a> &middot; <a href="#ref18">&uarr;</a></li>
+      <li id="fn19">wublock Substack, &ldquo;Ten Questions and Answers: A Comprehensive&hellip;&rdquo; (sequencer&#8209;level compliance screening, onchain corporate&#8209;action multiplier, early stock&#8209;token volume), 2026. <a href="https://wublock.substack.com/p/ten-questions-and-answers-a-comprehensive" target="_blank" rel="noopener">wublock.substack.com</a> &middot; <a href="#ref19">&uarr;</a></li>
+      <li id="fn20">CryptoBriefing, on Uniswap's stock&#8209;token trading volume on Robinhood Chain. <a href="https://cryptobriefing.com/uniswap-robinhood-chain-stock-token-trading/" target="_blank" rel="noopener">cryptobriefing.com</a> &middot; <a href="#ref20">&uarr;</a></li>
     </ol>
   </footer>
 

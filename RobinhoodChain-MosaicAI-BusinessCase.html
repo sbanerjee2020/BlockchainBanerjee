@@ -9,41 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F5F6F1;
-    --surface:#FFFFFF;
-    --surface-2:#ECEEE6;
-    --text:#161A20;
-    --text-muted:#565E68;
-    --border:#DBDCD3;
-    --gold:#9C7327;
-    --gold-ink:#5B4212;
-    --gold-soft:#F0E3C4;
-    --teal:#1B6E66;
-    --teal-soft:#DEEEEA;
-    --warn:#9A4413;
-    --warn-soft:#F4E1CE;
-    --shadow: 0 1px 2px rgba(22,26,32,0.05), 0 8px 24px rgba(22,26,32,0.06);
-    --radius: 14px;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#0D1117;
-      --surface:#141A22;
-      --surface-2:#1A222C;
-      --text:#EAEBE4;
-      --text-muted:#9BA2AC;
-      --border:#2A323C;
-      --gold:#D9AE5C;
-      --gold-ink:#F3DFAF;
-      --gold-soft:#3A2E17;
-      --teal:#5EBBAE;
-      --teal-soft:#123230;
-      --warn:#E08A55;
-      --warn-soft:#3A2013;
-      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px rgba(0,0,0,0.4);
-    }
-  }
-  :root[data-theme="dark"]{
     --bg:#0D1117;
     --surface:#141A22;
     --surface-2:#1A222C;
@@ -58,6 +23,7 @@
     --warn:#E08A55;
     --warn-soft:#3A2013;
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px rgba(0,0,0,0.4);
+    --radius: 14px;
   }
 
   *{box-sizing:border-box;}
@@ -264,7 +230,6 @@
     background:var(--gold); color:#1B1204; font-weight:600;
     padding:11px 18px; border-radius:8px; text-decoration:none; font-size:0.95rem;
   }
-  :root[data-theme="dark"] .cta-btn, @media (prefers-color-scheme: dark){ }
   .cta-btn:hover{ background:var(--gold-ink); color:var(--bg); }
 
   footer{
@@ -274,7 +239,7 @@
     font-family:"IBM Plex Mono", monospace; font-size:0.72rem; text-transform:uppercase;
     letter-spacing:0.08em; color:var(--text-muted); margin-bottom:10px;
   }
-  ol.footnotes{ padding-left:20px; margin:0; font-size:0.82rem; color:var(--text-muted); }
+  ol.footnotes{ padding-left:20px; margin:0; font-size:0.82rem; color:var(--text-muted); columns:2; column-gap:28px; }
   ol.footnotes li{ margin-bottom:6px; }
   ol.footnotes a{ color:var(--text-muted); }
   ol.footnotes a:hover{ color:var(--teal); }
@@ -283,6 +248,7 @@
   @media (max-width:600px){
     .stats{ grid-template-columns:1fr 1fr; }
     .offerings{ grid-template-columns:1fr; }
+    ol.footnotes{ columns:1; }
   }
 </style>
 </head>
@@ -291,25 +257,25 @@
 
   <div class="kicker">MosaicAI Perspective &middot; September 2026</div>
   <h1>MosaicAI on Robinhood Chain</h1>
-  <p class="dek">Robinhood's own blockchain is two months old, already the highest fee-generating chain we track, and still mostly speculation. That gap between activity and thesis is exactly where we build.</p>
+  <p class="dek">Robinhood's own blockchain is two months old, briefly outearned Ethereum on daily revenue, and just opened itself to AI agents. Tokenized equities are still the minority of activity &mdash; that gap is exactly where we build.</p>
 
-  <p>Robinhood Chain went live on <strong>July&nbsp;1, 2026</strong><sup><a href="#fn1" id="ref1">1</a></sup> &mdash; a dedicated Ethereum layer&#8209;2, built on Arbitrum, purpose&#8209;built for round&#8209;the&#8209;clock tokenized stock trading, self&#8209;custody wallets, and &ldquo;Agentic Accounts&rdquo; that let an AI model trade on a user's behalf under human&#8209;set limits.<sup><a href="#fn2" id="ref2">2</a></sup> Two months later, value locked on the chain has grown roughly <strong>175&times;</strong>, and it now generates more daily fee revenue than any other chain we track &mdash; including Ethereum mainnet and Coinbase's Base.<sup><a href="#fn3" id="ref3">3</a></sup></p>
+  <p>Robinhood Chain went live on <strong>July&nbsp;1, 2026</strong><sup><a href="#fn1" id="ref1">1</a></sup> &mdash; a dedicated Ethereum layer&#8209;2, built on Arbitrum, purpose&#8209;built for round&#8209;the&#8209;clock tokenized stock trading and a self&#8209;custody wallet.<sup><a href="#fn2" id="ref2">2</a></sup> This quarter it went further: Robinhood opened the chain to AI agents, launching <strong>Agentic Trading</strong> (equities, in beta) and an Agentic Credit Card &mdash; built on Robinhood's own proprietary &ldquo;Trading&rdquo; and &ldquo;Banking&rdquo; infrastructure, not an open agent standard.<sup><a href="#fn8" id="ref8">8</a></sup> On Aug&nbsp;30, 2026 the chain's 24&#8209;hour app revenue hit <strong>$2.66M</strong> &mdash; briefly 2&times; Ethereum's and 6&times; Base's<sup><a href="#fn9" id="ref9">9</a></sup> &mdash; though independent reporting has it slipping back to roughly 5th place on a trailing 30&#8209;day basis.<sup><a href="#fn9">9</a></sup></p>
 
   <div class="stats">
     <div class="stat">
-      <div class="num">~$700M</div>
+      <div class="num">~$750M</div>
       <div class="label">Total value locked, up from ~$4M pre&#8209;mainnet</div>
       <div class="src">Sources: <a href="https://defillama.com/chain/robinhood-chain" target="_blank" rel="noopener">DefiLlama</a><sup><a href="#fn3">3</a></sup></div>
     </div>
     <div class="stat">
-      <div class="num">$6.18M/day</div>
-      <div class="label">Daily fee revenue &mdash; #1 of all tracked chains</div>
-      <div class="src">Source: <a href="https://www.growthepie.com/chains/robinhood" target="_blank" rel="noopener">growthepie</a><sup><a href="#fn4">4</a></sup></div>
+      <div class="num">$2.66M</div>
+      <div class="label">24h app revenue, Aug 30 &mdash; briefly 2&times; Ethereum's, 6&times; Base's</div>
+      <div class="src">Source: <a href="https://www.coindesk.com/markets/2026/08/31/robinhood-chain-beats-ethereum-in-daily-revenue-as-memecoin-trading-takes-over" target="_blank" rel="noopener">CoinDesk</a><sup><a href="#fn9">9</a></sup></div>
     </div>
     <div class="stat">
-      <div class="num">175&times;</div>
-      <div class="label">TVL growth since mainnet launch</div>
-      <div class="src">Sources: <sup><a href="https://defillama.com/chain/robinhood-chain">3</a></sup></div>
+      <div class="num">190+</div>
+      <div class="label">Tokenized stock products live, almost entirely traded on Uniswap</div>
+      <div class="src">Source: CryptoBriefing<sup><a href="#fn11" id="ref11">11</a></sup></div>
     </div>
   </div>
 
@@ -335,7 +301,7 @@
         <rect x="40" y="150" width="560" height="90" rx="10" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"/>
         <text x="320" y="176" text-anchor="middle" font-size="16" font-weight="700">Robinhood Chain</text>
         <text x="320" y="197" text-anchor="middle" font-size="12" font-family="IBM Plex Mono, monospace" opacity="0.75">Chain ID 4663 &middot; ~100ms blocks &middot; EVM&#8209;compatible &middot; gas: ETH</text>
-        <text x="320" y="219" text-anchor="middle" font-size="12" opacity="0.65">Stock Tokens &middot; Wallet &middot; DeFi (Uniswap, Morpho, Lighter) &middot; Chainlink oracles</text>
+        <text x="320" y="219" text-anchor="middle" font-size="12" opacity="0.65">Stock Tokens &middot; Wallet &middot; DeFi (Uniswap, Morpho, Lighter) &middot; Agentic Trading</text>
 
         <!-- connector 2 -->
         <line x1="320" y1="240" x2="320" y2="258" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow1)"/>
@@ -360,7 +326,7 @@
   </figure>
 
   <h2>Traction, and the honest caveat</h2>
-  <p>Independent on&#8209;chain analysis puts tokenized&#8209;equity activity at roughly <strong>4% of current volume</strong> &mdash; the rest is speculative crypto trading, memecoins included.<sup><a href="#fn5" id="ref5">5</a></sup> That's not a crack in the thesis; it's the timeline. Regulatory clarity is arriving in pieces &mdash; the SEC's January 2026 guidance on tokenized securities,<sup><a href="#fn6" id="ref6">6</a></sup> and Robinhood's own proposal for a federal tokenization framework.<sup><a href="#fn7" id="ref7">7</a></sup> As that clarity lands, the tokenized&#8209;equity share is what grows.</p>
+  <p>Independent analysis puts tokenized&#8209;equity activity at roughly <strong>4% of on&#8209;chain volume</strong><sup><a href="#fn5" id="ref5">5</a></sup> &mdash; GMGN and Pons &mdash; independent, permissionless meme&#8209;token platforms, not Robinhood products &mdash; together with Uniswap drive roughly 88&ndash;90% of daily revenue.<sup><a href="#fn9">9</a></sup><sup><a href="#fn10" id="ref10">10</a></sup> That's not a crack in the thesis; it's the timeline. Stock&#8209;token trading itself is real and growing &mdash; Uniswap alone processed <strong>$1.5B</strong> in stock&#8209;token trades in the chain's first six weeks<sup><a href="#fn11">11</a></sup> &mdash; and regulatory clarity is arriving in pieces: the SEC's January 2026 guidance on tokenized securities,<sup><a href="#fn6" id="ref6">6</a></sup> and Robinhood's own proposal for a federal tokenization framework.<sup><a href="#fn7" id="ref7">7</a></sup> As that clarity lands, the tokenized&#8209;equity share is what grows.</p>
 
   <div class="propbar-wrap">
     <div class="propbar">
@@ -374,7 +340,7 @@
   </div>
 
   <h2>Where MosaicAI fits</h2>
-  <p>MosaicAI already builds the two things this shift needs at once: audited Solidity for tokenization and custody, and secure, sandboxed AI for the decision layer. Robinhood Chain's Agentic Accounts hand trading authority to an AI model &mdash; someone has to build the guardrails, identity, and payment rails those agents run on. Our <a href="https://www.mosaicai.co/products/agentic-data-room" target="_blank" rel="noopener">Agentic Data Room</a> already turns financial disclosures into structured, queryable risk; we're extending it to evaluate issuers, collateral, and DeFi exposure before capital moves on&#8209;chain, not after.</p>
+  <p>MosaicAI already builds the two things this shift needs at once: audited Solidity for tokenization and custody, and secure, sandboxed AI for the decision layer. Robinhood's new Agentic Trading suite runs on its own proprietary MCP servers &mdash; built for its own retail app, not an open standard other builders can plug into.<sup><a href="#fn8">8</a></sup> That's the gap: funds, issuers, and institutional agents who want to interact with Robinhood Chain assets from outside Robinhood's own app still need an independent, interoperable identity and guardrail layer. Our <a href="https://www.mosaicai.co/products/agentic-data-room" target="_blank" rel="noopener">Agentic Data Room</a> already turns financial disclosures into structured, queryable risk; we're extending it to evaluate issuers, collateral, and DeFi exposure before capital moves on&#8209;chain, not after.</p>
 
   <div class="offerings">
     <div class="offer">
@@ -383,7 +349,7 @@
     </div>
     <div class="offer">
       <div class="name"><span class="tag">Agents</span>Agent Infrastructure</div>
-      <p>Guardrailed trading agents built against emerging agent&#8209;identity and agent&#8209;payment standards.</p>
+      <p>Guardrailed, interoperable trading agents &mdash; filling the gap Robinhood's proprietary MCP servers leave for outside builders.</p>
     </div>
     <div class="offer">
       <div class="name"><span class="tag">Contracts</span>Contract Engineering</div>
@@ -415,11 +381,12 @@
     <a href="https://www.growthepie.com/" target="_blank" rel="noopener">growthepie &#8594;</a>
     <a href="https://tokenterminal.com/explorer/metrics/fees" target="_blank" rel="noopener">Token Terminal (fees) &#8594;</a>
     <a href="https://dune.com/home" target="_blank" rel="noopener">Dune Analytics &#8594;</a>
+    <a href="https://arbdata.com/robinhood" target="_blank" rel="noopener">arbdata.com &#8594;</a>
   </div>
 
   <div class="cta">
     <h3>The wave hasn't crested yet</h3>
-    <p>Robinhood Chain is two months old and already outearning Ethereum mainnet on fees. Let's build the diligence, agent, and analytics tooling for when tokenized equities catch up to the speculation.</p>
+    <p>Robinhood Chain briefly outearned Ethereum on daily revenue and just opened itself to AI agents. The tokenization wave it was built for hasn't crested. Let's build the diligence, agent, and analytics tooling for when it does.</p>
     <a class="cta-btn" href="https://www.mosaicai.co/products/agentic-data-room" target="_blank" rel="noopener">See Agentic Data Room &rarr;</a>
   </div>
 
@@ -428,11 +395,15 @@
     <ol class="footnotes">
       <li id="fn1">Robinhood Newsroom, &ldquo;Robinhood Accelerates Global Expansion&hellip;Robinhood Chain Mainnet&hellip;,&rdquo; Jul 1, 2026. <a href="https://robinhood.com/us/en/newsroom/robinhood-accelerates-global-expansion-robinhood-chain-mainnet-stock-tokens-agentic-trading/" target="_blank" rel="noopener">robinhood.com/newsroom</a> &middot; <a href="#ref1">&uarr;</a></li>
       <li id="fn2">The Block, &ldquo;Robinhood Chain goes live on mainnet alongside 24/7 tokenized stocks&hellip;,&rdquo; Jul 1, 2026. <a href="https://www.theblock.co/news/business/2026-07-01-robinhood-chain-goes-live-mainnet-alongside-24-7-tokenized-stocks-lighter-perps-planned-crypto-agentic-trading-406918" target="_blank" rel="noopener">theblock.co</a> &middot; <a href="#ref2">&uarr;</a></li>
-      <li id="fn3">DefiLlama, Robinhood Chain page (TVL); pre&#8209;mainnet baseline and growth via DefiLlama's public data, early Sept 2026 snapshot. <a href="https://defillama.com/chain/robinhood-chain" target="_blank" rel="noopener">defillama.com/chain/robinhood-chain</a> &middot; <a href="#ref3">&uarr;</a></li>
-      <li id="fn4">growthepie, Robinhood Chain metrics (daily fee revenue, ranking vs. tracked chains). <a href="https://www.growthepie.com/chains/robinhood" target="_blank" rel="noopener">growthepie.com/chains/robinhood</a> &middot; <a href="#ref4">&uarr;</a></li>
+      <li id="fn3">DefiLlama and arbdata.com, Robinhood Chain TVL (peaked &gt;$1B; ~$750M+ as of Sept 1, 2026). <a href="https://defillama.com/chain/robinhood-chain" target="_blank" rel="noopener">defillama.com/chain/robinhood-chain</a>, <a href="https://arbdata.com/robinhood" target="_blank" rel="noopener">arbdata.com/robinhood</a> &middot; <a href="#ref3">&uarr;</a></li>
+      <li id="fn4">growthepie, Robinhood Chain metrics (daily fee revenue, ranking vs. tracked chains), early Sept 2026 snapshot. <a href="https://www.growthepie.com/chains/robinhood" target="_blank" rel="noopener">growthepie.com/chains/robinhood</a> &middot; <a href="#ref4">&uarr;</a></li>
       <li id="fn5">CryptoSlate, &ldquo;Robinhood took on Coinbase and immediately inherited Base's biggest problem,&rdquo; 2026. <a href="https://cryptoslate.com/robinhood-took-on-coinbase-and-immediately-inherited-bases-biggest-problem/" target="_blank" rel="noopener">cryptoslate.com</a> &middot; <a href="#ref5">&uarr;</a></li>
       <li id="fn6">Norton Rose Fulbright, &ldquo;SEC issues guidance on tokenized securities,&rdquo; Jan 28, 2026. <a href="https://www.nortonrosefulbright.com/en/knowledge/publications/f587fc3c/sec-issues-guidance-on-tokenized-securities" target="_blank" rel="noopener">nortonrosefulbright.com</a> &middot; <a href="#ref6">&uarr;</a></li>
       <li id="fn7">Benzinga, on Robinhood's proposal to the SEC for a federal tokenization framework. <a href="https://www.benzinga.com/25/05/45537142/robinhoods-push-to-bring-wall-street-on-blockchainbrokerage-firm-submits-proposal-to-sec-to-regulate-tokenized-assets" target="_blank" rel="noopener">benzinga.com</a> &middot; <a href="#ref7">&uarr;</a></li>
+      <li id="fn8">Robinhood Newsroom, &ldquo;Robinhood is now open to agents,&rdquo; 2026. <a href="https://robinhood.com/us/en/newsroom/robinhood-is-now-open-to-agents/" target="_blank" rel="noopener">robinhood.com/newsroom</a> &middot; <a href="#ref8">&uarr;</a></li>
+      <li id="fn9">CoinDesk, &ldquo;Robinhood Chain beats Ethereum in daily revenue as memecoin trading takes over,&rdquo; Aug 31, 2026. <a href="https://www.coindesk.com/markets/2026/08/31/robinhood-chain-beats-ethereum-in-daily-revenue-as-memecoin-trading-takes-over" target="_blank" rel="noopener">coindesk.com</a> &middot; <a href="#ref9">&uarr;</a></li>
+      <li id="fn10">CoinMarketCap, on Pons as an independent, permissionless meme&#8209;token launchpad built on Robinhood Chain. <a href="https://coinmarketcap.com/cmc-ai/pons/what-is/" target="_blank" rel="noopener">coinmarketcap.com</a> &middot; <a href="#ref10">&uarr;</a></li>
+      <li id="fn11">CryptoBriefing, on Uniswap's stock&#8209;token trading volume on Robinhood Chain. <a href="https://cryptobriefing.com/uniswap-robinhood-chain-stock-token-trading/" target="_blank" rel="noopener">cryptobriefing.com</a> &middot; <a href="#ref11">&uarr;</a></li>
     </ol>
   </footer>
 
