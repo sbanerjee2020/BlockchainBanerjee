@@ -277,8 +277,9 @@
     </table>
   </div>
 
-  <h2 id="s4"><span class="secnum">04</span> Architecture &amp; Where MosaicAI Plugs In</h2>
-  <p>Ethereum anchors settlement and data availability. Arbitrum's Nitro/Orbit stack sequences transactions and posts fraud proofs for the dedicated chain. Robinhood Chain itself hosts the application layer &mdash; Stock Tokens, the self&#8209;custody Wallet built on ERC&#8209;4337 smart accounts, DeFi primitives (Uniswap and Pleiades AMMs, Morpho lending paying roughly 7% APY on USDG, Lighter perpetuals), and Chainlink oracles for price feeds.<sup><a href="#fn2">2</a></sup> MosaicAI's service layer sits directly on top of &mdash; and wires into &mdash; specific components in that stack.</p>
+  <h2 id="s4"><span class="secnum">04</span> MosaicAI Service Architecture</h2>
+  <p>Ethereum anchors settlement and data availability. Arbitrum's Nitro/Orbit stack sequences transactions and posts fraud proofs for the dedicated chain. Robinhood Chain itself hosts the application layer &mdash; Stock Tokens, the self&#8209;custody Wallet built on ERC&#8209;4337 smart accounts, DeFi primitives (Uniswap and Pleiades AMMs, Morpho lending paying roughly 7% APY on USDG, Lighter perpetuals), and Chainlink oracles for price feeds.<sup><a href="#fn2">2</a></sup> 
+    <br>MosaicAI's service layer sits directly on top of &mdash; and wires into &mdash; specific components in that stack.</p>
 
   <figure class="diagram-frame">
     <svg viewBox="0 0 900 560" role="img" aria-label="Layered architecture: Ethereum settles Arbitrum's rollup, which sequences Robinhood Chain's stock tokens, wallet, DeFi and oracle components; MosaicAI's Agentic Diligence, Agent Identity and Payments, Contract Engineering, and Analytics services attach directly above the matching component.">
@@ -370,7 +371,7 @@
   <div class="offerings">
     <div class="offer">
       <div class="name"><span class="tag">Diligence</span>Agentic Diligence</div>
-      <p>Extends our Agentic Data Room ingestion pipeline to parse a stock token's offering documents and issuer disclosures, cross&#8209;referencing them against the on&#8209;chain collateral and liquidity actually backing the token (Morpho positions, AMM depth), producing a structured risk score before capital commits &mdash; not after.</p>
+      <p>MosaicAI Agentic Data Room ingestion pipeline parses a stock token's offering documents and issuer disclosures, cross&#8209;referencing them against the on&#8209;chain collateral and liquidity actually backing the token (Morpho positions, AMM depth), producing a structured <b>risk score</b> before capital commits &mdash; not after.</p>
     </div>
     <div class="offer">
       <div class="name"><span class="tag">Agents</span>Agent Identity &amp; Payments</div>
@@ -378,11 +379,11 @@
     </div>
     <div class="offer">
       <div class="name"><span class="tag">Contracts</span>Contract Engineering</div>
-      <p>Solidity/Vyper development and audits for tokenization, custody, and DeFi integration. Standard EVM tooling means our existing Ethereum practice ports to Robinhood Chain and its Arbitrum Orbit siblings without a new toolchain.</p>
+      <p>Solidity development and audits for tokenization, custody, and DeFi integration. Standard EVM tooling enables existing Ethereum practice ports to Robinhood Chain and its Arbitrum Orbit siblings without a new toolchain.</p>
     </div>
     <div class="offer">
       <div class="name"><span class="tag">Analytics</span>Analytics&#8209;as&#8209;a&#8209;Service</div>
-      <p>Rather than issuers building Dune queries from scratch, we package chain&#8209;level data &mdash; TVL, fee flow, stablecoin supply, DEX depth &mdash; from DefiLlama, growthepie, Token Terminal, and Dune, alongside our own diligence output, into one operational dashboard.</p>
+      <p>Rather than issuers building Dune queries from scratch, MpsaicAI packages chain&#8209;level data &mdash; TVL, fee flow, stablecoin supply, DEX depth &mdash; from DefiLlama, growthepie, Token Terminal, and Dune, alongside diligence output, into one operational dashboard.</p>
     </div>
   </div>
 
