@@ -166,11 +166,11 @@
 
   <div class="kicker">MosaicAI Technical Brief &middot; September 2026</div>
   <h1>MosaicAI on Robinhood Chain: Technical Deep Dive</h1>
-  <p class="dek">A sourced walkthrough of what Robinhood Chain actually is, what it's doing two months into mainnet, and where MosaicAI's engineering plugs into its stack &mdash; for the technical and business teams deciding whether to build here.</p>
+  <p class="dek">A walkthrough of what Robinhood Chain actually is, what it's doing two months into mainnet, and where MosaicAI's engineering plugs into its stack &mdash; for the technical and business teams deciding whether to build here.</p>
 
   <nav class="toc" aria-label="Table of contents">
-    <span class="tlabel">On this page</span>
-    <a href="#s1">1. What Robinhood Chain Is</a>
+    <span class="tlabel">On this Blog</span>
+    <a href="#s1">1. What Is Robinhood Chain</a>
     <a href="#s2">2. Traction &amp; Metrics</a>
     <a href="#s3">3. Competitive Landscape</a>
     <a href="#s4">4. Architecture</a>
@@ -180,7 +180,7 @@
     <a href="#s8">8. Risks &amp; Open Questions</a>
   </nav>
 
-  <h2 id="s1"><span class="secnum">01</span> What Robinhood Chain Is</h2>
+  <h2 id="s1"><span class="secnum">01</span> What Is Robinhood Chain</h2>
   <p>Robinhood Chain went live on mainnet on <strong>July&nbsp;1, 2026</strong>, announced at Robinhood's &ldquo;The World Is Flat&rdquo; keynote at the Old Royal Naval College in London, following a public testnet that had already processed more than 200&nbsp;million transactions.<sup><a href="#fn1" id="ref1">1</a></sup><sup><a href="#fn2" id="ref2">2</a></sup> It reaches Robinhood's own distribution &mdash; roughly 28&ndash;30 million funded accounts across 38 countries.<sup><a href="#fn14" id="ref14">14</a></sup> Technically, it's a dedicated Arbitrum deployment &mdash; an &ldquo;Arbitrum Dedicated Blockchain,&rdquo; built on the Nitro/Orbit stack &mdash; that settles to Ethereum for security and data availability via EIP&#8209;4844 blobs.<sup><a href="#fn3" id="ref3">3</a></sup> It is fully EVM&#8209;compatible: Solidity and Vyper contracts, standard tooling (Hardhat, Foundry, ethers.js, viem, Wagmi), and JSON&#8209;RPC all work unmodified, with native <strong>ERC&#8209;4337</strong> account abstraction for smart&#8209;contract wallets.<sup><a href="#fn3">3</a></sup></p>
 
   <div class="table-scroll">
