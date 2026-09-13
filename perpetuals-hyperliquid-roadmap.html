@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>The Perpetuals Desk</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink:#182226;
+    --ink-soft:#4A5A5E;
+    --paper:#F1F4F3;
+    --paper-raised:#FFFFFF;
+    --border:rgba(24,34,38,.13);
+    --accent:#0E7C86;
+    --accent-strong:#0A5A62;
+    --accent-soft:#DCEEEF;
+    --amber:#B5691E;
+    --amber-soft:#F5E6D2;
+    --long:#187A4E;
+    --long-soft:#DCEFE3;
+    --short:#B03B24;
+    --short-soft:#F6DFD8;
+    --shadow: 0 1px 2px rgba(24,34,38,.06), 0 8px 24px -12px rgba(24,34,38,.18);
+    --disp: "Fraunces", Georgia, serif;
+    --body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#E7EDEC;
+      --ink-soft:#9FB0AE;
+      --paper:#0E1517;
+      --paper-raised:#16201F;
+      --border:rgba(231,237,236,.14);
+      --accent:#57C7CE;
+      --accent-strong:#8FDDE1;
+      --accent-soft:rgba(87,199,206,.14);
+      --amber:#E3A458;
+      --amber-soft:rgba(227,164,88,.13);
+      --long:#4FC98A;
+      --long-soft:rgba(79,201,138,.13);
+      --short:#E5776259;
+      --short:#E88571;
+      --short-soft:rgba(232,133,113,.13);
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#E7EDEC;
+    --ink-soft:#9FB0AE;
+    --paper:#0E1517;
+    --paper-raised:#16201F;
+    --border:rgba(231,237,236,.14);
+    --accent:#57C7CE;
+    --accent-strong:#8FDDE1;
+    --accent-soft:rgba(87,199,206,.14);
+    --amber:#E3A458;
+    --amber-soft:rgba(227,164,88,.13);
+    --long:#4FC98A;
+    --long-soft:rgba(79,201,138,.13);
+    --short:#E88571;
+    --short-soft:rgba(232,133,113,.13);
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:var(--disp); text-wrap:balance; margin:0; color:var(--ink);}
+  a{color:var(--accent);}
+  ::selection{background:var(--accent-soft);}
+  .tabular{font-variant-numeric:tabular-nums;}
+
+  /* ---------- Layout shell ---------- */
+  .shell{max-width:1240px; margin:0 auto; display:grid; grid-template-columns:250px minmax(0,1fr); gap:0;}
+  @media (max-width:960px){ .shell{grid-template-columns:1fr;} }
+
+  /* ---------- Sticky TOC ---------- */
+  nav.toc{
+    position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;
+    padding:36px 20px 40px 32px; border-right:1px solid var(--border);
+  }
+  @media (max-width:960px){
+    nav.toc{position:static; height:auto; border-right:none; border-bottom:1px solid var(--border); padding:20px 24px;}
+  }
+  .toc-brand{display:flex; align-items:center; gap:10px; margin-bottom:28px;}
+  .toc-mark{width:30px; height:30px; border-radius:8px; background:var(--accent); flex:none; position:relative;}
+  .toc-mark svg{position:absolute; inset:0; width:100%; height:100%;}
+  .toc-brand-text{font-family:var(--mono); font-size:12.5px; letter-spacing:.06em; color:var(--ink-soft); text-transform:uppercase;}
+  .toc-title{font-family:var(--disp); font-size:19px; font-weight:600; line-height:1.15; margin-bottom:2px;}
+  .toc ul{list-style:none; margin:0; padding:0;}
+  .toc > ul{margin-top:22px;}
+  .toc li{margin:0;}
+  .toc .sec-link{
+    display:block; padding:9px 10px; margin:2px 0; border-radius:7px; font-size:13.5px; font-weight:600;
+    color:var(--ink); text-decoration:none; letter-spacing:.01em;
+  }
+  .toc .sec-link .num{font-family:var(--mono); color:var(--accent); margin-right:8px; font-size:12px;}
+  .toc .sub-link{
+    display:block; padding:5px 10px 5px 30px; font-size:12.5px; color:var(--ink-soft); text-decoration:none; border-radius:7px;
+  }
+  .toc a:hover{background:var(--accent-soft); color:var(--ink);}
+  .toc-foot{margin-top:28px; padding-top:18px; border-top:1px solid var(--border); font-size:11.5px; color:var(--ink-soft); font-family:var(--mono); line-height:1.7;}
+
+  /* ---------- Main column ---------- */
+  main{min-width:0; padding:56px 48px 120px; max-width:820px;}
+  @media (max-width:640px){ main{padding:36px 20px 90px;} }
+
+  .kicker{
+    font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:600;
+  }
+  header.masthead{margin-bottom:56px;}
+  header.masthead h1{font-size:clamp(32px,5vw,46px); font-weight:600; margin:10px 0 16px; max-width:14ch;}
+  header.masthead p{font-size:17px; color:var(--ink-soft); max-width:56ch; margin:0 0 22px;}
+  .who-for{
+    display:flex; flex-wrap:wrap; gap:8px; font-family:var(--mono); font-size:11.5px;
+  }
+  .who-for span{
+    border:1px solid var(--border); border-radius:100px; padding:5px 12px; color:var(--ink-soft);
+  }
+
+  section.section{padding-top:68px; scroll-margin-top:24px;}
+  section.section:first-of-type{padding-top:0;}
+  .section-head{display:flex; align-items:baseline; gap:18px; margin-bottom:6px; padding-bottom:22px; border-bottom:2px solid var(--ink);}
+  .section-head .idx{font-family:var(--disp); font-size:52px; font-weight:500; line-height:1; color:var(--accent);}
+  .section-head h2{font-size:clamp(24px,4vw,32px); font-weight:600;}
+  .section-dek{color:var(--ink-soft); font-size:15px; margin:16px 0 40px; max-width:60ch;}
+
+  h3.q{
+    font-size:20px; font-weight:600; margin:44px 0 14px; padding-top:2px; scroll-margin-top:24px;
+    display:flex; gap:10px; align-items:baseline;
+  }
+  h3.q .q-mark{color:var(--accent); font-family:var(--mono); font-size:14px;}
+  p{margin:0 0 16px; max-width:66ch;}
+  ul.plain, ol.plain{margin:0 0 16px; padding-left:22px; max-width:64ch;}
+  ul.plain li, ol.plain li{margin-bottom:8px;}
+  strong{font-weight:600;}
+  code, .code{font-family:var(--mono); font-size:.92em; background:var(--accent-soft); padding:.1em .4em; border-radius:4px;}
+
+  /* ---------- Callouts ---------- */
+  .callout{
+    border:1px solid var(--border); border-left:4px solid var(--accent); background:var(--paper-raised);
+    border-radius:10px; padding:20px 22px; margin:26px 0; box-shadow:var(--shadow);
+  }
+  .callout h4{font-size:13px; text-transform:uppercase; letter-spacing:.08em; font-family:var(--mono); font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:8px;}
+  .callout.example{border-left-color:var(--accent);}
+  .callout.example h4{color:var(--accent-strong);}
+  .callout.watch{border-left-color:var(--amber); background:var(--amber-soft);}
+  .callout.watch h4{color:var(--amber);}
+  .callout.watch p, .callout.watch li{color:var(--ink);}
+  .callout p:last-child{margin-bottom:0;}
+  .callout table{margin:0;}
+
+  .stat-row{display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 4px;}
+  .stat{
+    flex:1 1 140px; border:1px solid var(--border); border-radius:9px; padding:12px 14px; background:var(--paper-raised);
+  }
+  .stat .n{font-family:var(--mono); font-size:20px; font-weight:600; color:var(--accent-strong); display:block;}
+  .stat .l{font-size:11.5px; color:var(--ink-soft); line-height:1.3;}
+
+  figure{margin:30px 0; padding:0;}
+  figure svg{width:100%; height:auto; display:block;}
+  figcaption{font-size:12.5px; color:var(--ink-soft); margin-top:10px; text-align:center; font-family:var(--mono);}
+
+  /* ---------- Tables ---------- */
+  .tablewrap{overflow-x:auto; margin:24px 0; border:1px solid var(--border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:14px;}
+  th,td{padding:12px 14px; text-align:left; border-bottom:1px solid var(--border); vertical-align:top;}
+  thead th{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); background:var(--paper);}
+  tbody tr:last-child td{border-bottom:none;}
+  td.hi{color:var(--accent-strong); font-weight:600;}
+  td .tag{display:inline-block; font-family:var(--mono); font-size:10.5px; padding:2px 7px; border-radius:100px; background:var(--long-soft); color:var(--long); margin-top:4px;}
+
+  /* ---------- Sources ---------- */
+  .sources{margin-top:28px; padding-top:18px; border-top:1px dashed var(--border);}
+  .sources h4{font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); margin-bottom:10px; font-weight:600;}
+  .sources ol{margin:0; padding-left:18px; font-size:13px; color:var(--ink-soft);}
+  .sources li{margin-bottom:5px;}
+  .sources a{color:var(--ink-soft); text-decoration-color:var(--border);}
+  .sources a:hover{color:var(--accent);}
+
+  .toollist{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; margin:20px 0;}
+  .toolcard{border:1px solid var(--border); border-radius:9px; padding:13px 14px; background:var(--paper-raised);}
+  .toolcard .t{font-weight:600; font-size:13.5px; margin-bottom:3px;}
+  .toolcard .d{font-size:12px; color:var(--ink-soft); line-height:1.45;}
+
+  .stepline{list-style:none; margin:24px 0; padding:0; counter-reset:step;}
+  .stepline li{
+    counter-increment:step; position:relative; padding:2px 0 26px 42px; border-left:2px solid var(--border); margin-left:14px;
+  }
+  .stepline li:last-child{border-left-color:transparent; padding-bottom:2px;}
+  .stepline li::before{
+    content:counter(step); position:absolute; left:-15px; top:0; width:28px; height:28px; border-radius:50%;
+    background:var(--accent); color:var(--paper-raised); font-family:var(--mono); font-weight:600; font-size:12.5px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .stepline .st{font-weight:600; margin-bottom:4px; font-size:15px;}
+  .stepline p{margin-bottom:0; font-size:14.5px;}
+
+  .divider-quote{
+    font-family:var(--disp); font-size:22px; font-weight:500; color:var(--ink); border-left:3px solid var(--accent);
+    padding:4px 0 4px 22px; margin:36px 0; max-width:56ch; line-height:1.4;
+  }
+
+  footer.end{
+    margin-top:90px; padding-top:28px; border-top:2px solid var(--ink); font-size:13px; color:var(--ink-soft);
+  }
+  footer.end p{max-width:70ch;}
+
+  @media print{ nav.toc{display:none;} .shell{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<nav class="toc" id="toc">
+  <div class="toc-brand">
+    <div class="toc-mark"><svg viewBox="0 0 30 30"><polyline points="4,20 10,13 15,17 26,6" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div>
+      <div class="toc-title">The Perpetuals Desk</div>
+      <div class="toc-brand-text">Trading roadmap · Sep 2026</div>
+    </div>
+  </div>
+  <ul>
+    <li><a class="sec-link" href="#s1"><span class="num">01</span>Perpetuals, plainly</a>
+      <ul>
+        <li><a class="sub-link" href="#s1-1">What is a perp?</a></li>
+        <li><a class="sub-link" href="#s1-2">Why the fuss?</a></li>
+        <li><a class="sub-link" href="#s1-3">Can I trade from the US?</a></li>
+      </ul>
+    </li>
+    <li><a class="sec-link" href="#s2"><span class="num">02</span>Hyperliquid</a>
+      <ul>
+        <li><a class="sub-link" href="#s2-1">What it is</a></li>
+        <li><a class="sub-link" href="#s2-2">HYPE listing dates</a></li>
+        <li><a class="sub-link" href="#s2-3">Why the big deal</a></li>
+        <li><a class="sub-link" href="#s2-4">Path onshore</a></li>
+        <li><a class="sub-link" href="#s2-5">How your team plugs in</a></li>
+      </ul>
+    </li>
+    <li><a class="sec-link" href="#s3"><span class="num">03</span>Trading, step by step</a>
+      <ul>
+        <li><a class="sub-link" href="#s3-1">Choosing a venue</a></li>
+        <li><a class="sub-link" href="#s3-2">Placing your first trade</a></li>
+        <li><a class="sub-link" href="#s3-3">Watchlist: risk &amp; rules</a></li>
+      </ul>
+    </li>
+  </ul>
+  <div class="toc-foot">Educational reference only —<br>not investment, legal or tax advice.<br>Prepared for a US-resident reader.</div>
+</nav>
+
+<main>
+
+<header class="masthead">
+  <span class="kicker">A working reference for the roadmap ahead</span>
+  <h1>Perpetuals, Hyperliquid &amp; trading across every asset class</h1>
+  <p>You already speak fluent crypto, Solidity, and LLMs. This is the missing middle layer — how leveraged perpetual futures actually work, what Hyperliquid changed, and the concrete, compliant steps to trade crypto, equities, commodities and indices as a US resident.</p>
+  <div class="who-for">
+    <span>Written for: US resident / citizen</span>
+    <span>Background: Solidity + Hardhat, Coinbase/Kraken/MetaMask</span>
+    <span>As of: September 13, 2026</span>
+  </div>
+</header>
+
+<!-- ================= SECTION 1 ================= -->
+<section class="section" id="s1">
+  <div class="section-head"><span class="idx">01</span><h2>Perpetuals, plainly</h2></div>
+  <p class="section-dek">A perpetual future ("perp") is the single instrument behind most of the leverage in crypto. Before touching Hyperliquid or any US venue, get this mechanism solid — it's the same math everywhere it shows up.</p>
+
+  <h3 class="q" id="s1-1"><span class="q-mark">Q</span>What is perpetual futures trading, and why is it such a big deal?</h3>
+
+  <p><strong>A regular futures contract</strong> locks in a price for an asset on a set expiry date — like a forward-dated invoice. <strong>A perpetual future has no expiry.</strong> You can hold it for an hour or three years. It behaves like leveraged spot trading, except you never actually own the coin, stock, or barrel of oil — you own a contract whose value tracks it.</p>
+
+  <p>The trick is keeping a contract with no expiry date glued to the real ("spot") price of the asset, since there's no expiry date to force convergence. Exchanges solve this with the <strong>funding rate</strong>: a small periodic payment between longs (buyers) and shorts (sellers).</p>
+
+  <figure>
+    <svg viewBox="0 0 700 240" role="img" aria-label="Funding rate mechanism diagram">
+      <line x1="40" y1="120" x2="660" y2="120" style="stroke:var(--border); stroke-width:1"/>
+      <text x="40" y="30" style="font:600 12px var(--mono); fill:var(--ink-soft);">PERP TRADES ABOVE SPOT</text>
+      <text x="40" y="46" style="font:400 11.5px var(--body); fill:var(--ink-soft);">too many longs pushed the price up</text>
+      <rect x="40" y="60" width="280" height="46" rx="8" style="fill:var(--long-soft)"/>
+      <text x="60" y="88" style="font:600 14px var(--mono); fill:var(--long)">Longs pay shorts →</text>
+
+      <text x="380" y="30" style="font:600 12px var(--mono); fill:var(--ink-soft);">PERP TRADES BELOW SPOT</text>
+      <text x="380" y="46" style="font:400 11.5px var(--body); fill:var(--ink-soft);">too many shorts pushed the price down</text>
+      <rect x="380" y="60" width="280" height="46" rx="8" style="fill:var(--short-soft)"/>
+      <text x="400" y="88" style="font:600 14px var(--mono); fill:var(--short)">← Shorts pay longs</text>
+
+      <circle cx="350" cy="150" r="30" style="fill:var(--accent-soft); stroke:var(--accent); stroke-width:2"/>
+      <text x="350" y="146" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--accent-strong)">SPOT</text>
+      <text x="350" y="160" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--accent-strong)">PRICE</text>
+      <line x1="40" y1="150" x2="320" y2="150" style="stroke:var(--long); stroke-width:2; stroke-dasharray:4 3"/>
+      <line x1="380" y1="150" x2="660" y2="150" style="stroke:var(--short); stroke-width:2; stroke-dasharray:4 3"/>
+      <text x="40" y="200" style="font:400 12px var(--body); fill:var(--ink-soft);">Result: the payment nudges traders back toward spot, every 1–8 hours, forever. That periodic nudge is the entire mechanism that lets a contract with no expiry date track a real-world price.</text>
+    </svg>
+    <figcaption>Fig. 1 — The funding rate see-saw that anchors a "perpetual" to reality</figcaption>
+  </figure>
+
+  <p>Why does this matter so much? Three reasons:</p>
+  <ul class="plain">
+    <li><strong>Leverage without borrowing.</strong> Post $1,000 as margin, control a $10,000 position — no loan paperwork, no collateral custody at a lender. The exchange nets your margin against your open risk in real time.</li>
+    <li><strong>It's the dominant way the world actually trades crypto.</strong> Perpetuals now account for the large majority of all crypto trading volume — more than spot trading, more than dated futures — because they never force you to "roll" a position at expiry.</li>
+    <li><strong>It went from a crypto curiosity to a systemic financial story in 2026.</strong> Regulators, CME, Kraken, Coinbase, Kalshi, the White House, and Hyperliquid are now openly fighting over who gets to host this trillion-dollar-a-year flow — see Sections 2 and 3.</li>
+  </ul>
+
+  <div class="callout example">
+    <h4>Worked example — a $1,000 BTC perp trade</h4>
+    <p>BTC spot is <span class="code">$110,000</span>. You open a <strong>long</strong> with $1,000 margin at <strong>10× leverage</strong>.</p>
+    <div class="stat-row">
+      <div class="stat"><span class="n tabular">$10,000</span><span class="l">Notional position size (margin × leverage)</span></div>
+      <div class="stat"><span class="n tabular">0.0909 BTC</span><span class="l">Contract exposure ($10,000 ÷ $110,000)</span></div>
+      <div class="stat"><span class="n tabular">≈10%</span><span class="l">Maintenance margin buffer before liquidation (varies by venue)</span></div>
+    </div>
+    <p style="margin-top:14px;">BTC rises <strong>5%</strong> to $115,500 → your $10,000 notional gains <strong>$500</strong>. Against your $1,000 margin, that's a <strong>+50% account return</strong> — the leverage cuts both ways. A 5% move <em>against</em> you erases half your margin; a ~10% adverse move at 10× leverage gets you close to liquidation, where the exchange force-closes the position before your losses exceed your posted margin.</p>
+  </div>
+
+  <h3 class="q" id="s1-2"><span class="q-mark">Q</span>Why has this become such a big deal, specifically now?</h3>
+  <p>Three forces converged in 2026:</p>
+  <ol class="plain">
+    <li><strong>Scale.</strong> On-chain perpetual exchanges alone processed roughly <strong>$423 billion in 30 days</strong> across the sector, and the category (on-chain + offshore centralized) is estimated to represent the majority of all crypto trading turnover. <sup>[1]</sup></li>
+    <li><strong>The US spent years locked out.</strong> Because the CFTC treats leveraged, margined, no-delivery crypto contracts as regulated derivatives, every major perp venue (Binance, Bybit, OKX, Hyperliquid) has geo-blocked US persons — pushing an enormous, liquid market entirely offshore, out of reach of US retail and out of the US tax and compliance net.</li>
+    <li><strong>That wall started coming down in 2026.</strong> A joint SEC/CFTC digital-asset taxonomy (March 17, 2026) gave the CFTC clear jurisdiction to license onshore perpetual-style products, and Kraken, Coinbase, and Kalshi all launched CFTC-regulated versions within months of each other. <sup>[2][3]</sup></li>
+  </ol>
+
+  <h3 class="q" id="s1-3"><span class="q-mark">Q</span>Can I actually trade crypto perps from the US?</h3>
+  <p><strong>Yes — but only on a short, specific list of CFTC-regulated US venues,</strong> not on the offshore platforms most crypto-native traders think of first.</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Venue</th><th>Status for US residents</th><th>What it actually is</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">Coinbase Financial Markets</td><td>✅ Live since Jul 2025</td><td>BTC &amp; ETH "perpetual-style" futures, up to 10× leverage, via a CFTC-registered exchange/FCM inside your normal Coinbase account. <sup>[4]</sup></td></tr>
+        <tr><td class="hi">Kraken Derivatives US</td><td>✅ Live 2026</td><td>True no-expiry perpetuals (BTC, ETH, SOL, XRP) via Bitnomial, a fully licensed US derivatives exchange Kraken's parent (Payward) acquired. <sup>[2]</sup></td></tr>
+        <tr><td class="hi">Kalshi (BTCPERP)</td><td>✅ Approved May 2026</td><td>A CFTC-approved "true" Bitcoin perpetual listed on a regulated exchange, via the prediction-market-turned-derivatives venue Kalshi. <sup>[5]</sup></td></tr>
+        <tr><td class="hi">CME Group</td><td>✅ (dated futures, not true perps)</td><td>The traditional, most institutional venue; moving to 24/7 trading of crypto futures/options starting 2026, but contracts still expire and roll. <sup>[3]</sup></td></tr>
+        <tr><td class="hi">Binance / Bybit / OKX / Hyperliquid</td><td>🚫 Blocked</td><td>Offshore platforms that geo-block US IP addresses for derivatives. Using a VPN to reach them breaches their terms of service, forfeits any consumer protection, and can create real legal and tax exposure for a US person.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout watch">
+    <h4>⚠ Live legal uncertainty</h4>
+    <p><strong>CME is actively suing to challenge the CFTC's approval</strong> of these onshore "true perpetual" products (Kraken's and Kalshi's, specifically). As of today, the products are legally live — but a court could still reshape what's allowed. Treat this as a fast-moving regulatory story, not settled law. <sup>[2][6]</sup></p>
+  </div>
+
+  <div class="sources">
+    <h4>Sources &amp; further reading — Section 1</h4>
+    <ol>
+      <li id="ref1">The Block — <a href="https://www.theblock.co/post/395728/hyperliquid-gains-centralized-exchanges-perps-market-share-nears-6" target="_blank" rel="noopener">"Hyperliquid gains ground on centralized exchanges as perps market share nears 6%"</a></li>
+      <li id="ref2">Kraken Blog — <a href="https://blog.kraken.com/product/kraken-derivatives/announcing-cftc-regulated-us-perps" target="_blank" rel="noopener">"Announcing CFTC-regulated perpetual futures for US Traders"</a></li>
+      <li id="ref3">TechTimes — <a href="https://www.techtimes.com/articles/326705/20260904/coinbase-files-domestic-stock-perps-under-security-futures-cme-suit-clouds-launch.htm" target="_blank" rel="noopener">"Coinbase Files for Domestic Stock Perps Under Security Futures: CME Suit Clouds Launch"</a></li>
+      <li id="ref4">CoinCentral — <a href="https://coincentral.com/kraken-launches-cftc-regulated-perpetual-futures-for-us-crypto-traders/" target="_blank" rel="noopener">"Kraken Launches CFTC-Regulated Perpetual Futures for US Crypto Traders"</a></li>
+      <li id="ref5">bex.co — <a href="https://bex.co/blog/2026/03/19/cftc-perpetual-futures-us-markets-200b-offshore-volume" target="_blank" rel="noopener">"The US Moves to Legalize Perpetual Futures: A Game-Changer for Crypto Markets"</a></li>
+      <li id="ref6">CryptoSlate — <a href="https://cryptoslate.com/america-is-importing-cryptos-perpetual-futures-liquidation-engine/" target="_blank" rel="noopener">"Multi-trillion-dollar offshore engine... arrives in America — and CME is suing to crush it"</a></li>
+    </ol>
+    <h4 style="margin-top:16px;">Analytics &amp; learning sites to bookmark</h4>
+    <div class="toollist">
+      <div class="toolcard"><div class="t">Coinglass.com</div><div class="d">Live funding rates, open interest, and liquidation heatmaps across every major perp venue.</div></div>
+      <div class="toolcard"><div class="t">DefiLlama /derivatives</div><div class="d">On-chain perp DEX volume and market-share rankings (Hyperliquid, Aster, GMX, dYdX...).</div></div>
+      <div class="toolcard"><div class="t">CFTC.gov</div><div class="d">The primary US regulator for derivatives — rule releases, orders, enforcement actions.</div></div>
+      <div class="toolcard"><div class="t">kraken.com/learn</div><div class="d">Plain-English explainers on futures mechanics, margin, and US compliance specifics.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 2 ================= -->
+<section class="section" id="s2">
+  <div class="section-head"><span class="idx">02</span><h2>Hyperliquid</h2></div>
+  <p class="section-dek">The single platform most responsible for turning "perpetuals" from a crypto-native niche into a mainstream financial story in 2026.</p>
+
+  <h3 class="q" id="s2-1"><span class="q-mark">Q</span>What is Hyperliquid?</h3>
+  <p>Hyperliquid is its own purpose-built Layer-1 blockchain, designed from scratch to run a <strong>fully on-chain order book</strong> — the same style of matching engine a stock exchange or Binance uses — instead of the slower automated-market-maker pools most DeFi exchanges rely on. It has two halves:</p>
+  <ul class="plain">
+    <li><strong>HyperCore</strong> — the trading engine itself: the order book, matching, margining, and liquidation logic, running on-chain at speeds that feel like a centralized exchange.</li>
+    <li><strong>HyperEVM</strong> — a fully Solidity-compatible smart-contract layer sitting next to HyperCore, byte-compatible with the Ethereum Virtual Machine, so <strong>your existing Hardhat/Foundry toolchain works on it unmodified</strong>. Contracts here can read and act on live HyperCore data — balances, positions, oracle prices, vault state.</li>
+  </ul>
+  <p>It's non-custodial (you connect a wallet, no account or KYC to trade), lists 100+ perpetual markets, and — notably for your roadmap — has begun listing non-crypto instruments too (its HIP-3 framework let a builder list 24/7 oil perpetuals, for example).</p>
+
+  <h3 class="q" id="s2-2"><span class="q-mark">Q</span>When was the HYPE token listed on Robinhood and Coinbase?</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Event</th><th>Date</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">HYPE genesis / TGE</td><td class="tabular">Nov 29, 2024</td><td>Hyperliquid's own "genesis event" — 310M HYPE (31% of the 1B fixed supply) airdropped to ~90,000+ points-eligible early users. No public sale. <sup>[7]</sup></td></tr>
+        <tr><td class="hi">Robinhood</td><td>Sometime in 2025 <em>(exact date not precisely documented in available sources)</em></td><td>HYPE became one of 45+ crypto assets tradable on Robinhood Crypto during 2025. <sup>[8]</sup></td></tr>
+        <tr><td class="hi">Robinhood — HYPE prediction markets</td><td class="tabular">Sep 5–6, 2026</td><td>Separately, Robinhood listed short-dated <em>prediction markets</em> on the HYPE price — a different product from spot trading. <sup>[9]</sup></td></tr>
+        <tr><td class="hi">Coinbase</td><td class="tabular">Jan 29, 2026</td><td>Coinbase added HYPE to its public <em>listing roadmap</em> (its formal "we intend to list this" signal). As of this writing (Sep 13, 2026), full spot trading on Coinbase's main exchange had <strong>not</strong> yet gone live — Coinbase's own commentary flags HYPE's DeFi/futures-linked design as the likely reason for the delay. <sup>[10][11]</sup></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout watch">
+    <h4>⚠ Check before you assume</h4>
+    <p>Listing status changes fast. Before trading HYPE on Coinbase, confirm it has actually moved from "roadmap" to "tradable" on <a href="https://www.coinbase.com/price/hype-token-vip" target="_blank" rel="noopener">Coinbase's own asset page</a> — as of research for this document it was still an informational listing, not a live order book.</p>
+  </div>
+
+  <h3 class="q" id="s2-3"><span class="q-mark">Q</span>Why is Hyperliquid such a big deal?</h3>
+  <div class="stat-row">
+    <div class="stat"><span class="n tabular">58%</span><span class="l">share of ALL on-chain perp DEX volume (of $423B in a trailing 30 days)</span></div>
+    <div class="stat"><span class="n tabular">6.2%</span><span class="l">share of the GLOBAL perp market — CEXs included — up from 4% at the start of 2026</span></div>
+    <div class="stat"><span class="n tabular">70%</span><span class="l">share of the decentralized perp market specifically</span></div>
+    <div class="stat"><span class="n tabular">$8.97B</span><span class="l">open interest outstanding</span></div>
+    <div class="stat"><span class="n tabular">274,000</span><span class="l">monthly active traders</span></div>
+    <div class="stat"><span class="n tabular">$1B+</span><span class="l">cumulative protocol revenue, crossed mid-2026</span></div>
+  </div>
+  <p style="margin-top:18px;">Numbers aside, the structural reason it matters: Hyperliquid proved a fully on-chain order book can match the speed and feel of a centralized exchange like Binance, while remaining transparent, non-custodial, and community-owned (trading fees flow back to buy and distribute HYPE). That combination is why it's now the dominant venue for exactly the trillion-dollar-a-year trade that US regulation had, until 2026, pushed entirely offshore. <sup>[1][12]</sup></p>
+
+  <figure>
+    <svg viewBox="0 0 700 190" role="img" aria-label="Hyperliquid market share bar chart">
+      <text x="10" y="20" style="font:600 11px var(--mono); fill:var(--ink-soft);">SHARE OF MARKET, BY SEGMENT</text>
+      <text x="140" y="55" style="font:500 12px var(--body); fill:var(--ink-soft);">On-chain perp DEX volume</text>
+      <rect x="140" y="62" width="464" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="140" y="62" width="269" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="416" y="77" style="font:600 12px var(--mono); fill:var(--accent-strong)">58%</text>
+
+      <text x="140" y="105" style="font:500 12px var(--body); fill:var(--ink-soft);">Decentralized perp market</text>
+      <rect x="140" y="112" width="464" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="140" y="112" width="325" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="472" y="127" style="font:600 12px var(--mono); fill:var(--accent-strong)">70%</text>
+
+      <text x="140" y="150" style="font:500 12px var(--body); fill:var(--ink-soft);">Global perp market (incl. CEXs)</text>
+      <rect x="140" y="157" width="464" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="140" y="157" width="29" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="176" y="172" style="font:600 12px var(--mono); fill:var(--accent-strong)">6.2%</text>
+    </svg>
+    <figcaption>Fig. 2 — Hyperliquid's share by market segment, 2026</figcaption>
+  </figure>
+
+  <h3 class="q" id="s2-4"><span class="q-mark">Q</span>When will Hyperliquid come onshore in the US?</h3>
+  <p><strong>No firm date exists yet.</strong> Here's the timeline of what's actually happened:</p>
+
+  <figure>
+    <svg viewBox="0 0 700 150" role="img" aria-label="Hyperliquid onshore timeline">
+      <line x1="30" y1="75" x2="670" y2="75" style="stroke:var(--border); stroke-width:2"/>
+      <circle cx="60" cy="75" r="6" style="fill:var(--accent)"/>
+      <text x="60" y="55" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--ink-soft)">MAR 17</text>
+      <text x="60" y="100" text-anchor="middle" style="font:400 11px var(--body); fill:var(--ink)">SEC+CFTC digital-<tspan x="60" dy="13">asset taxonomy</tspan></text>
+
+      <circle cx="270" cy="75" r="6" style="fill:var(--accent)"/>
+      <text x="270" y="55" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--ink-soft)">AUG 19</text>
+      <text x="270" y="100" text-anchor="middle" style="font:400 11px var(--body); fill:var(--ink)">Trump: CFTC "working<tspan x="270" dy="13">to bring HL to the US"</tspan></text>
+
+      <circle cx="480" cy="75" r="6" style="fill:var(--accent)"/>
+      <text x="480" y="55" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--ink-soft)">SEP 9</text>
+      <text x="480" y="100" text-anchor="middle" style="font:400 11px var(--body); fill:var(--ink)">HL Policy Center backs<tspan x="480" dy="13">CFTC vs. CME lawsuit</tspan></text>
+
+      <circle cx="640" cy="75" r="7" style="fill:var(--paper-raised); stroke:var(--amber); stroke-width:2.5"/>
+      <text x="640" y="55" text-anchor="middle" style="font:700 11px var(--mono); fill:var(--amber)">TODAY</text>
+      <text x="640" y="100" text-anchor="middle" style="font:600 11px var(--body); fill:var(--amber)">Still IP-blocked<tspan x="640" dy="13">for US traders</tspan></text>
+    </svg>
+    <figcaption>Fig. 3 — Path to "onshore," as of September 13, 2026</figcaption>
+  </figure>
+
+  <ul class="plain">
+    <li><strong>Aug 19, 2026:</strong> President Trump said CFTC Chair Mike Selig was working to bring Hyperliquid into the US "in a fully compliant fashion." HYPE jumped 11% on the headline. <sup>[13]</sup></li>
+    <li><strong>Reported path:</strong> Hyperliquid Labs is said to be negotiating with Payward (Kraken's parent) — the same company whose Bitnomial acquisition is what let <em>Kraken itself</em> legally offer onshore perpetuals. That's the likely template: license through an existing CFTC-registered US entity rather than Hyperliquid becoming its own US exchange overnight. <sup>[14]</sup></li>
+    <li><strong>Sep 9, 2026:</strong> The Hyperliquid Policy Center filed in support of the CFTC's position in CME's lawsuit, actively lobbying to keep the current onshore-perpetuals framework intact. <sup>[15]</sup></li>
+    <li><strong>Right now:</strong> hyperliquid.xyz still blocks US IP addresses. Nothing about actual US market access has changed yet — this is a live negotiation, not a done deal.</li>
+  </ul>
+
+  <h3 class="q" id="s2-5"><span class="q-mark">Q</span>How can a blockchain + AI development team participate today?</h3>
+  <p>Split this into two lanes, because they carry very different compliance profiles for a US-based team:</p>
+
+  <div class="callout example">
+    <h4>Lane A — Build (open to a US team right now)</h4>
+    <ol class="plain">
+      <li><strong>Ship a HyperEVM dApp.</strong> Your Hardhat + Solidity stack works unmodified. There are 100+ dApps live and the ecosystem (lending, liquid staking, options AMMs, structured vaults) is still genuinely early — a real edge for a team that already knows this tooling. <sup>[16]</sup></li>
+      <li><strong>Deploy a HIP-3 builder-perpetual market.</strong> Stake enough HYPE and you can launch your <em>own</em> permissionless perp market on Hyperliquid's infrastructure — choosing the asset, oracle, and margin rules yourself, and keeping a cut of the fees. This is directly relevant to your stated goal of trading <strong>commodities, indices, and pre-IPO assets</strong>: HIP-3 is exactly the mechanism that let a builder list an oil perpetual — the same pattern extends to indices or synthetic pre-IPO exposure. <sup>[17]</sup></li>
+      <li><strong>Integrate via builder codes.</strong> Route order flow from your own front-end or bot through Hyperliquid's API and earn a fee-share, without operating your own matching engine.</li>
+      <li><strong>Build the AI layer.</strong> Hyperliquid's WebSocket/REST API is built for algorithmic access — a natural fit for your LLM background: signal-generation agents, risk-monitoring bots, or an LLM-driven strategy engine that executes through a HyperEVM smart contract.</li>
+      <li><strong>Run a validator.</strong> Stake HYPE to help secure HyperBFT consensus — pure infrastructure participation, not trading.</li>
+    </ol>
+  </div>
+
+  <div class="callout watch">
+    <h4>Lane B — Trade (currently blocked for US persons)</h4>
+    <p>Building contracts, running a validator, or writing bots against the API is infrastructure work and is a different activity from <em>trading as a US person on Hyperliquid's markets</em>, which the platform itself still geo-restricts. Don't conflate the two — and don't route US trading through a VPN to bypass that block; wait for the onshore path in Fig. 3 to actually land.</p>
+  </div>
+
+  <div class="sources">
+    <h4>Sources &amp; further reading — Section 2</h4>
+    <ol>
+      <li id="ref7">The Block — <a href="https://www.theblock.co/post/328631/hyperliquid-plans-to-launch-hype-token-in-nov-29-genesis-event" target="_blank" rel="noopener">"Hyperliquid plans to launch HYPE token in Nov. 29 'genesis event'"</a></li>
+      <li id="ref8">Robinhood Newsroom — <a href="https://robinhood.com/us/en/newsroom/this-year-in-crypto-2025/" target="_blank" rel="noopener">"This Year in Crypto: 2025"</a></li>
+      <li id="ref9">Prediction News — <a href="https://predictionnews.com/story/robinhood-lists-live-prediction-market-for-hype-token-price-on-sep-5-2026" target="_blank" rel="noopener">"Robinhood lists back-to-back HYPE token prediction markets"</a></li>
+      <li id="ref10">KuCoin News — <a href="https://www.kucoin.com/news/flash/coinbase-adds-hyperliquid-hype-to-listing-roadmap" target="_blank" rel="noopener">"Coinbase Adds Hyperliquid (HYPE) to Listing Roadmap"</a></li>
+      <li id="ref11">Coinbase — <a href="https://www.coinbase.com/price/hype-token-vip" target="_blank" rel="noopener">HYPE asset page (check live status here)</a></li>
+      <li id="ref12">VanEck — <a href="https://www.vaneck.com/pl/en/blog/digital-assets/exploring-hyperliquid-redefining-derivatives-trading/" target="_blank" rel="noopener">"Exploring Hyperliquid: Redefining Derivatives Trading"</a></li>
+      <li id="ref13">CoinDesk — <a href="https://www.coindesk.com/markets/2026/08/19/hype-jumps-11-as-trump-says-cftc-is-working-to-bring-hyperliquid-to-u-s" target="_blank" rel="noopener">"HYPE jumps 11% as Trump says CFTC is working to bring Hyperliquid to U.S."</a></li>
+      <li id="ref14">Fintelegram — <a href="https://fintelegram.com/the-perpetual-futures-war-hyperliquid-pushes-sec-and-cftc-to-bring-cryptos-biggest-offshore-product-onshore/" target="_blank" rel="noopener">"The Perpetual Futures War: Hyperliquid Pushes SEC &amp; CFTC"</a></li>
+      <li id="ref15">The Block — <a href="https://www.theblock.co/news/regulation/2026-09-09-hyperliquid-policy-center-backs-cftc-fight-perpetual-futures-asks-court-drop-cme-case-414046" target="_blank" rel="noopener">"Hyperliquid Policy Center backs CFTC in fight over perpetual futures"</a></li>
+      <li id="ref16">QuillAudits — <a href="https://www.quillaudits.com/blog/blockchain/guide-to-hyperevm" target="_blank" rel="noopener">"A Guide to HyperEVM and Its Growing Ecosystem"</a></li>
+      <li id="ref17">Hyperliquid Wiki — <a href="https://hyperliquid-co.gitbook.io/wiki/guide/builder-guide" target="_blank" rel="noopener">"Builder Guide"</a> &amp; <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips" target="_blank" rel="noopener">HIP proposals docs</a></li>
+    </ol>
+    <h4 style="margin-top:16px;">Analytics &amp; learning sites to bookmark</h4>
+    <div class="toollist">
+      <div class="toolcard"><div class="t">hypurrscan.io</div><div class="d">Community-built on-chain explorer and analytics for Hyperliquid activity.</div></div>
+      <div class="toolcard"><div class="t">app.hyperliquid.xyz/stats</div><div class="d">Native protocol stats: volume, OI, and fee dashboards.</div></div>
+      <div class="toolcard"><div class="t">Hyperliquid Docs (GitBook)</div><div class="d">API reference, HIP proposals, and the HyperEVM developer guide.</div></div>
+      <div class="toolcard"><div class="t">DefiLlama /perps</div><div class="d">Cross-exchange volume and market-share leaderboard, updated daily.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 3 ================= -->
+<section class="section" id="s3">
+  <div class="section-head"><span class="idx">03</span><h2>Trading, step by step</h2></div>
+  <p class="section-dek">A concrete, compliant path for a US resident and citizen — which venue to use, exactly how to place the first trade, and the risk and legal items to keep on a permanent watchlist.</p>
+
+  <h3 class="q" id="s3-1"><span class="q-mark">Q</span>Which venue should I choose — Coinbase, Kraken, or CME?</h3>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th>Coinbase Financial Markets</th><th>Kraken Derivatives US</th><th>CME Group</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Contract type</strong></td><td>"Perpetual-style" nano futures (5-yr dated wrapper)</td><td>True no-expiry perpetuals</td><td>Standard dated futures &amp; options</td></tr>
+        <tr><td><strong>Assets today</strong></td><td>BTC, ETH</td><td>BTC, ETH, SOL, XRP</td><td>BTC, ETH, SOL, XRP + full commodities/equity-index suite</td></tr>
+        <tr><td><strong>Max leverage</strong></td><td>Up to 10×</td><td>Varies by asset (not fully published)</td><td>Set by exchange margin schedule, typically lower</td></tr>
+        <tr><td><strong>Account setup</strong></td><td>Inside your existing Coinbase account</td><td>Inside your existing Kraken account, via Bitnomial</td><td>Requires a futures broker (FCM); higher minimums</td></tr>
+        <tr><td><strong>24/7 trading</strong></td><td>Yes</td><td>Yes</td><td>Moving to 24/7 starting 2026</td></tr>
+        <tr><td><strong>Best for</strong></td><td>Simplicity, staying in one app you already use</td><td>Broadest true-perp crypto coverage, existing Kraken users</td><td>Largest size, deepest institutional liquidity, non-crypto assets</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Practical recommendation for your roadmap:</strong> since you already hold both Coinbase and Kraken accounts, start with <strong>Kraken Derivatives US</strong> for true perpetual mechanics (it's the closest onshore analog to what you'd experience on Hyperliquid), keep <strong>Coinbase Financial Markets</strong> as your simpler day-to-day sleeve, and open a relationship with a <strong>CME-cleared broker</strong> once you're ready to add commodities and equity-index futures — that's the only regulated venue on this list that already covers those asset classes. Watch Coinbase's pending SEC filing for single-stock perpetuals (filed Sep 1, 2026) — if approved, it's the most direct path to your "equities" leg inside a platform you already use. <sup>[18]</sup></p>
+
+  <h3 class="q" id="s3-2"><span class="q-mark">Q</span>What are the actual steps to place a trade?</h3>
+  <ol class="stepline">
+    <li><span class="st">Confirm eligibility &amp; complete derivatives onboarding</span><p>Your existing spot KYC does not automatically cover derivatives. Kraken and Coinbase each require a separate derivatives agreement, risk disclosures, and sometimes a suitability questionnaire before the perp account activates.</p></li>
+    <li><span class="st">Fund the derivatives sub-account</span><p>Transfer USD (or approved collateral) from spot into the specific derivatives wallet — margin usually cannot be pulled automatically from your spot balance mid-trade.</p></li>
+    <li><span class="st">Read the actual contract spec before the marketing name</span><p>Check tick size, contract size, the exact index/oracle the settlement price is drawn from, and — critically — whether it's a true perpetual or a dated "perpetual-style" wrapper (see the Section 3.1 table).</p></li>
+    <li><span class="st">Size the position and choose leverage</span><p>Decide direction (long/short), notional size, and leverage <em>before</em> looking at the order ticket — not while watching the price move.</p></li>
+    <li><span class="st">Set your exit before your entry</span><p>Place a stop-loss and take-profit, and calculate your liquidation price, before the order fills — not after.</p></li>
+    <li><span class="st">Submit the order</span><p>Market order for immediate fill, limit order to control your entry price. Confirm margin and maintenance-margin ratio on the position screen once it's open.</p></li>
+    <li><span class="st">Track funding payments</span><p>Perpetuals bill or credit funding every few hours (Fig. 1). On a small account, funding drag can matter as much as price movement over a multi-day hold.</p></li>
+    <li><span class="st">Close and reconcile</span><p>Exit with an opposite order or let your stop/target trigger, then reconcile realized P&amp;L — see the tax note below.</p></li>
+  </ol>
+
+  <div class="callout example">
+    <h4>Worked example — a regulated perp trade end to end</h4>
+    <p>You go <strong>long 1 BTC-equivalent notional</strong> at <span class="code">$110,000</span> using <strong>5× leverage</strong>.</p>
+    <div class="stat-row">
+      <div class="stat"><span class="n tabular">$22,000</span><span class="l">Margin required (notional ÷ leverage)</span></div>
+      <div class="stat"><span class="n tabular">+$5,500</span><span class="l">Unrealized gain if BTC rises 5% to $115,500</span></div>
+      <div class="stat"><span class="n tabular">+25%</span><span class="l">That gain as a return on your $22,000 margin</span></div>
+    </div>
+    <p style="margin-top:14px;">With a typical <strong>3% maintenance-margin</strong> requirement, your approximate liquidation price sits near <span class="code">$110,000 × (1 − 20% + 3%) ≈ $93,500</span> — roughly a 15% adverse move at 5× leverage. Funding, at a representative rate of <span class="code">0.01% per 8 hours</span> paid by longs when the perp trades above spot, would cost this position about <span class="code">$11</span> per 8-hour period ($10,000 notional-adjusted) — small per period, but it compounds on a position held for weeks.</p>
+  </div>
+
+  <h3 class="q" id="s3-3"><span class="q-mark">Q</span>What should stay on my permanent watchlist?</h3>
+
+  <div class="callout watch">
+    <h4>Market &amp; execution risk</h4>
+    <ul class="plain" style="margin-bottom:0;">
+      <li>Liquidation cascades in thin, off-peak liquidity — size down going into low-volume hours.</li>
+      <li>Funding-rate flips: a crowded trade can flip from paying you to costing you overnight.</li>
+      <li>A simple position-sizing floor: risk no more than 1–2% of account equity on any single trade, independent of how much leverage the venue allows.</li>
+    </ul>
+  </div>
+
+  <div class="callout watch">
+    <h4>Legal &amp; regulatory items to track</h4>
+    <ul class="plain" style="margin-bottom:0;">
+      <li><strong>CME v. CFTC litigation</strong> — still unresolved as of Sep 2026; a ruling could alter or unwind the current onshore-perpetual approvals for Kraken and Kalshi. <sup>[6]</sup></li>
+      <li><strong>Contract structure ≠ marketing name</strong> — Coinbase's product is a dated 5-year "nano" future marketed as "perpetual-style"; Kraken's (via Bitnomial) is a true no-expiry perpetual. Read the actual contract spec.</li>
+      <li><strong>Tax treatment</strong> — futures on a CFTC-regulated exchange are typically <strong>Section 1256 contracts</strong>: gains get 60% long-term / 40% short-term capital-gains treatment and are marked-to-market at year-end, regardless of how long you held them. That's a meaningfully different (often better) tax profile than spot crypto — confirm current-year treatment with a tax professional, since this hinges on the exchange's regulatory status.</li>
+      <li><strong>Offshore trading as a US person</strong> (e.g., via VPN to Hyperliquid or Binance) sits outside this protection entirely and carries its own reporting and legal risk — it is not a shortcut around the venues above.</li>
+      <li>Check <a href="https://www.cftc.gov" target="_blank" rel="noopener">cftc.gov</a> and <a href="https://www.nfa.futures.org" target="_blank" rel="noopener">nfa.futures.org</a> directly for the current rule status rather than relying on any single article, including this one.</li>
+    </ul>
+  </div>
+
+  <div class="sources">
+    <h4>Sources &amp; further reading — Section 3</h4>
+    <ol>
+      <li id="ref18">The Block — <a href="https://www.theblock.co/news/regulation/2026-09-03-coinbase-seeks-sec-greenlight-to-list-24-7-equity-perpetuals-413487" target="_blank" rel="noopener">"Coinbase seeks SEC greenlight to list 24/7 equity perpetuals"</a></li>
+      <li>Kraken Learn — <a href="https://www.kraken.com/learn/best-crypto-futures-trading-platforms" target="_blank" rel="noopener">"The best crypto futures trading platforms for 2026"</a></li>
+      <li>Kraken Learn — <a href="https://www.kraken.com/learn/kraken-vs-coinbase-futures" target="_blank" rel="noopener">"Kraken vs Coinbase Advanced for futures trading"</a></li>
+      <li>Kraken Support — <a href="https://support.kraken.com/articles/us-perpetual-futures" target="_blank" rel="noopener">"US Perpetual Futures"</a></li>
+      <li>The Defiant — <a href="https://thedefiant.io/news/cefi/kraken-coinbase-perps-onshore-us-derivatives-launch" target="_blank" rel="noopener">"Kraken and Coinbase Bring Perps Onshore as US Derivatives Markets Shift"</a></li>
+    </ol>
+    <h4 style="margin-top:16px;">Analytics &amp; learning sites to bookmark</h4>
+    <div class="toollist">
+      <div class="toolcard"><div class="t">CFTC.gov</div><div class="d">Official rules, orders, and enforcement — the source of record.</div></div>
+      <div class="toolcard"><div class="t">NFA.futures.org</div><div class="d">Self-regulatory body for US futures brokers — verify any FCM's registration here.</div></div>
+      <div class="toolcard"><div class="t">CMEGroup.com/education</div><div class="d">CME's own margin, contract-spec, and futures-mechanics courses.</div></div>
+      <div class="toolcard"><div class="t">TradingView</div><div class="d">Charting and funding-rate overlays across most regulated and offshore venues.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-quote">"Read the contract spec before the marketing name — that one habit prevents most of the expensive surprises in this market."</div>
+
+<footer class="end">
+  <p><strong>Educational reference only, current as of September 13, 2026.</strong> Perpetuals and other leveraged derivatives carry substantial risk of loss, including total loss of posted margin, and can result in losses exceeding your initial deposit on some products. Regulatory status (Section 1) and specific platform availability (Sections 2–3) are moving targets — verify directly with CFTC.gov, NFA.futures.org, and each venue before committing capital. Nothing here is investment, legal, or tax advice.</p>
+</footer>
+
+</main>
+</div>
+</body>
+</html>
