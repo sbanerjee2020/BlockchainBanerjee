@@ -332,10 +332,10 @@
   </ul>
   <div class="toc-divider newest">New in this edition</div>
   <ul>
-    <li><a class="sec-link newest" href="#s7"><span class="num">07</span>1inch</a>
+    <li><a class="sec-link newest" href="#s7"><span class="num">07</span>Injective</a>
       <ul>
-        <li><a class="sub-link" href="#s7-1">What is 1inch?</a></li>
-        <li><a class="sub-link" href="#s7-2">1inch &amp; RWA</a></li>
+        <li><a class="sub-link" href="#s7-1">What is Injective?</a></li>
+        <li><a class="sub-link" href="#s7-2">Injective in RWA-perps</a></li>
         <li><a class="sub-link" href="#s7-3">Similar projects</a></li>
         <li><a class="sub-link" href="#s7-4">Where to track them</a></li>
       </ul>
@@ -349,7 +349,7 @@
 <header class="masthead">
   <span class="kicker">A working reference for the roadmap ahead — RWA Edition</span>
   <h1>Perpetuals, Hyperliquid &amp; trading across every asset class</h1>
-  <p>You already speak fluent crypto, Solidity, and LLMs. This edition adds the deep technical layer: how HyperCore, HIP-3 and HIP-4 actually work, why they make Hyperliquid the leading candidate to host real-world-asset trading globally, how apps like trade[XYZ] are built on top of it, where to watch the live data — and now, a look at 1inch, the largest DeFi trade-routing layer, and what "RWA" looks like when there's no leverage involved.</p>
+  <p>You already speak fluent crypto, Solidity, and LLMs. This edition adds the deep technical layer: how HyperCore, HIP-3 and HIP-4 actually work, why they make Hyperliquid the leading candidate to host real-world-asset trading globally, how apps like trade[XYZ] are built on top of it, where to watch the live data — and now, how Injective's competing finance-native L1 stacks up on RWA perpetuals specifically.</p>
   <div class="who-for">
     <span>Written for: US resident / citizen</span>
     <span>Background: Solidity + Hardhat, Coinbase/Kraken/MetaMask</span>
@@ -363,7 +363,7 @@
   <strong>RWA architecture edition —</strong> Sections 04–06 (added previously): a technical deep dive on Hyperliquid's architecture and RWA thesis, a build guide modeled on trade[XYZ], and a list of live RWA-perp analytics dashboards. Built on <a href="https://a16zcrypto.com/posts/article/what-are-perpetual-futures/#the-market-opportunity-for-perps" target="_blank" rel="noopener">a16z crypto's perpetuals research</a> and <a href="https://www.coingecko.com/learn/hyperliquid-hip3-hip4-tokenized-stocks-and-prediction-markets" target="_blank" rel="noopener">CoinGecko's HIP-3/HIP-4 explainer</a>.
 </div>
 <div class="edition-note v3">
-  <strong>New —</strong> Section 07 covers <strong>1inch</strong>, the largest DEX-aggregation layer in DeFi, based on a <a href="https://cryptobriefing.com/1inch-800b-trades-defi-profitability/" target="_blank" rel="noopener">CryptoBriefing report on 1inch's $800B-volume profitability problem</a>. Unlike every other project in this document, 1inch runs no perpetuals and no leverage — it's included because its recent Ondo Finance integration is a genuinely different model for accessing real-world assets on-chain, and because the profitability question the article raises is worth asking about every protocol here.
+  <strong>New —</strong> Section 07 covers <strong>Injective</strong>, the strongest finance-native alternative to Hyperliquid's approach, based on <a href="https://www.coingecko.com/learn/injective-rwa-perpetuals-global-markets" target="_blank" rel="noopener">CoinGecko's "Injective RWA Perpetuals: From Crypto to Global Markets"</a> — its architecture, its RWA-perpetual product, comparable projects, and where to track it.
 </div>
 
 <!-- ================= SECTION 1 ================= -->
@@ -478,7 +478,7 @@
     <li><strong>HyperCore</strong> — the trading engine itself: the order book, matching, margining, and liquidation logic, running on-chain at speeds that feel like a centralized exchange.</li>
     <li><strong>HyperEVM</strong> — a fully Solidity-compatible smart-contract layer sitting next to HyperCore, byte-compatible with the Ethereum Virtual Machine, so <strong>your existing Hardhat/Foundry toolchain works on it unmodified</strong>. Contracts here can read and act on live HyperCore data — balances, positions, oracle prices, vault state.</li>
   </ul>
-  <p>It's non-custodial (you connect a wallet, no account or KYC to trade), lists 100+ perpetual markets, and — notably for your roadmap — has begun listing non-crypto instruments too (its HIP-3 framework let a builder list 24/7 oil perpetuals, for example). Section 4 goes deep on exactly how this works under the hood; Section 7 looks at a very different kind of "RWA" story — 1inch's spot-aggregated access to tokenized assets, with no leverage at all.</p>
+  <p>It's non-custodial (you connect a wallet, no account or KYC to trade), lists 100+ perpetual markets, and — notably for your roadmap — has begun listing non-crypto instruments too (its HIP-3 framework let a builder list 24/7 oil perpetuals, for example). Section 4 goes deep on exactly how this works under the hood, and Section 7 compares it directly to Injective, the strongest finance-native alternative architecture.</p>
 
   <h3 class="q" id="s2-2"><span class="q-mark">Q</span>When was the HYPE token listed on Robinhood and Coinbase?</h3>
   <div class="tablewrap">
@@ -781,7 +781,7 @@
     </ol>
   </div>
 
-  <p>The traction is already real, not theoretical: RWA instruments (equities, commodities, indices) made up as much as <strong>44% of Hyperliquid's own trading volume</strong>, and 23 of Hyperliquid's top 30 trading pairs are now tokenized stocks or commodities rather than crypto-native assets. <sup>[23][25]</sup> Section 7 looks at a completely different route into "RWA on-chain" — 1inch's spot aggregation of tokenized Treasuries and stocks — as a useful contrast to the leveraged model covered here.</p>
+  <p>The traction is already real, not theoretical: RWA instruments (equities, commodities, indices) made up as much as <strong>44% of Hyperliquid's own trading volume</strong>, and 23 of Hyperliquid's top 30 trading pairs are now tokenized stocks or commodities rather than crypto-native assets. <sup>[23][25]</sup> Section 7 puts this claim to the test against Injective, the strongest competing architecture.</p>
 
   <div class="sources">
     <h4>Sources &amp; further reading — Section 4</h4>
@@ -917,13 +917,13 @@
     <div class="acard">
       <span class="kind live">Dune</span>
       <div class="name">Community query (supplied reference)</div>
-      <div class="desc">The specific Dune query provided for the previous edition — open it directly on Dune for its current chart and underlying SQL, since embedded query results change live and aren't reproduced here.</div>
+      <div class="desc">The specific Dune query provided for an earlier edition — open it directly on Dune for its current chart and underlying SQL, since embedded query results change live and aren't reproduced here.</div>
       <a href="https://dune.com/queries/6280948/10007199" target="_blank" rel="noopener">dune.com/queries/6280948 →</a>
     </div>
     <div class="acard">
       <span class="kind agg">Dataset</span>
       <div class="name">Dune RWA Dataset</div>
-      <div class="desc">Dune's dedicated real-world-asset dataset (launched Aug 31, 2026), tracking tokenized and synthetic RWA supply, holders, secondary trading, perpetuals, and collateral use across chains. <sup>[30]</sup></div>
+      <div class="desc">Dune's dedicated real-world-asset dataset (launched Aug 31, 2026), tracking tokenized and synthetic RWA supply, holders, secondary trading, perpetuals, and collateral use across chains — not Hyperliquid-only, but includes it. <sup>[30]</sup></div>
       <a href="https://dune.com/blog" target="_blank" rel="noopener">dune.com/blog →</a>
     </div>
     <div class="acard">
@@ -935,7 +935,7 @@
     <div class="acard">
       <span class="kind agg">Aggregator</span>
       <div class="name">DefiLlama — Derivatives</div>
-      <div class="desc">Cross-platform perp-volume leaderboard placing Hyperliquid's RWA-inclusive volume next to every other on-chain perp DEX.</div>
+      <div class="desc">Cross-platform perp-volume leaderboard placing Hyperliquid's RWA-inclusive volume next to every other on-chain perp DEX, Injective included.</div>
       <a href="https://defillama.com/derivatives" target="_blank" rel="noopener">defillama.com/derivatives →</a>
     </div>
     <div class="acard">
@@ -954,7 +954,7 @@
   <div class="sources">
     <h4>Sources &amp; further reading — Section 6</h4>
     <ol>
-      <li class="primary" id="ref-dune">Dune Analytics — <a href="https://dune.com/queries/6280948/10007199" target="_blank" rel="noopener">community query</a> <span style="color:var(--ink-soft); font-weight:400;">(reference supplied for the previous edition)</span></li>
+      <li class="primary" id="ref-dune">Dune Analytics — <a href="https://dune.com/queries/6280948/10007199" target="_blank" rel="noopener">community query</a> <span style="color:var(--ink-soft); font-weight:400;">(reference supplied for an earlier edition)</span></li>
       <li id="ref30">GlobeNewswire — <a href="https://www.globenewswire.com/news-release/2026/08/31/3353276/0/en/dune-launches-rwa-dataset-to-make-the-tokenized-asset-market-observable-after-issuance.html" target="_blank" rel="noopener">"Dune Launches RWA Dataset to Make the Tokenized Asset Market Observable"</a></li>
       <li>QuickNode — <a href="https://www.quicknode.com/builders-guide/tools/hyperliquid-dashboard-by-dune" target="_blank" rel="noopener">"Hyperliquid Dashboard by Dune"</a></li>
       <li>Dune Docs — <a href="https://docs.dune.com/data-catalog/community/hyperliquid/overview" target="_blank" rel="noopener">"Hyperliquid data" catalog overview</a></li>
@@ -962,106 +962,113 @@
   </div>
 </section>
 
-<!-- ================= SECTION 7 (NEW — 1inch) ================= -->
+<!-- ================= SECTION 7 (Injective) ================= -->
 <section class="section newest" id="s7">
-  <div class="section-head newest"><span class="idx">07</span><h2>1inch</h2></div>
-  <p class="section-dek">A very different kind of project from everything else in this document: no perpetuals, no leverage, no order book of its own — just the largest trade-routing layer in DeFi, and a live case study in whether volume alone makes a business.</p>
+  <div class="section-head newest"><span class="idx">07</span><h2>Injective</h2></div>
+  <p class="section-dek">The strongest finance-native competitor to Hyperliquid's approach — a Layer-1 built around an on-chain order book from day one, with its own take on RWA perpetuals.</p>
 
-  <h3 class="q" id="s7-1"><span class="q-mark">Q</span>What is 1inch?</h3>
-  <p><strong>1inch is a DEX aggregator and intent-routing layer — it holds no liquidity and runs no order book of its own.</strong> Instead, its <strong>Pathfinder</strong> engine scans the entire on-chain liquidity graph — more than 350 individual liquidity sources (Uniswap, Curve, Balancer, and dozens more) across 13+ blockchains — and splits a single trade across multiple venues and intermediate tokens to find a better net price than any one DEX could offer alone. Founded in 2019 (originally a hackathon project by Sergej Kunz and Anton Bukov), it's now governed by the 1inch DAO, with the <strong>1INCH</strong> token used for governance and as resolver collateral. <sup>[31][32]</sup></p>
+  <h3 class="q" id="s7-1"><span class="q-mark">Q</span>What is Injective?</h3>
+  <p><strong>Injective is a Layer-1 blockchain built on the Cosmos SDK, purpose-built for finance rather than general-purpose smart contracts.</strong> Where Hyperliquid is "an exchange with an L1 wrapped around it," Injective is closer to the inverse: a general-purpose finance L1 that ships a fully decentralized order book as a first-class, chain-level module rather than a smart contract sitting on top. <sup>[31][32]</sup></p>
 
   <div class="stat-row">
-    <div class="stat teal2"><span class="n tabular">350+</span><span class="l">Liquidity sources scanned by Pathfinder across 13+ chains</span></div>
-    <div class="stat teal2"><span class="n tabular">$0 gas</span><span class="l">On Fusion mode — resolvers fill your signed intent instead of you paying gas</span></div>
-    <div class="stat teal2"><span class="n tabular">No bridge</span><span class="l">Fusion+ lets you swap, e.g., ETH on Ethereum for SOL on Solana with one signature</span></div>
+    <div class="stat teal2"><span class="n tabular">650ms</span><span class="l">Block time, with instant finality</span></div>
+    <div class="stat teal2"><span class="n tabular">25,000 TPS</span><span class="l">Sustained throughput</span></div>
+    <div class="stat teal2"><span class="n tabular">~$0.0003</span><span class="l">Typical transaction fee</span></div>
+    <div class="stat teal2"><span class="n tabular">100M INJ</span><span class="l">Fixed maximum token supply — deflationary from there</span></div>
   </div>
 
-  <p style="margin-top:16px;">Three execution modes matter:</p>
+  <p style="margin-top:16px;">Three design choices define it:</p>
   <ul class="plain">
-    <li><strong>Classic</strong> — on-chain aggregation via Pathfinder; you pay gas, the router finds the best split.</li>
-    <li><strong>Fusion</strong> — intent-based: you sign what you want, professional "resolvers" compete to fill it, you pay no gas, and MEV bots can't sandwich your order. Resolvers earn a small spread (a few basis points) baked into your quoted price.</li>
-    <li><strong>Fusion+</strong> — extends the same resolver model cross-chain, replacing bridges with a single signed intent.</li>
+    <li><strong>A native on-chain order book, not an AMM.</strong> Injective's <span class="code">Exchange module</span> handles order matching, spot, and derivatives directly at the chain level, using batch auctions to settle orders — a mechanism specifically meant to neutralize the front-running/MEV that plagues sequential, mempool-based matching. <sup>[31]</sup></li>
+    <li><strong>Chain-level shared infrastructure.</strong> Per CoinGecko's own framing, oracle pricing, orderbook management, matching, margin calculations, liquidation, and even the insurance fund all run as shared network services rather than something every application has to rebuild — so a new market or app plugs into the same canonical infrastructure instead of fragmenting liquidity across siloed venues. <sup>[36]</sup></li>
+    <li><strong>MultiVM, one shared liquidity layer.</strong> Injective's original environment is CosmWasm (WASM); an EVM mainnet — letting your existing Solidity/Hardhat stack deploy directly — launched <strong>November 11, 2025</strong>; an SVM (Solana-program) track has also been announced. All settle against the same native USDC and the same canonical order books, rather than fragmenting across bridges. <sup>[33]</sup></li>
   </ul>
+  <p><strong>Tokenomics:</strong> INJ has a fixed 100M max supply and a weekly <strong>Burn Auction</strong> — a basket of protocol fees collected across the ecosystem is auctioned off, and the winning bid (paid in INJ) is destroyed permanently, directly linking real usage to token scarcity. On the regulatory side, <strong>INJ itself began trading as a CFTC-regulated future via Bitnomial on April 15, 2026</strong> — the same "license through an existing US derivatives entity" pattern behind Kraken's onshore crypto perps in Section 1. <sup>[34][31]</sup></p>
 
-  <div class="callout caution">
-    <h4>The profitability paradox — what the referenced article is actually about</h4>
-    <p>The <a href="https://cryptobriefing.com/1inch-800b-trades-defi-profitability/" target="_blank" rel="noopener">CryptoBriefing report</a> supplied for this edition lays out a striking gap between scale and business health. Since its 2019 launch, 1inch has routed roughly <strong>$814 billion</strong> in cumulative volume — <strong>$214 billion in 2025 alone</strong> (+39% YoY, across 114 million transactions). And yet co-founder Sergej Kunz says the business still isn't profitable, for a structural reason: <strong>as an aggregator, 1inch's own fees have to stay at or below the fees of the DEXs it routes through</strong> — charge more, and users (or the wallets embedding 1inch) simply route around it. The 1INCH token trades roughly <strong>99% below its 2021 all-time high</strong>, with a market cap of only <strong>$100–130 million</strong> despite that volume. <sup>[33]</sup></p>
-    <p>The lesson generalizes well beyond 1inch: <strong>routing enormous volume is not the same as capturing durable value.</strong> Compare this to Hyperliquid's fee-buyback model or a HIP-3 deployer's 50% fee share (Section 4) — both are designed specifically to capture value at the base matching/settlement layer, rather than as a thin routing layer sitting on top of someone else's liquidity, which is exactly the trap 1inch's numbers illustrate.</p>
-  </div>
+  <h3 class="q" id="s7-2"><span class="q-mark">Q</span>What does Injective do in RWA-perps specifically?</h3>
+  <p>Injective's RWA product is built on its <strong>iAssets framework</strong> — described by CoinGecko as "programmable primitives built for position-based exposure and cross-market composability." The point is architectural: iAssets let applications route orders, monitor margin, automate strategies, and combine exposures <em>without requiring the underlying stock, commodity, or currency to be wrapped, custodied, or pre-funded on the network</em> — exposure through position, not through holding a tokenized copy of the asset. <sup>[36]</sup></p>
 
-  <h3 class="q" id="s7-2"><span class="q-mark">Q</span>What does 1inch actually do in RWA — and why not perps?</h3>
-  <p><strong>1inch has no native perpetual-futures product and offers no leverage anywhere in its stack</strong> — worth stating plainly, since every other project in this document is a perp venue. Its RWA story is a spot-swap story instead: in <strong>September 2025</strong>, 1inch partnered with <strong>Ondo Finance</strong> — one of the largest RWA platforms in crypto, known for tokenized US Treasury products like <strong>OUSG</strong> and <strong>USDY</strong> — to route access to tokenized real-world assets through 1inch's own Swap API. <sup>[34]</sup></p>
-  <ul class="plain">
-    <li><strong>What it solves:</strong> the integration targets RWA's biggest adoption blocker — fragmented liquidity — by letting any wallet or dApp embedding 1inch's API offer tokenized-Treasury or tokenized-stock swaps with the same aggregated best-execution routing as any other token swap. Bitget and Trust Wallet are among the API partners already live with it. <sup>[34]</sup></li>
-    <li><strong>How it executes:</strong> RWA swaps route through the same resolver network as Fusion — professional market makers filling signed intents — not a perpetual order book, so there's no funding rate, no liquidation, and no leverage. You end up holding the actual tokenized instrument (or a claim on it), at spot, not a synthetic derivative position.</li>
-    <li><strong>Scale:</strong> tokenized stock and ETF volume routed through the Ondo integration passed <strong>$2.5 billion</strong> cumulatively within its first months live; the CryptoBriefing article's slightly later figure of <strong>$3 billion in cumulative tokenized volume by March 2026</strong> reflects the same growth a bit further along. <sup>[33][34]</sup></li>
-  </ul>
-
-  <div class="callout watch">
-    <h4>How this differs from every other RWA product in this document</h4>
-    <p>Sections 2–6 are about <em>leveraged, synthetic</em> RWA exposure — perpetual contracts on Hyperliquid that track a stock or commodity's price without ever touching the real asset. 1inch's RWA integration is the opposite: <em>unleveraged, aggregated access to the actual tokenized instrument</em> at the best available spot price. If your roadmap calls for leveraged directional or hedged exposure, 1inch is not the venue. If it calls for efficiently swapping into a tokenized Treasury or equity product at good execution, this is a legitimate — and very different — way to do it.</p>
-  </div>
-
-  <h3 class="q" id="s7-3"><span class="q-mark">Q</span>What are other similar projects?</h3>
   <div class="tablewrap">
     <table>
-      <thead><tr><th>Aggregator</th><th>Chain focus</th><th>Known for</th></tr></thead>
+      <thead><tr><th>Milestone / metric</th><th>Detail</th></tr></thead>
       <tbody>
-        <tr><td class="hi t">1inch</td><td>13+ EVM chains</td><td>Largest EVM aggregator by volume (~59% of Ethereum aggregator volume, mid-2025); Pathfinder + Fusion/Fusion+; the only one with a dedicated RWA (Ondo) integration confirmed here.</td></tr>
-        <tr><td class="hi">ParaSwap</td><td>EVM chains</td><td>Second-largest EVM aggregator; popular as an embedded swap engine for wallets and dApps.</td></tr>
-        <tr><td class="hi">Matcha (0x)</td><td>EVM chains</td><td>Combines on-chain AMM routing with off-chain RFQ quotes from professional market makers.</td></tr>
-        <tr><td class="hi">CowSwap</td><td>EVM chains</td><td>Batch auctions specifically designed for MEV protection.</td></tr>
-        <tr><td class="hi">Odos</td><td>EVM chains</td><td>Multi-input, multi-output routing — swap a whole basket of tokens in one transaction.</td></tr>
-        <tr><td class="hi">Jupiter</td><td>Solana</td><td>Dominant on Solana specifically (~95% of Solana aggregator volume).</td></tr>
-        <tr><td>OpenOcean / KyberSwap</td><td>Multi-chain</td><td>Smaller multi-chain aggregators rounding out the category.</td></tr>
+        <tr><td class="hi t">Active RWA markets</td><td><strong>135 markets</strong>, all quoted against native USDC — 111 equities, 11 FX pairs, 9 commodities, 2 indices, 2 pre-IPO references. <sup>[36]</sup></td></tr>
+        <tr><td class="hi t">Pre-IPO perpetuals</td><td>Launched <strong>Oct 1, 2025</strong> — the first on-chain venue offering leveraged exposure to private companies (OpenAI, SpaceX, Anthropic) before any public listing. Directly relevant to your own stated interest in pre-IPO assets. <sup>[35]</sup></td></tr>
+        <tr><td class="hi t">Commodities</td><td>Gold (XAU/USDT), silver (XAG/USDT), WTI crude, each with up to <strong>50× leverage</strong>. <sup>[35]</sup></td></tr>
+        <tr><td class="hi t">Cumulative RWA volume</td><td><strong>$5.3B+</strong> cumulative since early 2025; <strong>$845.9M</strong> in 2026 year-to-date. Monthly volume has been accelerating: <strong>$186.5M in July 2026</strong>, then <strong>$209.7M in August 2026</strong> — August alone ran roughly 3.4× May's volume. <sup>[36]</sup></td></tr>
+        <tr><td class="hi t">Flagship front-end</td><td><strong>Helix</strong> — the Injective Labs-backed DEX, playing the same role for Injective that trade[XYZ] plays for Hyperliquid: a non-custodial UI trading against the shared native order book. <sup>[37]</sup></td></tr>
       </tbody>
     </table>
   </div>
-  <p>All of these compete on the same core mechanic — routing, not holding, liquidity — which is precisely why the profitability squeeze described above isn't unique to 1inch: it's structural to the entire aggregator category.</p>
+
+  <h3 class="q" id="s7-3"><span class="q-mark">Q</span>What are the other similar projects?</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Project</th><th>Chain</th><th>RWA-perp positioning</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">Hyperliquid</td><td>Own L1</td><td>Dominant by volume; permissionless HIP-3 listings; the only DEX with a licensed S&amp;P 500 perpetual (Section 2, 4–6).</td></tr>
+        <tr><td class="hi t">Injective / Helix</td><td>Cosmos L1 (MultiVM)</td><td>Finance-native L1 with iAssets; the only venue offering exclusively on-chain pre-IPO perpetuals.</td></tr>
+        <tr><td class="hi">Ostium</td><td>Arbitrum</td><td>Over 90% of open interest sits in stocks/commodities/FX/indices rather than crypto — RWA-first by design, 71 trading pairs. <sup>[38]</sup></td></tr>
+        <tr><td class="hi">Synthetix / Kwenta</td><td>Base / Optimism</td><td>Synthetic-asset liquidity infrastructure powering perps on indices and commodities for downstream front-ends. <sup>[39]</sup></td></tr>
+        <tr><td class="hi">Canborsa</td><td>Canton Network</td><td>Entered beta May 2026 as the first RWA perp DEX on the institutional-grade Canton Network — one to watch, not yet at scale. <sup>[39]</sup></td></tr>
+        <tr><td>GMX</td><td>Arbitrum</td><td>Crypto-only perps with a "real yield" AMM model — included for contrast; it is <em>not</em> an RWA competitor.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The category as a whole is growing fast, not just individual venues: on-chain RWA-perpetual volume across stocks, indices, commodities, forex, and bonds rose <strong>162%</strong>, from $11.8B in December 2025 to $31.0B in January 2026. <sup>[38]</sup></p>
 
   <h3 class="q" id="s7-4"><span class="q-mark">Q</span>Is there a place to track these projects?</h3>
   <div class="analytics-grid">
     <div class="acard">
       <span class="kind native">Native</span>
-      <div class="name">1inch Blog — annual numbers</div>
-      <div class="desc">1inch's own "numbers behind 1inch" reports break down yearly volume, transaction counts, and cross-chain activity.</div>
-      <a href="https://1inch.com/blog/post/the-numbers-behind-1inch-in-2025" target="_blank" rel="noopener">1inch.com/blog →</a>
+      <div class="name">Helix (Injective)</div>
+      <div class="desc">Injective's flagship front-end — live order books, volume, and open interest across its spot, derivatives, and RWA perpetual markets.</div>
+      <a href="https://helixapp.com" target="_blank" rel="noopener">helixapp.com →</a>
+    </div>
+    <div class="acard">
+      <span class="kind native">Explorer</span>
+      <div class="name">Injective Explorer</div>
+      <div class="desc">The chain's own block explorer — transactions, validator activity, and Burn Auction history.</div>
+      <a href="https://explorer.injective.network" target="_blank" rel="noopener">explorer.injective.network →</a>
     </div>
     <div class="acard">
       <span class="kind agg">Aggregator</span>
-      <div class="name">DefiLlama — 1inch</div>
-      <div class="desc">Tracks 1inch's TVL, token volume/liquidity, and — most usefully — DEX Aggregator Volume by Protocol, ranking 1inch against every competitor above.</div>
-      <a href="https://defillama.com/protocol/1inch" target="_blank" rel="noopener">defillama.com/protocol/1inch →</a>
+      <div class="name">DefiLlama — Injective</div>
+      <div class="desc">Injective's DEX-volume rankings by protocol (Helix and others), placed alongside every other chain for direct comparison.</div>
+      <a href="https://defillama.com/dexs/chain/injective" target="_blank" rel="noopener">defillama.com/dexs/chain/injective →</a>
     </div>
     <div class="acard">
       <span class="kind live">Dune</span>
-      <div class="name">1inch — Aggregation Router</div>
-      <div class="desc">1inch's own official Dune dashboard collection, covering router volume and usage across chains.</div>
-      <a href="https://dune.com/1inch/aggregator" target="_blank" rel="noopener">dune.com/1inch/aggregator →</a>
-    </div>
-    <div class="acard">
-      <span class="kind live">Dune</span>
-      <div class="name">1inch Aggregators Volume</div>
-      <div class="desc">A community dashboard specifically comparing aggregator volumes, useful for sizing 1inch against ParaSwap, Jupiter, and others.</div>
-      <a href="https://dune.com/obchakevich/1inch-aggregators-volume" target="_blank" rel="noopener">dune.com/obchakevich/... →</a>
+      <div class="name">Dune curated RWA dataset</div>
+      <div class="desc">Cross-chain, curated real-world-asset dataset spanning tokenized and synthetic RWA perpetuals — the closest thing to an apples-to-apples cross-protocol view.</div>
+      <a href="https://docs.dune.com/data-catalog/curated/rwa/overview" target="_blank" rel="noopener">docs.dune.com/.../curated/rwa →</a>
     </div>
     <div class="acard">
       <span class="kind research">Research</span>
-      <div class="name">CryptoBriefing</div>
-      <div class="desc">The reference article for this section — a direct, skeptical look at aggregator economics rather than a volume dashboard.</div>
-      <a href="https://cryptobriefing.com/1inch-800b-trades-defi-profitability/" target="_blank" rel="noopener">cryptobriefing.com →</a>
+      <div class="name">CoinGecko — Injective RWA Perpetuals</div>
+      <div class="desc">"Injective RWA Perpetuals: From Crypto to Global Markets" — the reference article for this section, with the fullest current breakdown of markets and monthly volume.</div>
+      <a href="https://www.coingecko.com/learn/injective-rwa-perpetuals-global-markets" target="_blank" rel="noopener">coingecko.com/learn →</a>
+    </div>
+    <div class="acard">
+      <span class="kind research">Research</span>
+      <div class="name">Messari — Injective RWA report</div>
+      <div class="desc">"Building the Infrastructure Layer for Onchain RWA Derivatives" — a periodic deep-dive rather than a live feed, useful for methodology and context.</div>
+      <a href="https://messari.io/report/injective-building-the-infrastructure-layer-for-onchain-rwa-derivatives" target="_blank" rel="noopener">messari.io report →</a>
     </div>
   </div>
 
   <div class="sources">
     <h4>Sources &amp; further reading — Section 7</h4>
     <ol>
-      <li class="primary t">CryptoBriefing — <a href="https://cryptobriefing.com/1inch-800b-trades-defi-profitability/" target="_blank" rel="noopener">"1inch's $800B Trades, DeFi's Profitability Problem"</a> <span style="color:var(--ink-soft); font-weight:400;">(reference article for this edition)</span></li>
-      <li id="ref31">DEXTools — <a href="https://www.dextools.io/tutorials/what-is-1inch-defi-dex-aggregator-guide-2026" target="_blank" rel="noopener">"1inch Explained: Pathfinder, Fusion and How the DEX Aggregator Works"</a></li>
-      <li id="ref32">ChainClarity — <a href="https://chainclarity.io/1inch" target="_blank" rel="noopener">"1inch DEX Aggregator: Pathfinder, Fusion &amp; 1INCH Tokenomics"</a></li>
-      <li id="ref33">CryptoBriefing (same as above) — cumulative volume, profitability, and Ondo/RWA figures</li>
-      <li id="ref34">Yahoo Finance / CoinGape — <a href="https://finance.yahoo.com/news/1inch-unlocks-access-tokenized-rwas-175000087.html" target="_blank" rel="noopener">"1inch Unlocks Access to Tokenized RWAs via Swap API"</a>; TradingView/Cointelegraph — <a href="https://www.tradingview.com/news/cointelegraph:06f5a252c094b:0-tokenized-rwas-buck-the-slump-as-1inch-ondo-volumes-top-2-5b/" target="_blank" rel="noopener">"Tokenized RWAs buck the slump as 1inch-Ondo volumes top $2.5B"</a></li>
-      <li>eco.com — <a href="https://eco.com/support/en/articles/13314092-best-dex-aggregators-in-2026-1inch-jupiter-paraswap-and-more" target="_blank" rel="noopener">"Best DEX Aggregators in 2026: 1inch, Jupiter, ParaSwap, and More"</a></li>
+      <li class="primary t" id="ref36">CoinGecko Learn — <a href="https://www.coingecko.com/learn/injective-rwa-perpetuals-global-markets" target="_blank" rel="noopener">"Injective RWA Perpetuals: From Crypto to Global Markets"</a> <span style="color:var(--ink-soft); font-weight:400;">(reference article for this edition)</span></li>
+      <li id="ref31">Injective — <a href="https://injective.com/blog/understanding-injective-architecture-and-consensus" target="_blank" rel="noopener">"Understanding Injective Architecture and Consensus"</a></li>
+      <li id="ref32">CoinGecko Learn — <a href="https://www.coingecko.com/learn/injective-2026-convergence-report" target="_blank" rel="noopener">"Injective in 2026: The Convergence of On-Chain Finance"</a></li>
+      <li id="ref33">Docs — <a href="https://docs.injective.network/developers-native/examples/exchange" target="_blank" rel="noopener">Injective Exchange module developer docs</a></li>
+      <li id="ref34">ChainClarity — <a href="https://chainclarity.io/injective" target="_blank" rel="noopener">"Injective (INJ) Whitepaper: On-Chain Orderbook L1 + INJ Burn"</a></li>
+      <li id="ref35">Messari — <a href="https://messari.io/report/injective-building-the-infrastructure-layer-for-onchain-rwa-derivatives" target="_blank" rel="noopener">"Injective: Building the Infrastructure Layer for Onchain RWA Derivatives"</a>; BitcoinEthereumNews — <a href="https://bitcoinethereumnews.com/tech/injectives-rwa-perpetual-volume-tops-5-3b-amid-sec-shift/" target="_blank" rel="noopener">"Injective's RWA Perpetual Volume Tops $5.3B Amid SEC Shift"</a></li>
+      <li id="ref37">CoinMarketCap — <a href="https://coinmarketcap.com/exchanges/injective-protocol/" target="_blank" rel="noopener">Helix exchange listing &amp; volume</a></li>
+      <li id="ref38">Ostium — <a href="https://www.ostium.com/blog/perps-on-rwas-best-dex-for-rwa-perpetuals-2026-guide" target="_blank" rel="noopener">"Perps on RWAs: Best DEX for RWA Perpetuals — 2026 Guide"</a>; Bankless — <a href="https://www.bankless.com/read/trading-rwa-perps-with-ostium" target="_blank" rel="noopener">"Trading RWA Perps with Ostium"</a></li>
+      <li id="ref39">BlockEden — <a href="https://blockeden.xyz/blog/2026/04/03/perpification-rwa-perpetual-futures-tokenization-a16z-thesis/" target="_blank" rel="noopener">"Perpification: Why Perpetual Futures May Eat Real-World Asset Tokenization"</a></li>
     </ol>
   </div>
 </section>
