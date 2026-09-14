@@ -24,6 +24,8 @@
     --short-soft:#F6DFD8;
     --violet:#6B4FA0;
     --violet-soft:#EAE3F5;
+    --teal2:#1D6E5C;
+    --teal2-soft:#DCEEE7;
     --shadow: 0 1px 2px rgba(24,34,38,.06), 0 8px 24px -12px rgba(24,34,38,.18);
     --disp: "Fraunces", Georgia, serif;
     --body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -47,6 +49,8 @@
       --short-soft:rgba(232,133,113,.13);
       --violet:#B7A0E8;
       --violet-soft:rgba(183,160,232,.14);
+      --teal2:#7FD1BC;
+      --teal2-soft:rgba(127,209,188,.14);
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px -14px rgba(0,0,0,.6);
     }
   }
@@ -67,6 +71,8 @@
     --short-soft:rgba(232,133,113,.13);
     --violet:#B7A0E8;
     --violet-soft:rgba(183,160,232,.14);
+    --teal2:#7FD1BC;
+    --teal2-soft:rgba(127,209,188,.14);
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px -14px rgba(0,0,0,.6);
   }
 
@@ -111,11 +117,13 @@
   }
   .toc .sec-link .num{font-family:var(--mono); color:var(--accent); margin-right:8px; font-size:12px;}
   .toc .sec-link.new .num{color:var(--violet);}
+  .toc .sec-link.newest .num{color:var(--teal2);}
   .toc .sub-link{
     display:block; padding:5px 10px 5px 30px; font-size:12.5px; color:var(--ink-soft); text-decoration:none; border-radius:7px;
   }
   .toc a:hover{background:var(--accent-soft); color:var(--ink);}
   .toc-divider{margin:16px 10px 6px; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--violet); font-weight:600;}
+  .toc-divider.newest{color:var(--teal2);}
   .toc-foot{margin-top:28px; padding-top:18px; border-top:1px solid var(--border); font-size:11.5px; color:var(--ink-soft); font-family:var(--mono); line-height:1.7;}
 
   /* ---------- Main column ---------- */
@@ -135,18 +143,22 @@
     border:1px solid var(--border); border-radius:100px; padding:5px 12px; color:var(--ink-soft);
   }
   .who-for span.new{color:var(--violet); border-color:var(--violet-soft); background:var(--violet-soft);}
+  .who-for span.newest{color:var(--teal2); border-color:var(--teal2-soft); background:var(--teal2-soft);}
 
   .edition-note{
     border:1px solid var(--violet-soft); background:var(--violet-soft); border-radius:10px; padding:16px 20px; margin:0 0 40px;
     font-size:14px;
   }
   .edition-note strong{color:var(--violet);}
+  .edition-note.v3{border-color:var(--teal2-soft); background:var(--teal2-soft); margin-top:12px;}
+  .edition-note.v3 strong{color:var(--teal2);}
 
   section.section{padding-top:68px; scroll-margin-top:24px;}
   section.section:first-of-type{padding-top:0;}
   .section-head{display:flex; align-items:baseline; gap:18px; margin-bottom:6px; padding-bottom:22px; border-bottom:2px solid var(--ink);}
   .section-head .idx{font-family:var(--disp); font-size:52px; font-weight:500; line-height:1; color:var(--accent);}
   .section-head.new .idx{color:var(--violet);}
+  .section-head.newest .idx{color:var(--teal2);}
   .section-head h2{font-size:clamp(24px,4vw,32px); font-weight:600;}
   .section-dek{color:var(--ink-soft); font-size:15px; margin:16px 0 40px; max-width:60ch;}
 
@@ -156,12 +168,14 @@
   }
   h3.q .q-mark{color:var(--accent); font-family:var(--mono); font-size:14px;}
   .new h3.q .q-mark{color:var(--violet);}
+  .newest h3.q .q-mark{color:var(--teal2);}
   p{margin:0 0 16px; max-width:66ch;}
   ul.plain, ol.plain{margin:0 0 16px; padding-left:22px; max-width:64ch;}
   ul.plain li, ol.plain li{margin-bottom:8px;}
   strong{font-weight:600;}
   code, .code{font-family:var(--mono); font-size:.92em; background:var(--accent-soft); padding:.1em .4em; border-radius:4px;}
   .new code, .new .code{background:var(--violet-soft);}
+  .newest code, .newest .code{background:var(--teal2-soft);}
 
   /* ---------- Callouts ---------- */
   .callout{
@@ -176,6 +190,8 @@
   .callout.watch p, .callout.watch li{color:var(--ink);}
   .callout.tech{border-left-color:var(--violet); background:var(--violet-soft);}
   .callout.tech h4{color:var(--violet);}
+  .callout.caution{border-left-color:var(--teal2); background:var(--teal2-soft);}
+  .callout.caution h4{color:var(--teal2);}
   .callout p:last-child{margin-bottom:0;}
   .callout table{margin:0;}
 
@@ -185,6 +201,7 @@
   }
   .stat .n{font-family:var(--mono); font-size:20px; font-weight:600; color:var(--accent-strong); display:block;}
   .stat.violet .n{color:var(--violet);}
+  .stat.teal2 .n{color:var(--teal2);}
   .stat .l{font-size:11.5px; color:var(--ink-soft); line-height:1.3;}
 
   figure{margin:30px 0; padding:0;}
@@ -199,6 +216,7 @@
   tbody tr:last-child td{border-bottom:none;}
   td.hi{color:var(--accent-strong); font-weight:600;}
   td.hi.v{color:var(--violet);}
+  td.hi.t{color:var(--teal2);}
   td .tag{display:inline-block; font-family:var(--mono); font-size:10.5px; padding:2px 7px; border-radius:100px; background:var(--long-soft); color:var(--long); margin-top:4px;}
 
   /* ---------- Sources ---------- */
@@ -210,6 +228,7 @@
   .sources a:hover{color:var(--accent);}
   .sources li.primary{color:var(--ink);}
   .sources li.primary a{color:var(--violet); font-weight:600;}
+  .sources li.primary.t a{color:var(--teal2);}
 
   .toollist{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; margin:20px 0;}
   .toolcard{border:1px solid var(--border); border-radius:9px; padding:13px 14px; background:var(--paper-raised);}
@@ -223,6 +242,7 @@
   .acard .kind.live{background:var(--long-soft); color:var(--long);}
   .acard .kind.native{background:var(--violet-soft); color:var(--violet);}
   .acard .kind.agg{background:var(--accent-soft); color:var(--accent-strong);}
+  .acard .kind.research{background:var(--teal2-soft); color:var(--teal2);}
   .acard .name{font-weight:600; font-size:15px; margin-bottom:6px;}
   .acard .desc{font-size:12.5px; color:var(--ink-soft); line-height:1.5; margin-bottom:10px;}
   .acard a{font-family:var(--mono); font-size:11.5px;}
@@ -238,6 +258,7 @@
     display:flex; align-items:center; justify-content:center;
   }
   .new .stepline li::before{background:var(--violet);}
+  .newest .stepline li::before{background:var(--teal2);}
   .stepline .st{font-weight:600; margin-bottom:4px; font-size:15px;}
   .stepline p{margin-bottom:0; font-size:14.5px;}
 
@@ -290,7 +311,7 @@
       </ul>
     </li>
   </ul>
-  <div class="toc-divider">New in this edition</div>
+  <div class="toc-divider">RWA architecture edition</div>
   <ul>
     <li><a class="sec-link new" href="#s4"><span class="num">04</span>Architecture &amp; RWA thesis</a>
       <ul>
@@ -309,6 +330,17 @@
     </li>
     <li><a class="sec-link new" href="#s6"><span class="num">06</span>RWA perp analytics</a></li>
   </ul>
+  <div class="toc-divider newest">New in this edition</div>
+  <ul>
+    <li><a class="sec-link newest" href="#s7"><span class="num">07</span>1inch</a>
+      <ul>
+        <li><a class="sub-link" href="#s7-1">What is 1inch?</a></li>
+        <li><a class="sub-link" href="#s7-2">1inch &amp; RWA</a></li>
+        <li><a class="sub-link" href="#s7-3">Similar projects</a></li>
+        <li><a class="sub-link" href="#s7-4">Where to track them</a></li>
+      </ul>
+    </li>
+  </ul>
   <div class="toc-foot">Educational reference only —<br>not investment, legal or tax advice.<br>Prepared for a US-resident reader.</div>
 </nav>
 
@@ -317,17 +349,21 @@
 <header class="masthead">
   <span class="kicker">A working reference for the roadmap ahead — RWA Edition</span>
   <h1>Perpetuals, Hyperliquid &amp; trading across every asset class</h1>
-  <p>You already speak fluent crypto, Solidity, and LLMs. This edition adds the deep technical layer: how HyperCore, HIP-3 and HIP-4 actually work, why they make Hyperliquid the leading candidate to host real-world-asset trading globally, how apps like trade[XYZ] are built on top of it, and where to watch the live data.</p>
+  <p>You already speak fluent crypto, Solidity, and LLMs. This edition adds the deep technical layer: how HyperCore, HIP-3 and HIP-4 actually work, why they make Hyperliquid the leading candidate to host real-world-asset trading globally, how apps like trade[XYZ] are built on top of it, where to watch the live data — and now, a look at 1inch, the largest DeFi trade-routing layer, and what "RWA" looks like when there's no leverage involved.</p>
   <div class="who-for">
     <span>Written for: US resident / citizen</span>
     <span>Background: Solidity + Hardhat, Coinbase/Kraken/MetaMask</span>
     <span>As of: September 14, 2026</span>
-    <span class="new">New: Sections 04–06</span>
+    <span class="new">Sections 04–06</span>
+    <span class="newest">New: Section 07</span>
   </div>
 </header>
 
 <div class="edition-note">
-  <strong>What's new in this edition —</strong> Sections 01–03 are unchanged from the first edition. Sections 04–06 are new: a technical deep dive on Hyperliquid's architecture and its case as the leading platform for real-world-asset (RWA) perpetuals, an analysis of trade[XYZ] and a step-by-step guide to building your own application on Hyperliquid, and a curated list of live RWA-perp analytics dashboards. Built on <a href="https://a16zcrypto.com/posts/article/what-are-perpetual-futures/#the-market-opportunity-for-perps" target="_blank" rel="noopener">a16z crypto's perpetuals market-opportunity research</a>, <a href="https://www.coingecko.com/learn/hyperliquid-hip3-hip4-tokenized-stocks-and-prediction-markets" target="_blank" rel="noopener">CoinGecko's HIP-3/HIP-4 explainer</a>, and a <a href="https://dune.com/queries/6280948/10007199" target="_blank" rel="noopener">community Dune query</a> supplied for this edition.
+  <strong>RWA architecture edition —</strong> Sections 04–06 (added previously): a technical deep dive on Hyperliquid's architecture and RWA thesis, a build guide modeled on trade[XYZ], and a list of live RWA-perp analytics dashboards. Built on <a href="https://a16zcrypto.com/posts/article/what-are-perpetual-futures/#the-market-opportunity-for-perps" target="_blank" rel="noopener">a16z crypto's perpetuals research</a> and <a href="https://www.coingecko.com/learn/hyperliquid-hip3-hip4-tokenized-stocks-and-prediction-markets" target="_blank" rel="noopener">CoinGecko's HIP-3/HIP-4 explainer</a>.
+</div>
+<div class="edition-note v3">
+  <strong>New —</strong> Section 07 covers <strong>1inch</strong>, the largest DEX-aggregation layer in DeFi, based on a <a href="https://cryptobriefing.com/1inch-800b-trades-defi-profitability/" target="_blank" rel="noopener">CryptoBriefing report on 1inch's $800B-volume profitability problem</a>. Unlike every other project in this document, 1inch runs no perpetuals and no leverage — it's included because its recent Ondo Finance integration is a genuinely different model for accessing real-world assets on-chain, and because the profitability question the article raises is worth asking about every protocol here.
 </div>
 
 <!-- ================= SECTION 1 ================= -->
@@ -442,7 +478,7 @@
     <li><strong>HyperCore</strong> — the trading engine itself: the order book, matching, margining, and liquidation logic, running on-chain at speeds that feel like a centralized exchange.</li>
     <li><strong>HyperEVM</strong> — a fully Solidity-compatible smart-contract layer sitting next to HyperCore, byte-compatible with the Ethereum Virtual Machine, so <strong>your existing Hardhat/Foundry toolchain works on it unmodified</strong>. Contracts here can read and act on live HyperCore data — balances, positions, oracle prices, vault state.</li>
   </ul>
-  <p>It's non-custodial (you connect a wallet, no account or KYC to trade), lists 100+ perpetual markets, and — notably for your roadmap — has begun listing non-crypto instruments too (its HIP-3 framework let a builder list 24/7 oil perpetuals, for example). Section 4 goes deep on exactly how this works under the hood.</p>
+  <p>It's non-custodial (you connect a wallet, no account or KYC to trade), lists 100+ perpetual markets, and — notably for your roadmap — has begun listing non-crypto instruments too (its HIP-3 framework let a builder list 24/7 oil perpetuals, for example). Section 4 goes deep on exactly how this works under the hood; Section 7 looks at a very different kind of "RWA" story — 1inch's spot-aggregated access to tokenized assets, with no leverage at all.</p>
 
   <h3 class="q" id="s2-2"><span class="q-mark">Q</span>When was the HYPE token listed on Robinhood and Coinbase?</h3>
   <div class="tablewrap">
@@ -656,7 +692,7 @@
   </div>
 </section>
 
-<!-- ================= SECTION 4 (NEW) ================= -->
+<!-- ================= SECTION 4 ================= -->
 <section class="section new" id="s4">
   <div class="section-head new"><span class="idx">04</span><h2>Architecture &amp; the RWA thesis</h2></div>
   <p class="section-dek">Why serious analysts — a16z crypto among them — treat Hyperliquid as the leading on-chain candidate to host real-world-asset (RWA) trading, not just crypto perps.</p>
@@ -745,7 +781,7 @@
     </ol>
   </div>
 
-  <p>The traction is already real, not theoretical: RWA instruments (equities, commodities, indices) made up as much as <strong>44% of Hyperliquid's own trading volume</strong>, and 23 of Hyperliquid's top 30 trading pairs are now tokenized stocks or commodities rather than crypto-native assets. <sup>[23][25]</sup></p>
+  <p>The traction is already real, not theoretical: RWA instruments (equities, commodities, indices) made up as much as <strong>44% of Hyperliquid's own trading volume</strong>, and 23 of Hyperliquid's top 30 trading pairs are now tokenized stocks or commodities rather than crypto-native assets. <sup>[23][25]</sup> Section 7 looks at a completely different route into "RWA on-chain" — 1inch's spot aggregation of tokenized Treasuries and stocks — as a useful contrast to the leveraged model covered here.</p>
 
   <div class="sources">
     <h4>Sources &amp; further reading — Section 4</h4>
@@ -762,7 +798,7 @@
   </div>
 </section>
 
-<!-- ================= SECTION 5 (NEW) ================= -->
+<!-- ================= SECTION 5 ================= -->
 <section class="section new" id="s5">
   <div class="section-head new"><span class="idx">05</span><h2>Building on Hyperliquid</h2></div>
   <p class="section-dek">What the best HIP-3 applications actually look like, and the concrete path for your team to ship one.</p>
@@ -836,7 +872,7 @@
   </div>
 </section>
 
-<!-- ================= SECTION 6 (NEW) ================= -->
+<!-- ================= SECTION 6 ================= -->
 <section class="section new" id="s6">
   <div class="section-head new"><span class="idx">06</span><h2>RWA perp analytics</h2></div>
   <p class="section-dek">Where to watch live RWA-perpetual data — volumes, open interest, and market listings — rather than relying on any single snapshot in this document.</p>
@@ -881,13 +917,13 @@
     <div class="acard">
       <span class="kind live">Dune</span>
       <div class="name">Community query (supplied reference)</div>
-      <div class="desc">The specific Dune query provided for this edition — open it directly on Dune for its current chart and underlying SQL, since embedded query results change live and aren't reproduced here.</div>
+      <div class="desc">The specific Dune query provided for the previous edition — open it directly on Dune for its current chart and underlying SQL, since embedded query results change live and aren't reproduced here.</div>
       <a href="https://dune.com/queries/6280948/10007199" target="_blank" rel="noopener">dune.com/queries/6280948 →</a>
     </div>
     <div class="acard">
       <span class="kind agg">Dataset</span>
       <div class="name">Dune RWA Dataset</div>
-      <div class="desc">Dune's dedicated real-world-asset dataset (launched Aug 31, 2026), tracking tokenized and synthetic RWA supply, holders, secondary trading, perpetuals, and collateral use across chains — not Hyperliquid-only, but includes it. <sup>[30]</sup></div>
+      <div class="desc">Dune's dedicated real-world-asset dataset (launched Aug 31, 2026), tracking tokenized and synthetic RWA supply, holders, secondary trading, perpetuals, and collateral use across chains. <sup>[30]</sup></div>
       <a href="https://dune.com/blog" target="_blank" rel="noopener">dune.com/blog →</a>
     </div>
     <div class="acard">
@@ -918,7 +954,7 @@
   <div class="sources">
     <h4>Sources &amp; further reading — Section 6</h4>
     <ol>
-      <li class="primary" id="ref-dune">Dune Analytics — <a href="https://dune.com/queries/6280948/10007199" target="_blank" rel="noopener">community query</a> <span style="color:var(--ink-soft); font-weight:400;">(reference supplied for this edition)</span></li>
+      <li class="primary" id="ref-dune">Dune Analytics — <a href="https://dune.com/queries/6280948/10007199" target="_blank" rel="noopener">community query</a> <span style="color:var(--ink-soft); font-weight:400;">(reference supplied for the previous edition)</span></li>
       <li id="ref30">GlobeNewswire — <a href="https://www.globenewswire.com/news-release/2026/08/31/3353276/0/en/dune-launches-rwa-dataset-to-make-the-tokenized-asset-market-observable-after-issuance.html" target="_blank" rel="noopener">"Dune Launches RWA Dataset to Make the Tokenized Asset Market Observable"</a></li>
       <li>QuickNode — <a href="https://www.quicknode.com/builders-guide/tools/hyperliquid-dashboard-by-dune" target="_blank" rel="noopener">"Hyperliquid Dashboard by Dune"</a></li>
       <li>Dune Docs — <a href="https://docs.dune.com/data-catalog/community/hyperliquid/overview" target="_blank" rel="noopener">"Hyperliquid data" catalog overview</a></li>
@@ -926,10 +962,114 @@
   </div>
 </section>
 
+<!-- ================= SECTION 7 (NEW — 1inch) ================= -->
+<section class="section newest" id="s7">
+  <div class="section-head newest"><span class="idx">07</span><h2>1inch</h2></div>
+  <p class="section-dek">A very different kind of project from everything else in this document: no perpetuals, no leverage, no order book of its own — just the largest trade-routing layer in DeFi, and a live case study in whether volume alone makes a business.</p>
+
+  <h3 class="q" id="s7-1"><span class="q-mark">Q</span>What is 1inch?</h3>
+  <p><strong>1inch is a DEX aggregator and intent-routing layer — it holds no liquidity and runs no order book of its own.</strong> Instead, its <strong>Pathfinder</strong> engine scans the entire on-chain liquidity graph — more than 350 individual liquidity sources (Uniswap, Curve, Balancer, and dozens more) across 13+ blockchains — and splits a single trade across multiple venues and intermediate tokens to find a better net price than any one DEX could offer alone. Founded in 2019 (originally a hackathon project by Sergej Kunz and Anton Bukov), it's now governed by the 1inch DAO, with the <strong>1INCH</strong> token used for governance and as resolver collateral. <sup>[31][32]</sup></p>
+
+  <div class="stat-row">
+    <div class="stat teal2"><span class="n tabular">350+</span><span class="l">Liquidity sources scanned by Pathfinder across 13+ chains</span></div>
+    <div class="stat teal2"><span class="n tabular">$0 gas</span><span class="l">On Fusion mode — resolvers fill your signed intent instead of you paying gas</span></div>
+    <div class="stat teal2"><span class="n tabular">No bridge</span><span class="l">Fusion+ lets you swap, e.g., ETH on Ethereum for SOL on Solana with one signature</span></div>
+  </div>
+
+  <p style="margin-top:16px;">Three execution modes matter:</p>
+  <ul class="plain">
+    <li><strong>Classic</strong> — on-chain aggregation via Pathfinder; you pay gas, the router finds the best split.</li>
+    <li><strong>Fusion</strong> — intent-based: you sign what you want, professional "resolvers" compete to fill it, you pay no gas, and MEV bots can't sandwich your order. Resolvers earn a small spread (a few basis points) baked into your quoted price.</li>
+    <li><strong>Fusion+</strong> — extends the same resolver model cross-chain, replacing bridges with a single signed intent.</li>
+  </ul>
+
+  <div class="callout caution">
+    <h4>The profitability paradox — what the referenced article is actually about</h4>
+    <p>The <a href="https://cryptobriefing.com/1inch-800b-trades-defi-profitability/" target="_blank" rel="noopener">CryptoBriefing report</a> supplied for this edition lays out a striking gap between scale and business health. Since its 2019 launch, 1inch has routed roughly <strong>$814 billion</strong> in cumulative volume — <strong>$214 billion in 2025 alone</strong> (+39% YoY, across 114 million transactions). And yet co-founder Sergej Kunz says the business still isn't profitable, for a structural reason: <strong>as an aggregator, 1inch's own fees have to stay at or below the fees of the DEXs it routes through</strong> — charge more, and users (or the wallets embedding 1inch) simply route around it. The 1INCH token trades roughly <strong>99% below its 2021 all-time high</strong>, with a market cap of only <strong>$100–130 million</strong> despite that volume. <sup>[33]</sup></p>
+    <p>The lesson generalizes well beyond 1inch: <strong>routing enormous volume is not the same as capturing durable value.</strong> Compare this to Hyperliquid's fee-buyback model or a HIP-3 deployer's 50% fee share (Section 4) — both are designed specifically to capture value at the base matching/settlement layer, rather than as a thin routing layer sitting on top of someone else's liquidity, which is exactly the trap 1inch's numbers illustrate.</p>
+  </div>
+
+  <h3 class="q" id="s7-2"><span class="q-mark">Q</span>What does 1inch actually do in RWA — and why not perps?</h3>
+  <p><strong>1inch has no native perpetual-futures product and offers no leverage anywhere in its stack</strong> — worth stating plainly, since every other project in this document is a perp venue. Its RWA story is a spot-swap story instead: in <strong>September 2025</strong>, 1inch partnered with <strong>Ondo Finance</strong> — one of the largest RWA platforms in crypto, known for tokenized US Treasury products like <strong>OUSG</strong> and <strong>USDY</strong> — to route access to tokenized real-world assets through 1inch's own Swap API. <sup>[34]</sup></p>
+  <ul class="plain">
+    <li><strong>What it solves:</strong> the integration targets RWA's biggest adoption blocker — fragmented liquidity — by letting any wallet or dApp embedding 1inch's API offer tokenized-Treasury or tokenized-stock swaps with the same aggregated best-execution routing as any other token swap. Bitget and Trust Wallet are among the API partners already live with it. <sup>[34]</sup></li>
+    <li><strong>How it executes:</strong> RWA swaps route through the same resolver network as Fusion — professional market makers filling signed intents — not a perpetual order book, so there's no funding rate, no liquidation, and no leverage. You end up holding the actual tokenized instrument (or a claim on it), at spot, not a synthetic derivative position.</li>
+    <li><strong>Scale:</strong> tokenized stock and ETF volume routed through the Ondo integration passed <strong>$2.5 billion</strong> cumulatively within its first months live; the CryptoBriefing article's slightly later figure of <strong>$3 billion in cumulative tokenized volume by March 2026</strong> reflects the same growth a bit further along. <sup>[33][34]</sup></li>
+  </ul>
+
+  <div class="callout watch">
+    <h4>How this differs from every other RWA product in this document</h4>
+    <p>Sections 2–6 are about <em>leveraged, synthetic</em> RWA exposure — perpetual contracts on Hyperliquid that track a stock or commodity's price without ever touching the real asset. 1inch's RWA integration is the opposite: <em>unleveraged, aggregated access to the actual tokenized instrument</em> at the best available spot price. If your roadmap calls for leveraged directional or hedged exposure, 1inch is not the venue. If it calls for efficiently swapping into a tokenized Treasury or equity product at good execution, this is a legitimate — and very different — way to do it.</p>
+  </div>
+
+  <h3 class="q" id="s7-3"><span class="q-mark">Q</span>What are other similar projects?</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Aggregator</th><th>Chain focus</th><th>Known for</th></tr></thead>
+      <tbody>
+        <tr><td class="hi t">1inch</td><td>13+ EVM chains</td><td>Largest EVM aggregator by volume (~59% of Ethereum aggregator volume, mid-2025); Pathfinder + Fusion/Fusion+; the only one with a dedicated RWA (Ondo) integration confirmed here.</td></tr>
+        <tr><td class="hi">ParaSwap</td><td>EVM chains</td><td>Second-largest EVM aggregator; popular as an embedded swap engine for wallets and dApps.</td></tr>
+        <tr><td class="hi">Matcha (0x)</td><td>EVM chains</td><td>Combines on-chain AMM routing with off-chain RFQ quotes from professional market makers.</td></tr>
+        <tr><td class="hi">CowSwap</td><td>EVM chains</td><td>Batch auctions specifically designed for MEV protection.</td></tr>
+        <tr><td class="hi">Odos</td><td>EVM chains</td><td>Multi-input, multi-output routing — swap a whole basket of tokens in one transaction.</td></tr>
+        <tr><td class="hi">Jupiter</td><td>Solana</td><td>Dominant on Solana specifically (~95% of Solana aggregator volume).</td></tr>
+        <tr><td>OpenOcean / KyberSwap</td><td>Multi-chain</td><td>Smaller multi-chain aggregators rounding out the category.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>All of these compete on the same core mechanic — routing, not holding, liquidity — which is precisely why the profitability squeeze described above isn't unique to 1inch: it's structural to the entire aggregator category.</p>
+
+  <h3 class="q" id="s7-4"><span class="q-mark">Q</span>Is there a place to track these projects?</h3>
+  <div class="analytics-grid">
+    <div class="acard">
+      <span class="kind native">Native</span>
+      <div class="name">1inch Blog — annual numbers</div>
+      <div class="desc">1inch's own "numbers behind 1inch" reports break down yearly volume, transaction counts, and cross-chain activity.</div>
+      <a href="https://1inch.com/blog/post/the-numbers-behind-1inch-in-2025" target="_blank" rel="noopener">1inch.com/blog →</a>
+    </div>
+    <div class="acard">
+      <span class="kind agg">Aggregator</span>
+      <div class="name">DefiLlama — 1inch</div>
+      <div class="desc">Tracks 1inch's TVL, token volume/liquidity, and — most usefully — DEX Aggregator Volume by Protocol, ranking 1inch against every competitor above.</div>
+      <a href="https://defillama.com/protocol/1inch" target="_blank" rel="noopener">defillama.com/protocol/1inch →</a>
+    </div>
+    <div class="acard">
+      <span class="kind live">Dune</span>
+      <div class="name">1inch — Aggregation Router</div>
+      <div class="desc">1inch's own official Dune dashboard collection, covering router volume and usage across chains.</div>
+      <a href="https://dune.com/1inch/aggregator" target="_blank" rel="noopener">dune.com/1inch/aggregator →</a>
+    </div>
+    <div class="acard">
+      <span class="kind live">Dune</span>
+      <div class="name">1inch Aggregators Volume</div>
+      <div class="desc">A community dashboard specifically comparing aggregator volumes, useful for sizing 1inch against ParaSwap, Jupiter, and others.</div>
+      <a href="https://dune.com/obchakevich/1inch-aggregators-volume" target="_blank" rel="noopener">dune.com/obchakevich/... →</a>
+    </div>
+    <div class="acard">
+      <span class="kind research">Research</span>
+      <div class="name">CryptoBriefing</div>
+      <div class="desc">The reference article for this section — a direct, skeptical look at aggregator economics rather than a volume dashboard.</div>
+      <a href="https://cryptobriefing.com/1inch-800b-trades-defi-profitability/" target="_blank" rel="noopener">cryptobriefing.com →</a>
+    </div>
+  </div>
+
+  <div class="sources">
+    <h4>Sources &amp; further reading — Section 7</h4>
+    <ol>
+      <li class="primary t">CryptoBriefing — <a href="https://cryptobriefing.com/1inch-800b-trades-defi-profitability/" target="_blank" rel="noopener">"1inch's $800B Trades, DeFi's Profitability Problem"</a> <span style="color:var(--ink-soft); font-weight:400;">(reference article for this edition)</span></li>
+      <li id="ref31">DEXTools — <a href="https://www.dextools.io/tutorials/what-is-1inch-defi-dex-aggregator-guide-2026" target="_blank" rel="noopener">"1inch Explained: Pathfinder, Fusion and How the DEX Aggregator Works"</a></li>
+      <li id="ref32">ChainClarity — <a href="https://chainclarity.io/1inch" target="_blank" rel="noopener">"1inch DEX Aggregator: Pathfinder, Fusion &amp; 1INCH Tokenomics"</a></li>
+      <li id="ref33">CryptoBriefing (same as above) — cumulative volume, profitability, and Ondo/RWA figures</li>
+      <li id="ref34">Yahoo Finance / CoinGape — <a href="https://finance.yahoo.com/news/1inch-unlocks-access-tokenized-rwas-175000087.html" target="_blank" rel="noopener">"1inch Unlocks Access to Tokenized RWAs via Swap API"</a>; TradingView/Cointelegraph — <a href="https://www.tradingview.com/news/cointelegraph:06f5a252c094b:0-tokenized-rwas-buck-the-slump-as-1inch-ondo-volumes-top-2-5b/" target="_blank" rel="noopener">"Tokenized RWAs buck the slump as 1inch-Ondo volumes top $2.5B"</a></li>
+      <li>eco.com — <a href="https://eco.com/support/en/articles/13314092-best-dex-aggregators-in-2026-1inch-jupiter-paraswap-and-more" target="_blank" rel="noopener">"Best DEX Aggregators in 2026: 1inch, Jupiter, ParaSwap, and More"</a></li>
+    </ol>
+  </div>
+</section>
+
 <div class="divider-quote">"Read the contract spec before the marketing name — that one habit prevents most of the expensive surprises in this market."</div>
 
 <footer class="end">
-  <p><strong>Educational reference only, current as of September 14, 2026.</strong> Perpetuals and other leveraged derivatives carry substantial risk of loss, including total loss of posted margin, and can result in losses exceeding your initial deposit on some products. Regulatory status (Section 1), specific platform availability (Sections 2–3), and protocol parameters (Sections 4–6, e.g. HYPE staking thresholds and fee shares) are moving targets — verify directly with CFTC.gov, NFA.futures.org, Hyperliquid's own docs, and each venue before committing capital. Nothing here is investment, legal, or tax advice.</p>
+  <p><strong>Educational reference only, current as of September 14, 2026.</strong> Perpetuals and other leveraged derivatives carry substantial risk of loss, including total loss of posted margin, and can result in losses exceeding your initial deposit on some products. Regulatory status (Section 1), specific platform availability (Sections 2–3), protocol parameters (Sections 4–6, e.g. HYPE staking thresholds and fee shares), and reported volume figures (Section 7, which vary by source and snapshot date) are moving targets — verify directly with CFTC.gov, NFA.futures.org, each protocol's own docs, and each venue before committing capital. Nothing here is investment, legal, or tax advice.</p>
 </footer>
 
 </main>
