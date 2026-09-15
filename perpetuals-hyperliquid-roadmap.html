@@ -301,6 +301,11 @@
         <li><a class="sub-link" href="#s2-3">Why the big deal</a></li>
         <li><a class="sub-link" href="#s2-4">Path onshore</a></li>
         <li><a class="sub-link" href="#s2-5">How your team plugs in</a></li>
+        <li><a class="sub-link" href="#s2-6">Buybacks &amp; fees</a></li>
+        <li><a class="sub-link" href="#s2-7">HYPE ETFs vs BTC/ETH</a></li>
+        <li><a class="sub-link" href="#s2-8">PURR &amp; the MSTR playbook</a></li>
+        <li><a class="sub-link" href="#s2-9">Bitwise's Matt Hougan</a></li>
+        <li><a class="sub-link" href="#s2-10">Overall risk register</a></li>
       </ul>
     </li>
     <li><a class="sec-link" href="#s3"><span class="num">03</span>Trading, step by step</a>
@@ -353,7 +358,7 @@
   <div class="who-for">
     <span>Written for: US resident / citizen</span>
     <span>Background: Solidity + Hardhat, Coinbase/Kraken/MetaMask</span>
-    <span>As of: September 14, 2026</span>
+    <span>As of: September 15, 2026</span>
     <span class="new">Sections 04–06</span>
     <span class="newest">New: Section 07</span>
   </div>
@@ -471,6 +476,7 @@
 <section class="section" id="s2">
   <div class="section-head"><span class="idx">02</span><h2>Hyperliquid</h2></div>
   <p class="section-dek">The single platform most responsible for turning "perpetuals" from a crypto-native niche into a mainstream financial story in 2026.</p>
+  <p style="font-family:var(--mono); font-size:12px; color:var(--ink-soft); margin:-24px 0 40px;">Updated Sep 15, 2026 — added buybacks &amp; fees, HYPE ETFs, PURR, Bitwise's Matt Hougan, and a full risk register (2.6–2.10), sourced from two Coin Bureau video breakdowns — see Section 2 sources.</p>
 
   <h3 class="q" id="s2-1"><span class="q-mark">Q</span>What is Hyperliquid?</h3>
   <p>Hyperliquid is its own purpose-built Layer-1 blockchain, designed from scratch to run a <strong>fully on-chain order book</strong> — the same style of matching engine a stock exchange or Binance uses — instead of the slower automated-market-maker pools most DeFi exchanges rely on. It has two halves:</p>
@@ -580,6 +586,259 @@
     <p>Building contracts, running a validator, or writing bots against the API is infrastructure work and is a different activity from <em>trading as a US person on Hyperliquid's markets</em>, which the platform itself still geo-restricts. Don't conflate the two — and don't route US trading through a VPN to bypass that block; wait for the onshore path in Fig. 3 to actually land.</p>
   </div>
 
+  <h3 class="q" id="s2-6"><span class="q-mark">Q</span>What's the significance of HYPE's buybacks and fees?</h3>
+  <p>The single mechanism institutions keep pointing to is the <strong>buyback engine</strong>: roughly <strong>97–99% of all platform trading fees</strong> are routed automatically into a wallet that buys HYPE on the open market and <strong>permanently destroys it</strong> — no resale, no treasury stockpile. The more the platform is used, the smaller the outstanding supply gets. <sup>[41][42]</sup></p>
+
+  <figure>
+    <svg viewBox="0 0 700 260" role="img" aria-label="HYPE buyback flywheel diagram">
+      <rect x="20" y="30" width="150" height="54" rx="9" style="fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.5"/>
+      <text x="95" y="52" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--accent-strong)">Trading</text>
+      <text x="95" y="68" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--accent-strong)">volume</text>
+
+      <path d="M170,57 h35" style="stroke:var(--ink-soft); stroke-width:1.5; fill:none; marker-end:url(#arrow2)"/>
+      <rect x="205" y="30" width="150" height="54" rx="9" style="fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.5"/>
+      <text x="280" y="52" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--accent-strong)">Protocol fees</text>
+      <text x="280" y="68" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--accent-strong)">(97–99% routed)</text>
+
+      <path d="M355,57 h35" style="stroke:var(--ink-soft); stroke-width:1.5; fill:none; marker-end:url(#arrow2)"/>
+      <rect x="390" y="30" width="150" height="54" rx="9" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/>
+      <text x="465" y="52" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--long)">Buyback fund</text>
+      <text x="465" y="68" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">buys &amp; burns HYPE</text>
+
+      <path d="M540,57 h35" style="stroke:var(--ink-soft); stroke-width:1.5; fill:none; marker-end:url(#arrow2)"/>
+      <rect x="575" y="30" width="115" height="54" rx="9" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/>
+      <text x="632" y="52" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--long)">Supply ↓</text>
+      <text x="632" y="68" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">price support</text>
+
+      <path d="M632,84 v40 q0,20 -20,20 h-497 q-20,0 -20,20 v10" style="stroke:var(--ink-soft); stroke-width:1.5; fill:none; stroke-dasharray:3 3; marker-end:url(#arrow2)"/>
+      <text x="350" y="150" text-anchor="middle" style="font:500 11.5px var(--body); fill:var(--ink-soft)">bull market: attracts more traders → more volume (flywheel spins faster)</text>
+      <text x="350" y="167" text-anchor="middle" style="font:500 11.5px var(--body); fill:var(--short)">bear market: fewer traders → less volume → fewer buybacks (flywheel reverses)</text>
+
+      <rect x="230" y="200" width="240" height="46" rx="9" style="fill:var(--violet-soft); stroke:var(--violet); stroke-width:1.5"/>
+      <text x="350" y="222" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--violet)">+ USDC reserve yield</text>
+      <text x="350" y="238" text-anchor="middle" style="font:600 10.5px var(--mono); fill:var(--violet)">~$135–200M/yr from Oct 2026 — volume-independent</text>
+      <path d="M465,200 v-30 q0,-20 -20,-20" style="stroke:var(--violet); stroke-width:1.5; fill:none; marker-end:url(#arrow3)"/>
+
+      <defs>
+        <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--ink-soft)"/></marker>
+        <marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--violet)"/></marker>
+      </defs>
+    </svg>
+    <figcaption>Fig. 5 — The buyback flywheel: fee-funded today, partly volume-independent from October 2026</figcaption>
+  </figure>
+
+  <div class="callout example">
+    <h4>Worked example — the buyback run-rate vs. a single unlock</h4>
+    <p>In Q1 2026, buybacks were running at roughly <span class="code">$2.14M per day</span>.</p>
+    <div class="stat-row">
+      <div class="stat"><span class="n tabular">≈$781M</span><span class="l">Annualized run-rate ($2.14M × 365 days)</span></div>
+      <div class="stat"><span class="n tabular">$714M</span><span class="l">Value of the Jun 6, 2026 insider unlock (≈9.92M HYPE)</span></div>
+      <div class="stat"><span class="n tabular">&gt;10 months</span><span class="l">Of total buyback capacity absorbed by that single unlock ($714M ÷ $2.14M/day ≈ 333 days)</span></div>
+    </div>
+    <p style="margin-top:14px;">That's the core tension: the buyback engine cannot mechanically absorb a supply event that size in anything close to real time — a large scheduled unlock landing in a low-volume stretch is precisely when the flywheel is weakest. <sup>[41]</sup></p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 170" role="img" aria-label="Quarterly buyback decline bar chart">
+      <text x="10" y="20" style="font:600 11px var(--mono); fill:var(--ink-soft);">QUARTERLY BUYBACKS — DOWN 39% WHILE PRICE HIT ALL-TIME HIGHS</text>
+      <text x="120" y="55" style="font:500 12px var(--body); fill:var(--ink-soft);">Q3 2025</text>
+      <rect x="120" y="62" width="480" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="120" y="62" width="480" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="610" y="77" style="font:600 12px var(--mono); fill:var(--accent-strong)">$316.8M</text>
+
+      <text x="120" y="100" style="font:500 12px var(--body); fill:var(--ink-soft);">Q4 2025</text>
+      <rect x="120" y="107" width="480" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="120" y="107" width="386" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="516" y="122" style="font:600 12px var(--mono); fill:var(--accent-strong)">$255.0M</text>
+
+      <text x="120" y="145" style="font:500 12px var(--body); fill:var(--ink-soft);">Q1 2026</text>
+      <rect x="120" y="152" width="480" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="120" y="152" width="291" height="20" rx="4" style="fill:var(--short)"/>
+      <text x="421" y="167" style="font:600 12px var(--mono); fill:var(--short)">$192.3M</text>
+    </svg>
+    <figcaption>Fig. 6 — Quarterly buyback spend, Q3 2025 → Q1 2026: the flywheel already reversing before the price topped <sup>[41]</sup></figcaption>
+  </figure>
+
+  <p>Two updates worth tracking as of this edition (Sep 2026): <strong>cumulative buybacks now total roughly $1.3 billion</strong>, having burned about <strong>4.8% of HYPE's original supply</strong>; and Hyperliquid recently diversified the engine — yield on its billions in USDC reserves began accruing in late August 2026, with <strong>90% earmarked for buybacks starting October 2026</strong>, adding an estimated <strong>$135–200M/year</strong> that keeps flowing even if trading volume falls. Across the entire crypto industry, token buybacks hit a record <strong>$638M</strong> by the end of August 2026 — and Hyperliquid, together with one other protocol, accounted for <strong>90%</strong> of that total. Some analysts now frame this as a <strong>"buyback yield"</strong> (or "acquisition yield") of roughly <strong>3.9%</strong> — the share of HYPE's market value being permanently retired each year, similar in spirit to a stock's buyback yield, and a sign investors are starting to value HYPE on cash generated rather than pure speculation. <sup>[42]</sup></p>
+
+  <h3 class="q" id="s2-7"><span class="q-mark">Q</span>What's happening with HYPE ETFs — and how do BHYP, THYP and HYPG compare to Bitcoin and Ethereum ETFs?</h3>
+  <p>Two spot HYPE ETFs launched within days of each other in May 2026, and a third staking-focused fund is in registration:</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Fund</th><th>Issuer</th><th>Launched</th><th>Structure</th><th>Fee</th><th>Notable</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">THYP</td><td>21Shares</td><td class="tabular">May 11, 2026</td><td>Spot HYPE</td><td>Not disclosed in sources</td><td>First of the two initial spot launches</td></tr>
+        <tr><td class="hi">BHYP</td><td>Bitwise</td><td class="tabular">May 14, 2026</td><td>Spot HYPE</td><td>Not disclosed in sources</td><td>Flagship fund behind CIO Matt Hougan's thesis (2.9)</td></tr>
+        <tr><td class="hi">HYPG</td><td>Grayscale</td><td>Filing — multiple SEC amendments as of mid-2026</td><td>Staking HYPE (earns yield)</td><td class="tabular">0.29%</td><td>Undercuts on fees; seed plan ≈$130M</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 190" role="img" aria-label="ETF absorption in first 10 days as percent of asset market cap">
+      <text x="10" y="20" style="font:600 11px var(--mono); fill:var(--ink-soft);">SHARE OF ASSET'S MARKET CAP ABSORBED, FIRST 10 TRADING DAYS</text>
+      <text x="150" y="55" style="font:500 12px var(--body); fill:var(--ink-soft);">HYPE ETFs (THYP+BHYP)</text>
+      <rect x="150" y="62" width="454" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="62" width="454" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="617" y="77" style="font:600 12px var(--mono); fill:var(--accent-strong)">1.04%</text>
+
+      <text x="150" y="98" style="font:500 12px var(--body); fill:var(--ink-soft);">Bitcoin ETFs (launch cohort)</text>
+      <rect x="150" y="105" width="454" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="105" width="257" height="20" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="420" y="120" style="font:600 12px var(--mono); fill:var(--ink-soft)">0.59%</text>
+
+      <text x="150" y="132" style="font:500 12px var(--body); fill:var(--ink-soft);">Ethereum ETFs (launch cohort)</text>
+      <rect x="150" y="139" width="454" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="139" width="179" height="20" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="342" y="154" style="font:600 12px var(--mono); fill:var(--ink-soft)">0.41%</text>
+
+      <text x="150" y="166" style="font:500 12px var(--body); fill:var(--ink-soft);">Solana ETFs (launch cohort)</text>
+      <rect x="150" y="173" width="454" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="173" width="135" height="20" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="298" y="188" style="font:600 12px var(--mono); fill:var(--ink-soft)">0.31%</text>
+    </svg>
+    <figcaption>Fig. 7 — HYPE ETFs absorbed capital ~3.4× faster than Solana's, size-adjusted <sup>[41]</sup></figcaption>
+  </figure>
+
+  <div class="callout example">
+    <h4>Worked example — reading the size-adjusted comparison</h4>
+    <p>Absorbing <span class="code">1.04%</span> of HYPE's market cap vs. <span class="code">0.31%</span> of Solana's in the same 10-day window works out to <span class="code">1.04 ÷ 0.31 ≈ 3.35×</span> — matching the "nearly three and a half times faster than Solana" framing from the source video, and a useful sanity check that the reported figures are internally consistent.</p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Metric</th><th>HYPE ETFs</th><th>Bitcoin ETFs</th><th>Ethereum ETFs</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Inflows, first ~13 sessions</strong> (May 2026)</td><td class="tabular">&gt;$136M cumulative</td><td>—</td><td>—</td></tr>
+        <tr><td><strong>Cumulative inflows</strong> (as of Sep 2026 update)</td><td class="tabular">$356M since launch, 5 straight weeks of inflows</td><td class="tabular">$986M in the single week ending Sep 4, 2026 (3rd straight weekly inflow); $3.8B trailing 3 weeks</td><td class="tabular">$1.85B across August 2026 alone (best month in a year)</td></tr>
+        <tr><td><strong>Best single month</strong></td><td>Not separately disclosed</td><td class="tabular">&gt;$3.5B in August 2026 — biggest month since Sep 2025</td><td class="tabular">$1.85B — August 2026</td></tr>
+        <tr><td><strong>AUM, volume, single-day flows</strong></td><td colspan="3">Not disclosed in these sources — check live trackers below before making decisions.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="toollist">
+    <div class="toolcard"><div class="t">Farside Investors</div><div class="d">The standard reference for daily US spot Bitcoin &amp; Ethereum ETF flow data.</div></div>
+    <div class="toolcard"><div class="t">SoSoValue</div><div class="d">Cross-asset crypto ETF tracker, increasingly covering newer listings like HYPE funds.</div></div>
+    <div class="toolcard"><div class="t">bitwiseinvestments.com</div><div class="d">BHYP's official fund page — live AUM, NAV, and holdings.</div></div>
+    <div class="toolcard"><div class="t">21shares.com</div><div class="d">THYP's official fund page.</div></div>
+  </div>
+
+  <h3 class="q" id="s2-8"><span class="q-mark">Q</span>What are the risks and rewards of PURR, and what does MicroStrategy teach us?</h3>
+  <p><strong>Hyperliquid Strategies (Nasdaq: PURR)</strong> is, in the source video's own words, "quite simply the MicroStrategy playbook pointed straight at HYPE." It was born from a reverse merger in December 2025, when a former biotech shell called Sonnet BioTherapeutics was hollowed out and repurposed as a pure HYPE treasury vehicle — chaired by <strong>Bob Diamond</strong>, the former CEO of Barclays. <sup>[41][42]</sup></p>
+
+  <div class="stat-row">
+    <div class="stat"><span class="n tabular">20M → 29.3M</span><span class="l">HYPE tokens held, mid-2026 → per a Sep 2026 13F disclosure (≈$1.9B at the later date)</span></div>
+    <div class="stat"><span class="n tabular">$1.46B</span><span class="l">PURR's market cap, mid-2026 snapshot</span></div>
+    <div class="stat"><span class="n tabular">Jun 26, 2026</span><span class="l">Date PURR joined the Russell 3000 index, triggering mechanical passive-fund buying</span></div>
+  </div>
+
+  <div class="callout watch">
+    <h4>The reflexivity problem — the same knife that cuts both ways</h4>
+    <p>In Q1 2026, PURR posted net income of <strong>$152.5 million</strong> — almost entirely <em>unrealized</em> mark-to-market gains on its HYPE holdings. But over the full 9-month period ending March 31, 2026, the company actually posted a <strong>net loss of $165.4 million</strong>. Same holding, same accounting method — the sign just depends on which window you're standing in when HYPE's price moves.</p>
+  </div>
+
+  <div class="callout example">
+    <h4>Worked example — how much one bad week can swing PURR's "earnings"</h4>
+    <p>On its ~20M HYPE position, a <span class="code">$10</span> move in HYPE's price changes PURR's paper profit or loss by:</p>
+    <p style="text-align:center;"><span class="code">20,000,000 × $10 = $200,000,000</span></p>
+    <p>That single swing is larger than many quarters' worth of the company's entire reported net income — the defining feature (and danger) of a mark-to-market treasury vehicle.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 220" role="img" aria-label="PURR reflexivity loop diagram, up-cycle and down-cycle">
+      <text x="10" y="20" style="font:600 11px var(--mono); fill:var(--long);">UP-CYCLE</text>
+      <rect x="10" y="28" width="150" height="46" rx="8" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/>
+      <text x="85" y="55" text-anchor="middle" style="font:600 11.5px var(--mono); fill:var(--long)">HYPE price ↑</text>
+      <path d="M160,51 h30" style="stroke:var(--long); stroke-width:1.5; fill:none; marker-end:url(#arrowg)"/>
+      <rect x="190" y="28" width="150" height="46" rx="8" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/>
+      <text x="265" y="48" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">Mark-to-market</text>
+      <text x="265" y="63" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">gains on paper</text>
+      <path d="M340,51 h30" style="stroke:var(--long); stroke-width:1.5; fill:none; marker-end:url(#arrowg)"/>
+      <rect x="370" y="28" width="150" height="46" rx="8" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/>
+      <text x="445" y="48" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">Stock trades at</text>
+      <text x="445" y="63" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">premium to NAV</text>
+      <path d="M520,51 h30" style="stroke:var(--long); stroke-width:1.5; fill:none; marker-end:url(#arrowg)"/>
+      <rect x="550" y="28" width="140" height="46" rx="8" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/>
+      <text x="620" y="48" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">Index inclusion +</text>
+      <text x="620" y="63" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">capital raises buy more</text>
+
+      <text x="10" y="118" style="font:600 11px var(--mono); fill:var(--short);">DOWN-CYCLE — same mechanism, reversed</text>
+      <rect x="10" y="126" width="150" height="46" rx="8" style="fill:var(--short-soft); stroke:var(--short); stroke-width:1.5"/>
+      <text x="85" y="153" text-anchor="middle" style="font:600 11.5px var(--mono); fill:var(--short)">HYPE price ↓</text>
+      <path d="M160,149 h30" style="stroke:var(--short); stroke-width:1.5; fill:none; marker-end:url(#arrowr)"/>
+      <rect x="190" y="126" width="150" height="46" rx="8" style="fill:var(--short-soft); stroke:var(--short); stroke-width:1.5"/>
+      <text x="265" y="146" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">Paper gains</text>
+      <text x="265" y="161" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">vaporize instantly</text>
+      <path d="M340,149 h30" style="stroke:var(--short); stroke-width:1.5; fill:none; marker-end:url(#arrowr)"/>
+      <rect x="370" y="126" width="150" height="46" rx="8" style="fill:var(--short-soft); stroke:var(--short); stroke-width:1.5"/>
+      <text x="445" y="146" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">Premium to NAV</text>
+      <text x="445" y="161" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">compresses</text>
+      <path d="M520,149 h30" style="stroke:var(--short); stroke-width:1.5; fill:none; marker-end:url(#arrowr)"/>
+      <rect x="550" y="126" width="140" height="46" rx="8" style="fill:var(--short-soft); stroke:var(--short); stroke-width:1.5"/>
+      <text x="620" y="146" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">Leverage works</text>
+      <text x="620" y="161" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">downward, forced selling</text>
+
+      <text x="350" y="200" text-anchor="middle" style="font:400 12px var(--body); fill:var(--ink-soft)">This is the exact MicroStrategy (MSTR) pattern: a leveraged, single-asset treasury vehicle amplifies both directions identically.</text>
+
+      <defs>
+        <marker id="arrowg" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--long)"/></marker>
+        <marker id="arrowr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--short)"/></marker>
+      </defs>
+    </svg>
+    <figcaption>Fig. 8 — PURR's reflexivity loop, and the MicroStrategy lesson it repeats</figcaption>
+  </figure>
+
+  <p><strong>The MSTR lessons that transfer directly:</strong></p>
+  <ul class="plain">
+    <li><strong>Premium/discount to NAV is the whole game.</strong> MSTR has traded at both large premiums and steep discounts to the value of its BTC holdings — buying the stock is a bet on that premium, not just on the underlying asset.</li>
+    <li><strong>Reflexivity cuts identically in both directions.</strong> The same leverage and capital-raise mechanics that inflate gains on the way up accelerate losses on the way down — there's no asymmetry in your favor.</li>
+    <li><strong>Index inclusion manufactures demand that isn't conviction.</strong> Passive funds tracking the Russell 3000 must buy PURR regardless of valuation — a real, structural bid, but not evidence anyone actually likes the price.</li>
+    <li><strong>Concentration is the point and the risk.</strong> Unlike a diversified balance sheet, 100% of the thesis rests on one token's price — precisely why the swings are so much larger than a typical equity's.</li>
+  </ul>
+  <p>Reinforcing that this isn't a one-off curiosity: billionaire investor Stanley Druckenmiller's family office disclosed a new <strong>$23 million</strong> stake in Hyperliquid Strategies in its most recent 13F, alongside new positions in Bitcoin-mining-turned-data-center operators (including Riot Platforms and Hut 8) — a signal that the MSTR-style treasury-vehicle trade is being evaluated using real valuation frameworks (fee take-rates, buyback yield, comparables to Coinbase and CME), not just momentum. <sup>[42]</sup></p>
+
+  <h3 class="q" id="s2-9"><span class="q-mark">Q</span>Why does Bitwise CIO Matt Hougan's position on HYPE and BHYP matter?</h3>
+  <p>Bitwise's Chief Investment Officer has staked out one of the most aggressive institutional theses in the space: framing Hyperliquid not as "another DEX token" but as a <strong>"super app" candidate targeting the $600 trillion global asset market</strong> — the combined value of the world's equities, bonds, commodities, and currencies that RWA perpetuals (Sections 4–7) could eventually put on-chain. <sup>[41]</sup></p>
+  <ul class="plain">
+    <li><strong>Why it carries weight:</strong> this isn't a retail influencer take — it's the investment thesis behind a regulated, SEC-registered product (BHYP) that a major asset manager put its own balance sheet and reputation behind.</li>
+    <li><strong>It's backed by product action, not just commentary.</strong> BHYP launched May 14, 2026 and was part of the launch cohort that one Bitwise analyst called "the best single-asset crypto ETP launch since Bitcoin itself" — Bitwise didn't just publish research, it shipped the wrapper.</li>
+    <li><strong>It reframes the valuation question.</strong> If you take the "super app" thesis seriously, HYPE isn't priced against other L1 tokens — it's priced against a claim on a sliver of global asset-market infrastructure, which is a very different (and much larger) total addressable market.</li>
+  </ul>
+  <div class="callout watch">
+    <h4>Weigh the source, not just the size</h4>
+    <p>Hougan's fund (BHYP) financially benefits from HYPE adoption and inflows — that doesn't make the thesis wrong, but it's a direct financial interest, not disinterested research. Treat it the way you'd treat any asset manager talking their own book: informative, worth understanding, not a substitute for your own diligence.</p>
+  </div>
+
+  <h3 class="q" id="s2-10"><span class="q-mark">Q</span>What are the overall risks around HYPE and its ETFs?</h3>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Risk</th><th>What actually happened / the mechanism</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">Oracle risk</td><td>On May 28, 2026, a synthetic SpaceX perpetual crashed <strong>45% in ~30 minutes</strong> ($2,277 → $1,254) after an off-chain oracle provider fed a post-split price without adjusting for SpaceX's stock split — <strong>405 users were liquidated across 1,393 positions.</strong></td><td>HIP-3 markets (pre-IPO, 24/7 commodities — Sections 4–5) now run ~40% of total platform volume, so this class of failure scales with exactly the growth everyone is bullish on.</td></tr>
+        <tr><td class="hi">Governance / centralization risk</td><td>The network runs on roughly <strong>27–30 validators</strong> — a small set for a platform settling trillions — and its core software is <strong>closed source</strong>. Multicoin Capital's Kyle Samani has publicly called it "Binance 2.0."</td><td>Even Grayscale's own bullish research report flags the closed-source core as an auditability risk and warns about the lack of discretionary circuit breakers in the liquidation engine — a risk the same institutions filing ETFs are documenting in writing.</td></tr>
+        <tr><td class="hi">Regulatory / incumbent risk</td><td>ICE (NYSE's parent, whose CEO publicly called Hyperliquid "bigger than NASDAQ") is, alongside CME, actively lobbying the CFTC to classify Hyperliquid's perpetuals as <strong>swaps under Dodd-Frank</strong>, citing manipulation and sanctions concerns.</td><td>Public praise and private lobbying against the same platform is a clear signal of how threatened incumbents feel — and a swaps reclassification could materially change how the product is regulated.</td></tr>
+        <tr><td class="hi">Supply / unlock risk</td><td>The Jun 6, 2026 unlock alone (≈$714M) represented more than <strong>10 months</strong> of the buyback engine's Q1 2026 capacity (2.6).</td><td>Scheduled unlocks are dated and public — but the mechanism built to absorb sell pressure is not scaled to absorb them on its own.</td></tr>
+        <tr><td class="hi">Reflexivity risk</td><td>Quarterly buybacks fell <strong>39%</strong> (Q3 2025 → Q1 2026) even as the price hit all-time highs (Fig. 6); PURR's mark-to-market swings run in both directions identically (2.8).</td><td>The bull case and the bear case run on the <em>same engine</em> — it just spins in opposite directions depending on volume.</td></tr>
+        <tr><td class="hi">Positioning / mechanical risk</td><td>Heading into the May 2026 rally, roughly <strong>56% of open interest was short</strong>; over <strong>$126M</strong> in short liquidations occurred since ~May 20, 2026 alone.</td><td>A meaningful share of the "institutional FOMO" narrative was a short squeeze forcing bears to cover — not necessarily fresh conviction buying.</td></tr>
+        <tr><td class="hi">ETF-wrapper risk</td><td>Holding exposure via THYP/BHYP/HYPG adds a custodian, an issuer, and fund-structure risk on top of an already volatile underlying token.</td><td>Self-custody of HYPE directly removes that extra layer entirely — a real tradeoff against the convenience and tax-reporting simplicity of an ETF wrapper.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout watch">
+    <h4>A practical watchlist (from the source videos)</h4>
+    <ul class="plain" style="margin-bottom:0;">
+      <li>Track the <strong>quarterly buyback figure</strong> above almost everything else — it is the earliest tell that the flywheel is reversing, regardless of what the price chart shows.</li>
+      <li>Watch how each scheduled <strong>unlock</strong> actually behaves in the market, not just its size on paper.</li>
+      <li>Watch <strong>PURR's premium to the value of its underlying HYPE holdings</strong> — when that premium compresses, the leverage that worked upward starts working downward.</li>
+      <li>Treat any RSI/overbought reading as a dated, point-in-time signal (it stood near 77 when the first source video was recorded in June 2026) — check current momentum yourself rather than relying on this document's snapshot.</li>
+      <li>If you hold exposure via an ETF rather than the token itself, consciously weigh that added custodial/structural layer against the convenience.</li>
+    </ul>
+  </div>
+
   <div class="sources">
     <h4>Sources &amp; further reading — Section 2</h4>
     <ol>
@@ -594,6 +853,8 @@
       <li id="ref15">The Block — <a href="https://www.theblock.co/news/regulation/2026-09-09-hyperliquid-policy-center-backs-cftc-fight-perpetual-futures-asks-court-drop-cme-case-414046" target="_blank" rel="noopener">"Hyperliquid Policy Center backs CFTC in fight over perpetual futures"</a></li>
       <li id="ref16">QuillAudits — <a href="https://www.quillaudits.com/blog/blockchain/guide-to-hyperevm" target="_blank" rel="noopener">"A Guide to HyperEVM and Its Growing Ecosystem"</a></li>
       <li id="ref17">Hyperliquid Wiki — <a href="https://hyperliquid-co.gitbook.io/wiki/guide/builder-guide" target="_blank" rel="noopener">"Builder Guide"</a> &amp; <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips" target="_blank" rel="noopener">HIP proposals docs</a></li>
+      <li class="primary" id="ref41">Coin Bureau (YouTube) — <a href="https://www.youtube.com/watch?v=Kqk8nAfI-O0" target="_blank" rel="noopener">"Why Big Money Is Rushing Into Hyperliquid"</a>, published Jun 15, 2026 <span style="color:var(--ink-soft); font-weight:400;">(reference video for 2.6–2.10; commentary/opinion, not a primary filing — figures are point-in-time as of publish date)</span></li>
+      <li class="primary" id="ref42">Coin Bureau (YouTube) — <a href="https://www.youtube.com/watch?v=EmCiLqrdhiA" target="_blank" rel="noopener">"Why Smart Money Is DUMPING AI for Crypto"</a>, published Sep 15, 2026 <span style="color:var(--ink-soft); font-weight:400;">(reference video for 2.6–2.10; commentary/opinion, not a primary filing — figures are point-in-time as of publish date)</span></li>
     </ol>
     <h4 style="margin-top:16px;">Analytics &amp; learning sites to bookmark</h4>
     <div class="toollist">
@@ -1076,7 +1337,7 @@
 <div class="divider-quote">"Read the contract spec before the marketing name — that one habit prevents most of the expensive surprises in this market."</div>
 
 <footer class="end">
-  <p><strong>Educational reference only, current as of September 14, 2026.</strong> Perpetuals and other leveraged derivatives carry substantial risk of loss, including total loss of posted margin, and can result in losses exceeding your initial deposit on some products. Regulatory status (Section 1), specific platform availability (Sections 2–3), protocol parameters (Sections 4–6, e.g. HYPE staking thresholds and fee shares), and reported volume figures (Section 7, which vary by source and snapshot date) are moving targets — verify directly with CFTC.gov, NFA.futures.org, each protocol's own docs, and each venue before committing capital. Nothing here is investment, legal, or tax advice.</p>
+  <p><strong>Educational reference only, current as of September 15, 2026.</strong> Perpetuals and other leveraged derivatives carry substantial risk of loss, including total loss of posted margin, and can result in losses exceeding your initial deposit on some products. Regulatory status (Section 1), specific platform availability (Sections 2–3), protocol parameters (Sections 4–6, e.g. HYPE staking thresholds and fee shares), and reported volume figures (Section 7, which vary by source and snapshot date) are moving targets — verify directly with CFTC.gov, NFA.futures.org, each protocol's own docs, and each venue before committing capital. Nothing here is investment, legal, or tax advice.</p>
 </footer>
 
 </main>
