@@ -267,6 +267,30 @@
     padding:4px 0 4px 22px; margin:36px 0; max-width:56ch; line-height:1.4;
   }
 
+  /* ---------------- 12. AUTHOR CARD ---------------- */
+  .author-card {
+    display: flex; gap: 22px; align-items: flex-start;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 26px;
+    margin: 22px 0;
+    flex-wrap: wrap;
+  }
+  .author-card img {
+    width: 96px; height: 96px; border-radius: 50%;
+    object-fit: cover; border: 2px solid var(--copper);
+    flex-shrink: 0;
+  }
+  .author-card h3 { margin: 0 0 2px; font-size: 1.25rem; }
+  .author-card .role { color: var(--copper); font-size: 14px; margin-bottom: 10px; }
+  .author-card .links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .author-card .links a {
+    font-size: 13.5px; text-decoration: none; color: var(--text);
+    background: var(--panel-2); border: 1px solid var(--line);
+    padding: 7px 12px; border-radius: 20px;
+  }
+  .author-card .links a:hover { border-color: var(--copper); color: var(--copper); }
   footer.end{
     margin-top:90px; padding-top:28px; border-top:2px solid var(--ink); font-size:13px; color:var(--ink-soft);
   }
@@ -1335,7 +1359,24 @@
 </section>
 
 <div class="divider-quote">"Read the contract spec before the marketing name — that one habit prevents most of the expensive surprises in this market."</div>
+<section style="border-bottom:none; padding-bottom: 10px;">
+    <div class="kicker">About the author</div>
+    <div class="author-card">
+    <div>
+        <h3>Somnath Banerjee</h3>
+<img src="./SomnathBanerjee.png" alt="Somnath Banerjee" width="500" height="600">
 
+        <div class="role">Co-Founder, Mosaic AI Solutions</div>
+        <p style="margin:0; color:var(--text-dim); font-size:14.5px;">Writing at the intersection of crypto infrastructure and applied AI.</p>
+        <div class="links">
+          <a href="https://www.mosaicai.co/" target="_blank" rel="noopener">🌐 mosaicai.co</a>
+          <a href="mailto:sbanerjee@mosaicai.co">✉️ Email</a>
+          <a href="https://calendly.com/sbanerjee-mosaicai/30min" target="_blank" rel="noopener">📅 Book a call</a>
+          <a href="https://www.linkedin.com/in/blockchainbanerjee/" target="_blank" rel="noopener">in BlockchainBanerjee</a>
+        </div>
+      </div>
+    </div>
+  </section>
 <footer class="end">
   <p><strong>Educational reference only, current as of September 15, 2026.</strong> Perpetuals and other leveraged derivatives carry substantial risk of loss, including total loss of posted margin, and can result in losses exceeding your initial deposit on some products. Regulatory status (Section 1), specific platform availability (Sections 2–3), protocol parameters (Sections 4–6, e.g. HYPE staking thresholds and fee shares), and reported volume figures (Section 7, which vary by source and snapshot date) are moving targets — verify directly with CFTC.gov, NFA.futures.org, each protocol's own docs, and each venue before committing capital. Nothing here is investment, legal, or tax advice.</p>
 </footer>
