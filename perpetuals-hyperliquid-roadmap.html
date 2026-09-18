@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>RWA Perpetuals - A Decentralized framework for global asset trading</title>
+<title>The Perpetuals Desk — RWA Edition</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -267,30 +267,6 @@
     padding:4px 0 4px 22px; margin:36px 0; max-width:56ch; line-height:1.4;
   }
 
-  /* ---------------- 12. AUTHOR CARD ---------------- */
-  .author-card {
-    display: flex; gap: 22px; align-items: flex-start;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 26px;
-    margin: 22px 0;
-    flex-wrap: wrap;
-  }
-  .author-card img {
-    width: 96px; height: 96px; border-radius: 50%;
-    object-fit: cover; border: 2px solid var(--copper);
-    flex-shrink: 0;
-  }
-  .author-card h3 { margin: 0 0 2px; font-size: 1.25rem; }
-  .author-card .role { color: var(--copper); font-size: 14px; margin-bottom: 10px; }
-  .author-card .links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-  .author-card .links a {
-    font-size: 13.5px; text-decoration: none; color: var(--text);
-    background: var(--panel-2); border: 1px solid var(--line);
-    padding: 7px 12px; border-radius: 20px;
-  }
-  .author-card .links a:hover { border-color: var(--copper); color: var(--copper); }
   footer.end{
     margin-top:90px; padding-top:28px; border-top:2px solid var(--ink); font-size:13px; color:var(--ink-soft);
   }
@@ -330,6 +306,7 @@
         <li><a class="sub-link" href="#s2-8">PURR &amp; the MSTR playbook</a></li>
         <li><a class="sub-link" href="#s2-9">Bitwise's Matt Hougan</a></li>
         <li><a class="sub-link" href="#s2-10">Overall risk register</a></li>
+        <li><a class="sub-link" href="#s2-11">Revenue vs. all of crypto</a></li>
       </ul>
     </li>
     <li><a class="sec-link" href="#s3"><span class="num">03</span>Trading, step by step</a>
@@ -376,9 +353,9 @@
 <main>
 
 <header class="masthead">
-  <span class="kicker">RWA Perps, Hyperliquid &amp; Onchain Orderbook</span>
-  <h1>Perpetuals, Hyperliquid - Onchain Orderbook &amp; trading across every asset class</h1>
-  <p>A gentle introduction on Real World Asset Tokenization, Perpetual futures trading and any aaset trading.  It expands into deeper technical layer: how HyperCore, HIP-3 and HIP-4 actually work, how they make Hyperliquid the leading candidate to host real-world-asset trading globally, how apps like Trade[XYZ] are built on top of it, where to watch the live data — and now, how Injective's competing finance-native L1 stacks up on RWA perpetuals specifically.</p>
+  <span class="kicker">A working reference for the roadmap ahead — RWA Edition</span>
+  <h1>Perpetuals, Hyperliquid &amp; trading across every asset class</h1>
+  <p>You already speak fluent crypto, Solidity, and LLMs. This edition adds the deep technical layer: how HyperCore, HIP-3 and HIP-4 actually work, why they make Hyperliquid the leading candidate to host real-world-asset trading globally, how apps like trade[XYZ] are built on top of it, where to watch the live data — and now, how Injective's competing finance-native L1 stacks up on RWA perpetuals specifically.</p>
   <div class="who-for">
     <span>Written for: US resident / citizen</span>
     <span>Background: Solidity + Hardhat, Coinbase/Kraken/MetaMask</span>
@@ -863,6 +840,60 @@
     </ul>
   </div>
 
+  <h3 class="q" id="s2-11"><span class="q-mark">Q</span>How does Hyperliquid's revenue rank against all of crypto?</h3>
+  <p>Independent of the buyback mechanics in 2.6, it's worth checking the top-line number those buybacks are funded by. CoinGecko's tracked ranking of on-chain revenue across <strong>all</strong> crypto projects — not just perp DEXs — for <strong>Jan 1–Sep 15, 2026</strong> puts Hyperliquid in first place, ahead of every other protocol in the market. <sup>[43]</sup></p>
+
+  <div class="stat-row">
+    <div class="stat"><span class="n tabular">#1</span><span class="l">Hyperliquid's rank among all tracked on-chain revenue generators, YTD 2026</span></div>
+    <div class="stat"><span class="n tabular">$429.04M</span><span class="l">Hyperliquid's YTD on-chain revenue (Jan 1–Sep 15, 2026)</span></div>
+    <div class="stat"><span class="n tabular">12.62%</span><span class="l">Hyperliquid's share of the entire $3.40B tracked revenue pool</span></div>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 230" role="img" aria-label="Top on-chain revenue generators bar chart, 2026 year to date">
+      <text x="10" y="20" style="font:600 11px var(--mono); fill:var(--ink-soft);">TOP ON-CHAIN REVENUE, JAN 1 – SEP 15 2026 (YTD, EXCL. STABLECOIN GIANTS)</text>
+      <text x="150" y="55" style="font:600 12px var(--body); fill:var(--ink)">1. Hyperliquid (Perps)</text>
+      <rect x="150" y="62" width="450" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="62" width="450" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="608" y="77" style="font:600 12px var(--mono); fill:var(--accent-strong)">$429.0M</text>
+
+      <text x="150" y="90" style="font:500 12px var(--body); fill:var(--ink-soft)">2. Pump.fun (Launchpad)</text>
+      <rect x="150" y="97" width="450" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="97" width="338" height="20" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="496" y="112" style="font:600 12px var(--mono); fill:var(--ink-soft)">$322.2M</text>
+
+      <text x="150" y="125" style="font:500 12px var(--body); fill:var(--ink-soft)">3. Axiom Pro (Terminal)</text>
+      <rect x="150" y="132" width="450" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="132" width="139" height="20" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="297" y="147" style="font:600 12px var(--mono); fill:var(--ink-soft)">$132.1M</text>
+
+      <text x="150" y="160" style="font:500 12px var(--body); fill:var(--ink-soft)">6. Polymarket (Prediction)</text>
+      <rect x="150" y="167" width="450" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="167" width="121" height="20" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="279" y="182" style="font:600 12px var(--mono); fill:var(--ink-soft)">$115.5M</text>
+
+      <text x="150" y="195" style="font:500 12px var(--body); fill:var(--ink-soft)">13. Aave (Lending)</text>
+      <rect x="150" y="202" width="450" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="202" width="60" height="20" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="218" y="217" style="font:600 12px var(--mono); fill:var(--ink-soft)">$56.8M</text>
+    </svg>
+    <figcaption>Fig. 9 — Hyperliquid leads every tracked on-chain protocol by revenue, not just perp DEXs <sup>[43]</sup></figcaption>
+  </figure>
+
+  <div class="callout example">
+    <h4>Worked example — how concentrated is this?</h4>
+    <p>Hyperliquid ($429.04M) + Pump.fun ($322.21M), the two largest non-stablecoin revenue generators, together made:</p>
+    <p style="text-align:center;"><span class="code">$429.04M + $322.21M = $751.25M</span></p>
+    <p>against a $3.40B tracked pool: <span class="code">$751.25M ÷ $3.40B ≈ 22.10%</span> — meaning two protocols captured more than a fifth of all tracked on-chain revenue in the market, and Hyperliquid alone out-earned the <em>next two highest earners combined</em>. <sup>[43]</sup></p>
+  </div>
+
+  <p>Context worth keeping: the full top 15 (spanning perps, launchpads, trading terminals, prediction markets, lending, and RWA issuers like Paxos) represented <strong>56.02%</strong> of the $3.40B tracked total; Tether, Circle, and Grayscale were excluded from the ranking as scale outliers or non-usage-based businesses. And despite Bitcoin falling roughly 40% over the same stretch, monthly crypto revenue still averaged <strong>$1.08B</strong> from January–August 2026 — down only 11.68% from 2025's full-year average of $1.22B, a sign that fee-generating protocols like Hyperliquid held up better than the broader market. <sup>[43]</sup></p>
+
+  <div class="callout watch">
+    <h4>A notable absence: Injective</h4>
+    <p>Injective does not appear in CoinGecko's top-15 on-chain revenue list, despite the RWA-perpetual volume growth covered in Section 7. That's a useful reminder that <strong>trading volume and revenue capture are different metrics</strong> — a platform can grow its RWA market count and notional volume quickly while still generating a comparatively small share of protocol-level fee revenue. Worth tracking both before drawing conclusions from either alone. <sup>[43]</sup></p>
+  </div>
+
   <div class="sources">
     <h4>Sources &amp; further reading — Section 2</h4>
     <ol>
@@ -879,6 +910,7 @@
       <li id="ref17">Hyperliquid Wiki — <a href="https://hyperliquid-co.gitbook.io/wiki/guide/builder-guide" target="_blank" rel="noopener">"Builder Guide"</a> &amp; <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips" target="_blank" rel="noopener">HIP proposals docs</a></li>
       <li class="primary" id="ref41">Coin Bureau (YouTube) — <a href="https://www.youtube.com/watch?v=Kqk8nAfI-O0" target="_blank" rel="noopener">"Why Big Money Is Rushing Into Hyperliquid"</a>, published Jun 15, 2026 <span style="color:var(--ink-soft); font-weight:400;">(reference video for 2.6–2.10; commentary/opinion, not a primary filing — figures are point-in-time as of publish date)</span></li>
       <li class="primary" id="ref42">Coin Bureau (YouTube) — <a href="https://www.youtube.com/watch?v=EmCiLqrdhiA" target="_blank" rel="noopener">"Why Smart Money Is DUMPING AI for Crypto"</a>, published Sep 15, 2026 <span style="color:var(--ink-soft); font-weight:400;">(reference video for 2.6–2.10; commentary/opinion, not a primary filing — figures are point-in-time as of publish date)</span></li>
+      <li class="primary" id="ref43">CoinGecko Learn — <a href="https://www.coingecko.com/learn/top-onchain-revenue-crypto-projects-2026" target="_blank" rel="noopener">"Top On-Chain Revenue Crypto Projects 2026"</a> <span style="color:var(--ink-soft); font-weight:400;">(reference article for 2.11; data covers Jan 1–Sep 15, 2026)</span></li>
     </ol>
     <h4 style="margin-top:16px;">Analytics &amp; learning sites to bookmark</h4>
     <div class="toollist">
@@ -1229,6 +1261,12 @@
       <div class="desc">Live funding rates, open interest, and liquidation heatmaps — increasingly covering Hyperliquid's RWA instruments alongside crypto pairs.</div>
       <a href="https://coinglass.com" target="_blank" rel="noopener">coinglass.com →</a>
     </div>
+    <div class="acard">
+      <span class="kind research">Research</span>
+      <div class="name">CoinGecko — On-Chain Revenue Rankings</div>
+      <div class="desc">Periodic ranking of top on-chain revenue generators across all of crypto — the source for Hyperliquid's #1 revenue rank in Section 2.11, and a good cross-check against pure volume metrics.</div>
+      <a href="https://www.coingecko.com/learn/top-onchain-revenue-crypto-projects-2026" target="_blank" rel="noopener">coingecko.com/learn →</a>
+    </div>
   </div>
 
   <div class="callout watch">
@@ -1302,6 +1340,11 @@
   </div>
   <p>The category as a whole is growing fast, not just individual venues: on-chain RWA-perpetual volume across stocks, indices, commodities, forex, and bonds rose <strong>162%</strong>, from $11.8B in December 2025 to $31.0B in January 2026. <sup>[38]</sup></p>
 
+  <div class="callout watch">
+    <h4>Volume growth ≠ revenue share</h4>
+    <p>Worth checking against a harder number: CoinGecko's Jan 1–Sep 15, 2026 ranking of on-chain revenue across <strong>all</strong> crypto protocols (Section 2.11) does not list Injective among its top 15 — that list is led by Hyperliquid at $429.04M YTD. Injective's RWA-perpetual volume above is real and growing fast, but revenue capture and trading volume are different metrics; check both before comparing the two platforms on a single number. <sup>[40]</sup></p>
+  </div>
+
   <h3 class="q" id="s7-4"><span class="q-mark">Q</span>Is there a place to track these projects?</h3>
   <div class="analytics-grid">
     <div class="acard">
@@ -1354,29 +1397,13 @@
       <li id="ref37">CoinMarketCap — <a href="https://coinmarketcap.com/exchanges/injective-protocol/" target="_blank" rel="noopener">Helix exchange listing &amp; volume</a></li>
       <li id="ref38">Ostium — <a href="https://www.ostium.com/blog/perps-on-rwas-best-dex-for-rwa-perpetuals-2026-guide" target="_blank" rel="noopener">"Perps on RWAs: Best DEX for RWA Perpetuals — 2026 Guide"</a>; Bankless — <a href="https://www.bankless.com/read/trading-rwa-perps-with-ostium" target="_blank" rel="noopener">"Trading RWA Perps with Ostium"</a></li>
       <li id="ref39">BlockEden — <a href="https://blockeden.xyz/blog/2026/04/03/perpification-rwa-perpetual-futures-tokenization-a16z-thesis/" target="_blank" rel="noopener">"Perpification: Why Perpetual Futures May Eat Real-World Asset Tokenization"</a></li>
+      <li id="ref40">CoinGecko Learn — <a href="https://www.coingecko.com/learn/top-onchain-revenue-crypto-projects-2026" target="_blank" rel="noopener">"Top On-Chain Revenue Crypto Projects 2026"</a> <span style="color:var(--ink-soft); font-weight:400;">(cited for the volume-vs-revenue comparison above; see also Section 2.11)</span></li>
     </ol>
   </div>
 </section>
 
 <div class="divider-quote">"Read the contract spec before the marketing name — that one habit prevents most of the expensive surprises in this market."</div>
-<section style="border-bottom:none; padding-bottom: 10px;">
-    <div class="kicker">About the author</div>
-    <div class="author-card">
-    <div>
-        <h3>Somnath Banerjee</h3>
-<img src="./SomnathBanerjee.png" alt="Somnath Banerjee" width="500" height="600">
 
-        <div class="role">Co-Founder, Mosaic AI Solutions</div>
-        <p style="margin:0; color:var(--text-dim); font-size:14.5px;">Writing at the intersection of crypto infrastructure and applied AI.</p>
-        <div class="links">
-          <a href="https://www.mosaicai.co/" target="_blank" rel="noopener">🌐 mosaicai.co</a>
-          <a href="mailto:sbanerjee@mosaicai.co">✉️ Email</a>
-          <a href="https://calendly.com/sbanerjee-mosaicai/30min" target="_blank" rel="noopener">📅 Book a call</a>
-          <a href="https://www.linkedin.com/in/blockchainbanerjee/" target="_blank" rel="noopener">in BlockchainBanerjee</a>
-        </div>
-      </div>
-    </div>
-  </section>
 <footer class="end">
   <p><strong>Educational reference only, current as of September 15, 2026.</strong> Perpetuals and other leveraged derivatives carry substantial risk of loss, including total loss of posted margin, and can result in losses exceeding your initial deposit on some products. Regulatory status (Section 1), specific platform availability (Sections 2–3), protocol parameters (Sections 4–6, e.g. HYPE staking thresholds and fee shares), and reported volume figures (Section 7, which vary by source and snapshot date) are moving targets — verify directly with CFTC.gov, NFA.futures.org, each protocol's own docs, and each venue before committing capital. Nothing here is investment, legal, or tax advice.</p>
 </footer>
