@@ -292,6 +292,31 @@
   ul, ol{padding-left:22px; color:var(--ink-soft);}
   li{margin-bottom:6px;}
 
+  /* ---------------- 12. AUTHOR CARD ---------------- */
+  .author-card {
+    display: flex; gap: 22px; align-items: flex-start;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 26px;
+    margin: 22px 0;
+    flex-wrap: wrap;
+  }
+  .author-card img {
+    width: 96px; height: 96px; border-radius: 50%;
+    object-fit: cover; border: 2px solid var(--copper);
+    flex-shrink: 0;
+  }
+  .author-card h3 { margin: 0 0 2px; font-size: 1.25rem; }
+  .author-card .role { color: var(--copper); font-size: 14px; margin-bottom: 10px; }
+  .author-card .links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .author-card .links a {
+    font-size: 13.5px; text-decoration: none; color: var(--text);
+    background: var(--panel-2); border: 1px solid var(--line);
+    padding: 7px 12px; border-radius: 20px;
+  }
+  .author-card .links a:hover { border-color: var(--copper); color: var(--copper); }
+  
   footer{
     border-top:1px solid var(--border);
     margin-top:48px;
@@ -315,9 +340,9 @@
 <div class="wrap">
 
   <header class="hero">
-    <span class="eyebrow">Regulatory Brief · Plain English</span>
-    <h1>The SEC's "Innovation Exemption" for Tokenized Stocks — and What It Means for RWA Platforms Like MosaicAI</h1>
-    <p class="subtitle">A layman's walkthrough of the SEC's September 17, 2026 order, with worked examples, and an honest look at what it does — and doesn't — change for a private real-world-asset (RWA) tokenization platform, set against the collapse of the CLARITY Act two days earlier.</p>
+    <span class="eyebrow">Regulatory Brief · Plain English Version</span>
+    <h1>SEC's "Innovation Exemption" for Tokenized Stocks — and What It Means for RWA Platforms Like MosaicAI</h1>
+    <p class="subtitle">A regular person's walkthrough of the SEC's September 17, 2026 order, with worked examples, and an honest look at what it does — and doesn't — change for a private real-world-asset (RWA) tokenization platform, set against the collapse of the CLARITY Act two days earlier.</p>
     <div class="meta-row">
       <span>Published: September 17, 2026</span>
       <span>Reading time: ~10 min</span>
@@ -345,7 +370,7 @@
     <h2><span class="num">1</span>The 60-Second Version</h2>
     <div class="callout tldr">
       <span class="callout-label">TL;DR</span>
-      <p><strong>The SEC just gave a green light — for five years, on a trial basis — to a new way of trading stocks on the blockchain.</strong> Instead of requiring every trading venue to become a registered stock exchange, the SEC created a temporary carve-out ("innovation exemption") for platforms called <strong>Tokenized Securities Venues (TSVs)</strong>. These venues can let people trade <strong>tokenized versions of already-public, exchange-listed stocks</strong> (think a blockchain token that represents one share of Apple or Tesla) using automated pricing robots called <strong>AMMs (automated market makers)</strong> instead of a traditional buyer/seller order book.</p>
+      <p><strong>The SEC just gave a green light — for five years, on a trial basis — to a new way of trading stocks on the blockchain.</strong> Instead of requiring every trading venue to become a registered stock exchange, the SEC created a temporary carve-out ("innovation exemption") for platforms called <strong>Tokenized Securities Venues (TSVs)</strong>. These venues can let people trade <strong>tokenized versions of already-public, exchange-listed stocks</strong> (think a blockchain token that represents one share of Apple or Nvidia) using automated pricing robots called <strong>AMMs (automated market makers)</strong> instead of a traditional buyer/seller order book.</p>
       <p>Important nuance: <strong>this exemption only covers "NMS stocks"</strong> — i.e., stocks already listed on a U.S. public exchange like the NYSE or Nasdaq. It does <strong>not</strong> cover tokenized private assets such as private real estate, private equity, or private credit — which is exactly what platforms like MosaicAI issue. So the direct legal effect on MosaicAI today is small — but the <em>signal</em> it sends is large, especially because it landed just 48 hours after Congress's own crypto market-structure bill, the CLARITY Act, collapsed in the Senate.</p>
     </div>
   </section>
@@ -598,7 +623,24 @@
     </ol>
     <div class="disclaimer">This document is an educational summary prepared for internal discussion. It is not legal advice, investment advice, or a compliance opinion. Illustrative numbers in Section 7 are hypothetical and do not represent any actual MosaicAI deal, discount, or projected outcome. Verify all regulatory interpretations with qualified securities counsel before acting.</div>
   </section>
+<section style="border-bottom:none; padding-bottom: 10px;">
+    <div class="kicker">About the author</div>
+    <div class="author-card">
+    <div>
+        <h3>Somnath Banerjee</h3>
+<img src="./SomnathBanerjee.png" alt="Somnath Banerjee" width="500" height="600">
 
+        <div class="role">Co-Founder, Mosaic AI Solutions</div>
+        <p style="margin:0; color:var(--text-dim); font-size:14.5px;">Writing at the intersection of crypto infrastructure and applied AI.</p>
+        <div class="links">
+          <a href="https://www.mosaicai.co/" target="_blank" rel="noopener">🌐 mosaicai.co</a>
+          <a href="mailto:sbanerjee@mosaicai.co">✉️ Email</a>
+          <a href="https://calendly.com/sbanerjee-mosaicai/30min" target="_blank" rel="noopener">📅 Book a call</a>
+          <a href="https://www.linkedin.com/in/blockchainbanerjee/" target="_blank" rel="noopener">in BlockchainBanerjee</a>
+        </div>
+      </div>
+    </div>
+  </section>
   <footer>
     <strong>Sources</strong>
     <ul class="sources">
