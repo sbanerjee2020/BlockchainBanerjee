@@ -338,6 +338,33 @@
   .benefit-icon.investor{background:var(--accent-soft);}
   .benefit-icon.issuer{background:var(--good-soft);}
 
+  .tile-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media(max-width:420px){ .tile-grid{grid-template-columns:1fr;} }
+  .tile{
+    background:var(--panel-alt);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .tile-icon{
+    width:32px;height:32px;
+    border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px;
+    margin-bottom:2px;
+  }
+  .tile-grid.investor .tile-icon{background:var(--accent-soft);}
+  .tile-grid.issuer .tile-icon{background:var(--good-soft);}
+  .tile-title{font-weight:700; font-size:13.5px; color:var(--ink); line-height:1.3;}
+  .tile-desc{font-size:12.5px; color:var(--ink-soft); line-height:1.45; margin:0;}
+
   /* FAQ */
   .faq-item{
     background:var(--panel);
@@ -514,23 +541,53 @@
     <div class="card-grid">
       <div class="benefit-card">
         <h3><span class="benefit-icon investor">💰</span>For the Mass-Affluent Investor</h3>
-        <ul class="check-list investor">
-          <li><strong>Fractional access to expensive stocks.</strong> Example: a share of a $600 stock is normally all-or-nothing at your broker; a tokenized version can let you buy $50 worth directly.</li>
-          <li><strong>Faster settlement.</strong> A regular stock trade settles in 1 business day (T+1); an on-chain AMM trade settles in seconds.</li>
-          <li><strong>Real ownership, not a knockoff.</strong> The "no synthetic stock" rule means your token carries the same dividend and voting rights as a normal share — not a side-bet that just tracks the price.</li>
-          <li><strong>Closer to round-the-clock trading.</strong> Because the pool is smart-contract code, not a 9:30–4:00 exchange floor, it can price trades outside normal market hours (pausing only when the real stock's trading is halted).</li>
-          <li><strong>Transparent execution.</strong> Every trade's price, size, and timestamp gets published — you can verify you got a fair fill instead of trusting a black box.</li>
-        </ul>
+        <div class="tile-grid investor">
+          <div class="tile">
+            <div class="tile-icon">🪙</div>
+            <div class="tile-title">Fractional Access</div>
+            <div class="tile-desc">Buy $50 of a $600 stock — no whole-share minimum.</div>
+          </div>
+          <div class="tile">
+            <div class="tile-icon">⚡</div>
+            <div class="tile-title">Instant Settlement</div>
+            <div class="tile-desc">Seconds on-chain, vs. 1 business day (T+1) today.</div>
+          </div>
+          <div class="tile">
+            <div class="tile-icon">🛡️</div>
+            <div class="tile-title">Real Ownership</div>
+            <div class="tile-desc">Same dividends &amp; voting rights — no synthetic knockoffs.</div>
+          </div>
+          <div class="tile">
+            <div class="tile-icon">🕐</div>
+            <div class="tile-title">Near 24/7 Trading</div>
+            <div class="tile-desc">Beyond 9:30–4:00 — pauses only when the real stock halts.</div>
+          </div>
+        </div>
       </div>
       <div class="benefit-card">
         <h3><span class="benefit-icon issuer">🏢</span>For the Token Issuer (Public Company)</h3>
-        <ul class="check-list issuer">
-          <li><strong>A new liquidity channel, at no infrastructure cost.</strong> A TSV — not the company — builds and operates the trading venue; the company doesn't need to become an exchange member anywhere new.</li>
-          <li><strong>Retail engagement &amp; visibility.</strong> AMC's Adam Aron publicly cheered this move — tokenized access can plug into the same retail enthusiasm that turned AMC into a "meme stock," now with SEC guardrails attached.</li>
-          <li><strong>You stay in control.</strong> The issuer keeps a formal right to object to — and block — its own stock from being tokenized on any given TSV. Nothing happens to your stock without your say.</li>
-          <li><strong>Built-in investor protection reduces reputational risk.</strong> Because synthetic look-alikes are banned and rights must match the real share, a company doesn't have to worry about an inferior "shadow" version of its stock confusing or harming shareholders.</li>
-          <li><strong>A live precedent to build from.</strong> Any company curious about tokenizing its own cap table (public or, eventually, private) now has a real, SEC-blessed rulebook to point to instead of a legal blank page.</li>
-        </ul>
+        <div class="tile-grid issuer">
+          <div class="tile">
+            <div class="tile-icon">🔌</div>
+            <div class="tile-title">Zero Build Cost</div>
+            <div class="tile-desc">The TSV runs the venue — you don't build new infrastructure.</div>
+          </div>
+          <div class="tile">
+            <div class="tile-icon">📈</div>
+            <div class="tile-title">Retail Buzz</div>
+            <div class="tile-desc">AMC's Adam Aron: a rerun of meme-stock energy, with guardrails.</div>
+          </div>
+          <div class="tile">
+            <div class="tile-icon">🔒</div>
+            <div class="tile-title">You Keep Control</div>
+            <div class="tile-desc">Formal right to object to — and block — tokenization of your stock.</div>
+          </div>
+          <div class="tile">
+            <div class="tile-icon">✅</div>
+            <div class="tile-title">Protected Reputation</div>
+            <div class="tile-desc">No synthetic look-alikes to confuse or dilute your shareholder base.</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
