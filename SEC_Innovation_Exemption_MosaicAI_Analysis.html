@@ -292,31 +292,6 @@
   ul, ol{padding-left:22px; color:var(--ink-soft);}
   li{margin-bottom:6px;}
 
-  /* ---------------- 12. AUTHOR CARD ---------------- */
-  .author-card {
-    display: flex; gap: 22px; align-items: flex-start;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 26px;
-    margin: 22px 0;
-    flex-wrap: wrap;
-  }
-  .author-card img {
-    width: 96px; height: 96px; border-radius: 50%;
-    object-fit: cover; border: 2px solid var(--copper);
-    flex-shrink: 0;
-  }
-  .author-card h3 { margin: 0 0 2px; font-size: 1.25rem; }
-  .author-card .role { color: var(--copper); font-size: 14px; margin-bottom: 10px; }
-  .author-card .links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-  .author-card .links a {
-    font-size: 13.5px; text-decoration: none; color: var(--text);
-    background: var(--panel-2); border: 1px solid var(--line);
-    padding: 7px 12px; border-radius: 20px;
-  }
-  .author-card .links a:hover { border-color: var(--copper); color: var(--copper); }
-  
   footer{
     border-top:1px solid var(--border);
     margin-top:48px;
@@ -340,12 +315,12 @@
 <div class="wrap">
 
   <header class="hero">
-    <span class="eyebrow">Regulatory Brief · Plain English Version</span>
-    <h1>SEC's "Innovation Exemption" for Tokenized Stocks — and What It Means for RWA Platforms Like MosaicAI</h1>
-    <p class="subtitle">A regular person's walkthrough of the SEC's September 17, 2026 order, with worked examples, and an honest look at what it does — and doesn't — change for a private real-world-asset (RWA) tokenization platform, set against the collapse of the CLARITY Act two days earlier.</p>
+    <span class="eyebrow">Regulatory Brief · Plain English</span>
+    <h1>The SEC's "Innovation Exemption" for Tokenized Stocks — and What It Means for RWA Platforms Like MosaicAI</h1>
+    <p class="subtitle">A layman's walkthrough of the SEC's September 17, 2026 order, with worked examples, and an honest look at what it does — and doesn't — change for a private real-world-asset (RWA) tokenization platform, set against the collapse of the CLARITY Act two days earlier.</p>
     <div class="meta-row">
       <span>Published: September 17, 2026</span>
-      <span>Reading time: ~10 min</span>
+      <span>Reading time: ~12 min</span>
       <span><a href="https://www.sec.gov/newsroom/press-releases/2026-90-sec-issues-innovation-exemption-facilitate-trading-tokenized-nms-stock-request-comment" target="_blank" rel="noopener">Original SEC release ↗</a></span>
     </div>
   </header>
@@ -370,7 +345,7 @@
     <h2><span class="num">1</span>The 60-Second Version</h2>
     <div class="callout tldr">
       <span class="callout-label">TL;DR</span>
-      <p><strong>The SEC just gave a green light — for five years, on a trial basis — to a new way of trading stocks on the blockchain.</strong> Instead of requiring every trading venue to become a registered stock exchange, the SEC created a temporary carve-out ("innovation exemption") for platforms called <strong>Tokenized Securities Venues (TSVs)</strong>. These venues can let people trade <strong>tokenized versions of already-public, exchange-listed stocks</strong> (think a blockchain token that represents one share of Apple or Nvidia) using automated pricing robots called <strong>AMMs (automated market makers)</strong> instead of a traditional buyer/seller order book.</p>
+      <p><strong>The SEC just gave a green light — for five years, on a trial basis — to a new way of trading stocks on the blockchain.</strong> Instead of requiring every trading venue to become a registered stock exchange, the SEC created a temporary carve-out ("innovation exemption") for platforms called <strong>Tokenized Securities Venues (TSVs)</strong>. These venues can let people trade <strong>tokenized versions of already-public, exchange-listed stocks</strong> (think a blockchain token that represents one share of Apple or Tesla) using automated pricing robots called <strong>AMMs (automated market makers)</strong> instead of a traditional buyer/seller order book.</p>
       <p>Important nuance: <strong>this exemption only covers "NMS stocks"</strong> — i.e., stocks already listed on a U.S. public exchange like the NYSE or Nasdaq. It does <strong>not</strong> cover tokenized private assets such as private real estate, private equity, or private credit — which is exactly what platforms like MosaicAI issue. So the direct legal effect on MosaicAI today is small — but the <em>signal</em> it sends is large, especially because it landed just 48 hours after Congress's own crypto market-structure bill, the CLARITY Act, collapsed in the Senate.</p>
     </div>
   </section>
@@ -380,6 +355,7 @@
     <h2><span class="num">2</span>What Did the SEC Actually Do?</h2>
     <p>Normally in the U.S., if you want to run a venue where people buy and sell stocks, you have two choices: become a registered <strong>national securities exchange</strong> (like the NYSE) or a registered <strong>Alternative Trading System / broker-dealer</strong>. Both come with heavy compliance obligations built for a world of human market makers and centralized order books.</p>
     <p>The SEC's order says: for a specific, limited, closely-watched pilot, a new kind of venue — a <strong>Tokenized Securities Venue (TSV)</strong> — does <strong>not</strong> have to register as an "exchange," and the people supplying the trading capital ("liquidity providers") don't have to register as a "dealer," as long as everyone follows a specific rulebook (see Section 4).</p>
+    <p>SEC Chair <strong>Paul Atkins</strong> framed it as four core conditions: TSVs must be qualified, U.S.-domiciled entities that comply with OFAC sanctions rules; trading is permissioned, restricted to eligible participants only; <strong>synthetic tokenized stocks are banned</strong> — a token must be issued by the real issuer (or its agent), or tokenized by an unaffiliated third party, and must carry the same dividend, voting, and other rights as the underlying share; and the <strong>underlying issuer has the right to object to and block</strong> its stock from being traded on a given TSV. Ordinary anti-fraud and anti-manipulation rules under federal securities law continue to apply in full — this exemption removes a registration requirement, not investor-protection law.</p>
 
     <figure class="diagram-card">
       <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Comparison of traditional exchange trading and TSV AMM trading">
@@ -486,14 +462,18 @@
     <table>
       <thead><tr><th>Condition</th><th>Plain-English meaning</th></tr></thead>
       <tbody>
+        <tr><td>U.S. entity + OFAC compliance</td><td>A TSV must be a qualified U.S.-domiciled operator and screen for sanctioned parties — no offshore, anonymous venues.</td></tr>
+        <tr><td>Permissioned access only</td><td>Trading is restricted to eligible, verified participants — not an open, anyone-can-trade public pool.</td></tr>
+        <tr><td>No synthetic stock</td><td>A token must be a real claim on the actual share (issued by the issuer/agent, or tokenized by a vetted third party) — a look-alike "synthetic" derivative that just tracks the price is banned.</td></tr>
+        <tr><td>Equal rights for token holders</td><td>A tokenized Apple share must carry the same dividend, voting, and other rights as a real Apple share.</td></tr>
+        <tr><td>Issuer objection &amp; block right</td><td>The underlying company can object to — and outright block — its stock from being tokenized and traded on a given TSV. Stronger than a courtesy notice: it's a veto.</td></tr>
         <tr><td>Symbol &amp; volume limits</td><td>Only a limited list of tokenized stocks, and capped trading volume — this is a controlled pilot, not an open floodgate.</td></tr>
-        <tr><td>Equal rights for token holders</td><td>A tokenized Apple share must carry the same economic/voting rights as a real Apple share — no second-class "synthetic" exposure.</td></tr>
-        <tr><td>Issuer notice</td><td>If a TSV wants to list a tokenized version of a company's stock, it must tell that company first.</td></tr>
         <tr><td>Public, auditable smart contracts on permissionless chains</td><td>The trading code must be visible and checkable by anyone, and can't run on a private, closed blockchain the operator controls.</td></tr>
         <tr><td>Synchronized trading halts</td><td>If the NYSE/Nasdaq halts trading in the real stock (e.g., news pending), the tokenized version must halt too.</td></tr>
+        <tr><td>Anti-fraud &amp; anti-manipulation rules still apply</td><td>Existing federal securities law protections aren't waived — only the exchange/dealer registration requirement is.</td></tr>
         <tr><td>Public disclosure</td><td>TSVs must publicly disclose their operations and any of their own trading activity on the venue (conflict-of-interest transparency).</td></tr>
-        <tr><td>5-year sunset</td><td>The exemption automatically expires ~September 2031 unless the SEC acts again — this is explicitly a pilot, not a permanent rule.</td></tr>
-        <tr><td>Dealer exemption for liquidity providers</td><td>Firms that put their own capital into the AMM pool to help it function are exempted from registering as broker-dealers, provided it's their own proprietary capital.</td></tr>
+        <tr><td>Temporary: 5-year pilot → possible permanent rule</td><td>The exemption expires ~September 2031; the SEC will collect public comments and then consider writing a permanent rule, rather than making this permanent today.</td></tr>
+        <tr><td>Dealer exemption for liquidity providers</td><td>Firms that put their own proprietary capital into the AMM pool to help it function are exempted from registering as broker-dealers.</td></tr>
       </tbody>
     </table>
     </div>
@@ -501,12 +481,27 @@
       <span class="callout-label">Scope limit — read twice</span>
       <p>This order is about <strong>NMS stocks only</strong> — tokenized wrappers of shares already trading on a registered U.S. exchange. It is <strong>not</strong> a general blockchain-trading law, and it explicitly does <strong>not</strong> touch private securities, Reg D placements, real estate, private credit, or venture equity — the categories MosaicAI works in.</p>
     </div>
+
+    <div class="callout good">
+      <span class="callout-label">Industry reaction: AMC's Adam Aron</span>
+      <p>AMC Entertainment Chairman &amp; CEO <strong>Adam Aron</strong> publicly praised the decision, describing it as a five-year pilot built on mandatory investor protection: no synthetic tokenized stocks, full voting and dividend rights attached to every token, and issuers retaining the right to object to trading of their own securities on a TSV. He went further and <strong>called on Robinhood</strong> to apply those same three standards (investor protection, no synthetics, issuer objection rights) to its tokenized-stock offerings <em>outside</em> the U.S. — a reminder that the "rulebook" in Section 4 is quickly becoming the industry's de facto global benchmark, not just a U.S. compliance checkbox.</p>
+    </div>
   </section>
 
   <!-- 5. CONTEXT -->
   <section id="context">
     <h2><span class="num">5</span>Context: This Landed Right After the CLARITY Act Died</h2>
-    <p>Two days before this order, on <strong>September 15, 2026</strong>, the U.S. Senate failed a procedural ("cloture") vote on the <strong>CLARITY Act</strong> — the most significant attempt yet to write a comprehensive federal rulebook for digital assets, including which regulator (SEC vs. CFTC) oversees which tokens. The vote failed <strong>49–50</strong>, short of the 60 votes needed, with three Republicans (Collins, Hawley, Moran) voting no alongside Democratic opposition tied partly to concerns about the President's personal crypto holdings. Coverage of the vote and reaction is widely discussed, including in commentary videos like <a href="https://www.youtube.com/watch?v=CwrG4fV4dmw" target="_blank" rel="noopener">"The Clarity Act is DEAD"</a> and <a href="https://www.youtube.com/watch?v=z8K9Ha8eDYo" target="_blank" rel="noopener">an interview with the Solana Policy Institute's Kristin Smith on the backlash</a>.</p>
+    <p>Two days before this order, on <strong>September 15, 2026</strong>, the U.S. Senate failed a procedural ("cloture") vote on the <strong>CLARITY Act</strong> (formally the Crypto Market Clarity Act, H.R. 3633) — the most significant attempt yet to write a comprehensive federal rulebook for digital assets, including which regulator (SEC vs. CFTC) oversees which tokens. The vote failed <strong>49–50</strong> — affirmative votes came in below even 50, well short of the 60 needed to open debate — with three Republicans (Collins, Hawley, Moran) voting no alongside unified Democratic opposition tied partly to concerns about the President's personal crypto holdings. Coverage of the vote and reaction is widely discussed, including in commentary videos like <a href="https://www.youtube.com/watch?v=CwrG4fV4dmw" target="_blank" rel="noopener">"The Clarity Act is DEAD"</a> and <a href="https://www.youtube.com/watch?v=z8K9Ha8eDYo" target="_blank" rel="noopener">an interview with the Solana Policy Institute's Kristin Smith on the backlash</a>.</p>
+
+    <h3>What was actually in the bill Democrats rejected</h3>
+    <p>Per <a href="https://www.wublockchain.xyz/articles/wu-weekly-fed-rate-hike-coinex-shutdown-clarity-act-vote-fails-1938" target="_blank" rel="noopener">WuBlockchain's reporting</a>, Senate Republicans had released a revised text just before the vote — billed as their "last, best and final" offer — that already included real concessions:</p>
+    <ul>
+      <li><strong>An ethics package Trump himself agreed to:</strong> officials would have to divest "large" crypto holdings or place them in blind trusts, with state attorneys general empowered to enforce it — a direct answer to the conflict-of-interest objection.</li>
+      <li><strong>A narrowed Blockchain Regulatory Certainty Act (BRCA):</strong> its safe-harbor was cut back to Bank Secrecy Act / civil enforcement only, removing protection from criminal prosecution (including under Section 1960) — i.e., less of a shield for bad actors than the original draft.</li>
+      <li><strong>A stablecoin "circuit breaker":</strong> if regulators saw large-scale deposits fleeing community banks into stablecoins, they could step in — with Treasury Secretary <strong>Scott Bessent</strong> holding final say.</li>
+      <li><strong>The "Ag Amendment":</strong> new restrictions on vertical integration, related-party dealing, and conflicts of interest for digital commodity exchanges/brokers/dealers, plus explicit confirmation that state consumer-protection laws still apply, that developer protections don't exempt anyone from derivatives law, and that prediction markets are carved out untouched.</li>
+    </ul>
+    <p>Even with all of that on the table, the bill still couldn't clear 50 "yes" votes — a sign the divide is deeper than any single provision, and that a rewritten text alone won't unlock 2026 passage.</p>
 
     <figure class="diagram-card">
       <svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Timeline from CLARITY Act failure to SEC exemption">
@@ -554,7 +549,8 @@
         <ul>
           <li>MosaicAI's Genie Investor P2P secondary market today relies on manual matching between verified holders, bounded by Rule 144 holding periods and ongoing accreditation checks — not an AMM.</li>
           <li>This order is the <strong>first concrete precedent</strong> of the SEC blessing an AMM-based, permissioned trading venue for tokenized securities instead of requiring full exchange/ATS registration. That is the exact structural problem private RWA platforms face if they ever want continuous, algorithmic secondary liquidity.</li>
-          <li>The conditions (issuer notice, holder-rights parity, public auditable contracts, synchronized halts, disclosure) are effectively a <strong>preview checklist</strong> for what a future "private-securities TSV" exemption would likely require.</li>
+          <li>The conditions (issuer objection/block rights, no-synthetic-token rule, holder-rights parity, public auditable contracts, synchronized halts, disclosure) are effectively a <strong>preview checklist</strong> for what a future "private-securities TSV" exemption would likely require.</li>
+          <li><strong>Directly actionable today:</strong> the "no synthetic tokens" and "issuer/sponsor objection right" standards map almost one-to-one onto what a sound private RWA platform should already guarantee — that each token is a genuine, redeemable claim on the underlying property, and that the deal sponsor formally consents to (and can restrict) how their asset's token trades. Formalizing that consent step now, before any regulator asks, mirrors exactly what Adam Aron is asking Robinhood to do voluntarily overseas.</li>
         </ul>
       </div>
     </div>
@@ -623,28 +619,12 @@
     </ol>
     <div class="disclaimer">This document is an educational summary prepared for internal discussion. It is not legal advice, investment advice, or a compliance opinion. Illustrative numbers in Section 7 are hypothetical and do not represent any actual MosaicAI deal, discount, or projected outcome. Verify all regulatory interpretations with qualified securities counsel before acting.</div>
   </section>
-<section style="border-bottom:none; padding-bottom: 10px;">
-    <div class="kicker">About the author</div>
-    <div class="author-card">
-    <div>
-        <h3>Somnath Banerjee</h3>
-<img src="./SomnathBanerjee.png" alt="Somnath Banerjee" width="500" height="600">
 
-        <div class="role">Co-Founder, Mosaic AI Solutions</div>
-        <p style="margin:0; color:var(--text-dim); font-size:14.5px;">Writing at the intersection of crypto infrastructure and applied AI.</p>
-        <div class="links">
-          <a href="https://www.mosaicai.co/" target="_blank" rel="noopener">🌐 mosaicai.co</a>
-          <a href="mailto:sbanerjee@mosaicai.co">✉️ Email</a>
-          <a href="https://calendly.com/sbanerjee-mosaicai/30min" target="_blank" rel="noopener">📅 Book a call</a>
-          <a href="https://www.linkedin.com/in/blockchainbanerjee/" target="_blank" rel="noopener">in BlockchainBanerjee</a>
-        </div>
-      </div>
-    </div>
-  </section>
   <footer>
     <strong>Sources</strong>
     <ul class="sources">
       <li><a href="https://www.sec.gov/newsroom/press-releases/2026-90-sec-issues-innovation-exemption-facilitate-trading-tokenized-nms-stock-request-comment" target="_blank" rel="noopener">SEC.gov — "SEC Issues 'Innovation Exemption' to Facilitate the Trading of Tokenized NMS Stock and Request for Comment" (Sept 17, 2026)</a></li>
+      <li><a href="https://www.wublockchain.xyz/articles/wu-weekly-fed-rate-hike-coinex-shutdown-clarity-act-vote-fails-1938" target="_blank" rel="noopener">WuBlockchain — "Wu Weekly: Fed Rate Hike, CoinEx Shutdown, Clarity Act Vote Fails" (Sept 2026) — CLARITY Act bill text detail; SEC's four core conditions; Adam Aron/AMC reaction</a></li>
       <li><a href="https://www.cnbc.com/2026/09/15/senate-cloture-vote-on-clarity-act-fails-dealing-regulatory-setback-to-crypto-industry.html" target="_blank" rel="noopener">CNBC — "Senate cloture vote on Clarity Act fails, dealing regulatory blow to crypto industry" (Sept 15, 2026)</a></li>
       <li><a href="https://www.coindesk.com/policy/2026/09/15/crypto-clarity-act-flames-out-in-failed-u-s-senate-vote" target="_blank" rel="noopener">CoinDesk — "Crypto's biggest Senate push falls flat as the Clarity Act fails to clear a crucial procedural vote"</a></li>
       <li><a href="https://www.forbes.com/sites/digital-assets/2026/09/16/after-clarity-act-stalls-sec-and-cftc-take-on-bigger-role/" target="_blank" rel="noopener">Forbes — "What Comes Next For Crypto Regulation After The CLARITY Act Stalls" (Sept 16, 2026)</a></li>
