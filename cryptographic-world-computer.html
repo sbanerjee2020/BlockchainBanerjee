@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Cryptographic World Computer — Team Briefing</title>
+<!--
+  ============================================================
+  HOW TO EDIT THIS FILE
+  - Everything is in this single file: no build step, no external dependencies.
+  - Text: edit the HTML below directly, OR click "✎ Edit mode" in the top bar,
+    edit in the browser, then click "⬇ Save copy" to download the edited file.
+  - Colors: change the CSS variables in :root (light) and the dark blocks.
+  - Numbers used by calculators live in the CONFIG object at the top of <script>.
+  - Each section is a <section id="..."> — reorder or delete freely; the nav is
+    built automatically from <section data-nav="Label">.
+  ============================================================
+-->
+<style>
+:root{
+  --bg:#f7f6f2; --panel:#ffffff; --ink:#1c1d21; --muted:#5d6170; --line:#e3e1da;
+  --accent:#4f46e5; --accent-soft:#eef0ff; --c2015:#c98a00; --c2025:#1f9d55; --c2030:#2563eb;
+  --warn:#b45309; --warn-soft:#fff6e6; --good:#15803d; --good-soft:#eafaf0; --bad:#b91c1c;
+  --code-bg:#14161c; --code-ink:#e6e8ee;
+  --radius:12px; --maxw:1080px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111318; --panel:#1a1d24; --ink:#e8e9ee; --muted:#9aa0ae; --line:#2b2f39;
+    --accent:#8b8cff; --accent-soft:#23254a; --c2015:#e0a82e; --c2025:#3cc77a; --c2030:#5b9bff;
+    --warn:#f5a14a; --warn-soft:#2d2416; --good:#4ade80; --good-soft:#15291d; --bad:#f87171;
+    --code-bg:#0b0c10; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111318; --panel:#1a1d24; --ink:#e8e9ee; --muted:#9aa0ae; --line:#2b2f39;
+  --accent:#8b8cff; --accent-soft:#23254a; --c2015:#e0a82e; --c2025:#3cc77a; --c2030:#5b9bff;
+  --warn:#f5a14a; --warn-soft:#2d2416; --good:#4ade80; --good-soft:#15291d; --bad:#f87171;
+  --code-bg:#0b0c10; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
+a{color:var(--accent)}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar .in{max-width:var(--maxw);margin:0 auto;padding:8px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.topbar strong{font-size:14px;margin-right:auto}
+.btn{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:5px 10px;border-radius:8px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+nav.toc{max-width:var(--maxw);margin:0 auto;padding:6px 16px 10px;display:flex;gap:6px;flex-wrap:wrap}
+nav.toc a{font-size:12.5px;text-decoration:none;color:var(--muted);border:1px solid var(--line);padding:2px 9px;border-radius:999px;background:var(--panel)}
+nav.toc a:hover{color:var(--accent);border-color:var(--accent)}
+main{max-width:var(--maxw);margin:0 auto;padding-inline:16px;padding-block:24px 80px}
+header.hero{padding-block:28px 8px}
+header.hero h1{font-size:clamp(28px,5vw,46px);line-height:1.1;margin:0 0 10px;letter-spacing:-.02em}
+header.hero p.lede{font-size:18px;color:var(--muted);max-width:760px;margin:0}
+.meta{font-size:13px;color:var(--muted);margin-top:12px}
+section{margin-top:56px}
+h2{font-size:26px;letter-spacing:-.01em;margin:0 0 6px}
+h2 .num{color:var(--accent);font-variant-numeric:tabular-nums;margin-right:8px}
+h3{font-size:18px;margin:26px 0 6px}
+.sub{color:var(--muted);margin:0 0 18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.kpi .v{font-size:30px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:13px;color:var(--muted)}
+.kpi .d{font-size:12.5px;margin-top:4px}
+.eli5{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;padding:12px 16px;margin:14px 0}
+.eli5::before{content:"In plain English";display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.note{background:var(--warn-soft);border-left:4px solid var(--warn);border-radius:8px;padding:10px 14px;margin:14px 0;font-size:14.5px}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid currentColor}
+.y15{color:var(--c2015)} .y25{color:var(--c2025)} .y30{color:var(--c2030)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:640px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:color-mix(in srgb,var(--panel) 80%,var(--bg))}
+tr:last-child td{border-bottom:0}
+td.t{font-weight:600;white-space:nowrap}
+pre{background:var(--code-bg);color:var(--code-ink);padding:14px 16px;border-radius:10px;overflow-x:auto;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin:10px 0;position:relative}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+p code,li code,td code{background:color-mix(in srgb,var(--accent-soft) 70%,transparent);padding:1px 5px;border-radius:5px}
+.copy{position:absolute;top:8px;right:8px;font-size:11px;padding:2px 8px;border-radius:6px;border:1px solid #444;background:#222;color:#ddd;cursor:pointer}
+details{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:4px 16px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;padding:10px 0}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+.svgbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px;overflow-x:auto}
+.svgbox svg{display:block;width:100%;height:auto;min-width:560px}
+.svgbox .cap{font-size:13px;color:var(--muted);margin:6px 4px 0}
+svg text{fill:var(--ink);font-family:inherit}
+svg .mut{fill:var(--muted)}
+.ctrl{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin:8px 0 14px}
+.ctrl label{font-size:14px;display:flex;flex-direction:column;gap:2px;min-width:200px;flex:1}
+.ctrl input[type=range]{width:100%;accent-color:var(--accent)}
+.ctrl output{font-weight:700;font-variant-numeric:tabular-nums}
+.big{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.bar{height:22px;border-radius:6px;background:var(--accent);transition:width .3s}
+.barrow{display:grid;grid-template-columns:150px 1fr 90px;gap:10px;align-items:center;font-size:13.5px;margin:6px 0}
+.barrow .track{background:color-mix(in srgb,var(--line) 70%,transparent);border-radius:6px;overflow:hidden}
+.barrow span:last-child{font-variant-numeric:tabular-nums;text-align:right}
+.res{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.res li{font-size:14.5px}
+.res .k{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border-radius:5px;margin-right:6px;background:var(--accent-soft);color:var(--accent);min-width:58px;text-align:center}
+.timeline{position:relative;padding-left:22px;border-left:3px solid var(--line);margin-left:6px}
+.timeline .ev{position:relative;margin:0 0 18px}
+.timeline .ev::before{content:"";position:absolute;left:-31px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--panel);border:3px solid var(--accent)}
+.timeline .ev.fut::before{border-style:dashed}
+.timeline .when{font-size:12.5px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.glossary dt{font-weight:700;margin-top:12px}
+.glossary dd{margin:2px 0 0;color:var(--ink)}
+.glossary dd .tech{display:block;color:var(--muted);font-size:13.5px}
+.pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.editing [contenteditable="true"]{outline:2px dashed var(--accent);outline-offset:4px}
+footer{margin-top:60px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+@media (max-width:560px){.barrow{grid-template-columns:100px 1fr 70px}}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="in">
+  <strong>🌐 The Cryptographic World Computer — team briefing</strong>
+  <button class="btn" id="editBtn" title="Make the page editable in the browser">✎ Edit mode</button>
+  <button class="btn" id="saveBtn" title="Download this page (with your edits) as a new .html file">⬇ Save copy</button>
+  <button class="btn" id="themeBtn" title="Toggle light/dark">◐ Theme</button>
+</div>
+<nav class="toc" id="toc"></nav>
+</div>
+
+<main id="doc">
+
+<header class="hero">
+  <h1>Ethereum is becoming a “cryptographic world computer”</h1>
+  <p class="lede">A developer-oriented breakdown of Vitalik Buterin’s essay (27 Sep 2026): what changes between 2015 and 2030, why it matters, the numbers behind it, and how a Solidity + Python + React + AI team can start building for it today.</p>
+  <div class="meta">Source: <a href="https://vitalik.eth.limo/general/2026/09/27/the_cryptographic_world_computer.html" target="_blank" rel="noopener">vitalik.eth.limo — “The cryptographic world computer”</a> · Briefing prepared 2 Oct 2026 · Roadmap items marked “planned” are subject to change. Check <a href="https://forkcast.org" target="_blank" rel="noopener">forkcast.org</a> and <a href="https://strawmap.org" target="_blank" rel="noopener">strawmap.org</a> for current status.</div>
+</header>
+
+<!-- ====================================================== -->
+<section id="tldr" data-nav="TL;DR">
+  <h2><span class="num">01</span>TL;DR in 60 seconds</h2>
+  <p class="sub">The essay’s main point: Ethereum is still called a “blockchain” mostly for historical reasons.</p>
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="margin-top:0">The three big shifts</h3>
+      <ol>
+        <li><b>Verification:</b> “download every block and re-run it” → <b>sample a little data (PeerDAS) + check a short proof (SNARK)</b>.</li>
+        <li><b>Consensus:</b> Proof of Work → Proof of Stake → <b>much faster PoS with few-slot finality</b>.</li>
+        <li><b>Block building:</b> one miner decides → <b>several parties build each block together</b> (FOCIL, builders, private mempools).</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Why your team should care</h3>
+      <ul>
+        <li><b>Gas pricing will reward how your code is structured.</b> Parallel-friendly, well-encapsulated code will cost less than one big serial transaction.</li>
+        <li><b>ZK proofs move into the base layer.</b> Privacy and verifiability become things the protocol provides by default.</li>
+        <li><b>Hegotá (2027) is probably the last “normal” fork.</b> After it come recursive STARKs, automated formal verification and post-quantum cryptography, all areas where AI tooling helps a lot.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="eli5">Today, every serious participant re-checks Ethereum’s homework by redoing every sum. In the future, each participant spot-checks a few random pages to confirm the homework <i>exists</i>, and reads a short, unforgeable certificate (a proof) that shows the sums were done correctly. Checking gets far cheaper, so more people can check, and the whole system can do far more work.</div>
+</section>
+
+<!-- ====================================================== -->
+<section id="numbers" data-nav="Key numbers">
+  <h2><span class="num">02</span>The headline numbers</h2>
+  <p class="sub">2015 vs 2030 figures from the essay, with current (2025–26) protocol parameters for context.</p>
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Block / slot time</div><div class="v">~17s → 4–8s</div><div class="d">2015 PoW ≈ 17s · today 12s · 2030 target 4–8s</div></div>
+    <div class="card kpi"><div class="l">Time to “final”</div><div class="v">~200s → 8–32s</div><div class="d">2015: ~12 confirmations · today: 2 epochs = 64×12s ≈ <b>12.8 min</b></div></div>
+    <div class="card kpi"><div class="l">Data a node downloads per blob</div><div class="v">128 → 16 KiB</div><div class="d">PeerDAS: 8 of 128 columns of a 2× extended blob, so <b>8× less</b></div></div>
+    <div class="card kpi"><div class="l">Chance of being fooled (8 samples)</div><div class="v">≈ 0.27%</div><div class="d">Per node, per blob. Falls to ≈ 4×10⁻⁶ at 16 samples (see calculator)</div></div>
+  </div>
+  <div class="grid g3" style="margin-top:14px">
+    <div class="card kpi"><div class="l">Blob capacity after Fusaka BPO2</div><div class="v">14 / 21</div><div class="d">target / max blobs per block, up from 6/9 (Pectra) and 3/6 (Dencun)</div></div>
+    <div class="card kpi"><div class="l">Max blob data rate (21 blobs)</div><div class="v">224 KiB/s</div><div class="d">21 × 128 KiB ÷ 12s ≈ 19.8 GB/day of L2 data</div></div>
+    <div class="card kpi"><div class="l">Block verification cost</div><div class="v">re-execute → ~ms</div><div class="d">Verifying a SNARK takes about the same time however big the block is</div></div>
+  </div>
+  <div class="note">The 2015 and 2030 figures come from the essay’s comparison table. Blob counts and gas parameters are as of the Fusaka/BPO forks (Dec 2025 – Jan 2026) and are raised regularly, so check <a href="https://forkcast.org" target="_blank" rel="noopener">forkcast.org</a> before relying on them.</div>
+</section>
+
+<!-- ====================================================== -->
+<section id="evolution" data-nav="2010 → 2030">
+  <h2><span class="num">03</span>Bitcoin whitepaper vs Ethereum 2030, side by side</h2>
+  <p class="sub">Vitalik walks through the Bitcoin whitepaper section by section. Here is his comparison in table form, with plain-English notes added.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Question</th><th>2010 answer (Bitcoin)</th><th>2030 answer (Ethereum)</th><th>Plain-English meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="t">Was this tx authorized?</td><td>A signature</td><td>Quantum-safe signature(s), or a zero-knowledge proof</td><td>Future quantum computers could forge today’s signatures, so we switch locks. Sometimes a proof replaces the signature entirely.</td></tr>
+      <tr><td class="t">Which chain is the real one?</td><td>Proof of Work</td><td>PoS with few-slot finality + an “available” chain</td><td>Instead of an energy race, staked validators vote, and the chain is locked in within seconds rather than minutes.</td></tr>
+      <tr><td class="t">How do you verify blocks?</td><td>Download and re-compute everything</td><td>SNARK verification + PeerDAS sampling</td><td>Check a short proof and spot-check random chunks instead of redoing all the work.</td></tr>
+      <tr><td class="t">How does a tx get in?</td><td>User → mempool → miner → block</td><td>User → <b>private</b> mempool → FOCIL committee / builder → block. Signatures and proofs are stripped and aggregated early.</td><td>Many independent parties can force your tx in, nobody can peek at it first, and the heavy cryptographic checks are done before the block is built.</td></tr>
+      <tr><td class="t">Shape of computation</td><td>Linear / serial</td><td>Parallel. Proofs are processed in the mempool, and gas rules reward parallel-friendly code.</td><td>Like checkout lanes: independent work runs side by side.</td></tr>
+      <tr><td class="t">How do nodes save space?</td><td>Prune old history</td><td>Each node stores a small slice. History and state are distributed, internal tree nodes are often skipped, and data uses tailored formats.</td><td>Like BitTorrent: everyone holds some pieces and nobody needs all of them.</td></tr>
+      <tr><td class="t">What can light clients verify?</td><td>Consensus only (trust the majority on validity)</td><td>Consensus <b>and</b> validity (data availability + compute)</td><td>A phone wallet can confirm a block is correct, not just that it is popular.</td></tr>
+      <tr><td class="t">Privacy of writes</td><td>Hope nobody analyzes the UTXO graph</td><td>ZK-SNARKs</td><td>You can prove a payment was valid without showing who paid whom.</td></tr>
+      <tr><td class="t">Privacy of account policy</td><td>None</td><td>ZK-SNARKs + private account abstraction</td><td>Your wallet’s rules (multisig, limits, recovery) can stay hidden.</td></tr>
+      <tr><td class="t">Privacy of reads</td><td>Run a full node, or have none</td><td>Full node (lighter thanks to SNARKs), or TEE+ORAM, PIR</td><td>You can look up your balance without the RPC provider learning what you looked up.</td></tr>
+      <tr><td class="t">Network-layer privacy</td><td>Assume peers aren’t tracking you</td><td>Onion routing, mixnets</td><td>Your IP address isn’t linked to your transactions.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Visual: how much cryptography is in “crypto”?</h3>
+  <div class="svgbox">
+    <svg viewBox="0 0 720 260" role="img" aria-label="Stacked bars showing the growing share of advanced cryptography in 2009, 2020 and 2030">
+      <g font-size="13">
+        <!-- 2009 -->
+        <text x="20" y="62">2009</text>
+        <rect x="80" y="40" width="560" height="34" rx="6" fill="var(--c2015)" opacity=".85"/>
+        <rect x="80" y="40" width="34" height="34" rx="6" fill="var(--accent)"/>
+        <text x="122" y="62" fill="#fff">hashes + signatures; everything else is “Satoshian” design</text>
+        <!-- 2020 -->
+        <text x="20" y="122">2020</text>
+        <rect x="80" y="100" width="560" height="34" rx="6" fill="var(--c2025)" opacity=".85"/>
+        <rect x="80" y="100" width="140" height="34" rx="6" fill="var(--accent)"/>
+        <text x="90" y="122" fill="#fff">BLS, VDF/RANDAO</text>
+        <text x="230" y="122" fill="#fff">PoS consensus, account model, EVM</text>
+        <!-- 2030 -->
+        <text x="20" y="182">2030</text>
+        <rect x="80" y="160" width="560" height="34" rx="6" fill="var(--c2030)" opacity=".85"/>
+        <rect x="80" y="160" width="400" height="34" rx="6" fill="var(--accent)"/>
+        <text x="90" y="182" fill="#fff">STARKs · KZG/erasure codes · PQ sigs · ZK privacy · PIR/ORAM</text>
+        <text x="490" y="182" fill="#fff">Satoshian core</text>
+      </g>
+      <rect x="80" y="220" width="14" height="14" fill="var(--accent)"/><text x="100" y="232" font-size="12">advanced cryptography (illustrative share)</text>
+      <rect x="380" y="220" width="14" height="14" fill="var(--c2030)" opacity=".85"/><text x="400" y="232" font-size="12">classic blockchain mechanics</text>
+    </svg>
+    <p class="cap">Illustrative recreation of the essay’s “how much crypto is in crypto?” figure. Proportions are qualitative.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<section id="verify" data-nav="Verification shift">
+  <h2><span class="num">04</span>The core shift: “download &amp; re-execute” → “sample &amp; verify”</h2>
+  <p class="sub">The central technical change in the essay, and the one with the biggest knock-on effects.</p>
+
+  <div class="svgbox">
+    <svg viewBox="0 0 760 330" role="img" aria-label="Diagram comparing old and new block validation">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker>
+      </defs>
+      <text x="20" y="28" font-size="15" font-weight="700" fill="var(--c2015)">TODAY: every node redoes everything</text>
+      <rect x="20" y="44" width="130" height="70" rx="8" fill="none" stroke="var(--c2015)" stroke-width="2"/>
+      <text x="85" y="74" text-anchor="middle" font-size="13">New block</text><text x="85" y="94" text-anchor="middle" font-size="11" class="mut">full tx data</text>
+      <line x1="150" y1="79" x2="215" y2="79" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="220" y="44" width="160" height="70" rx="8" fill="none" stroke="var(--c2015)" stroke-width="2"/>
+      <text x="300" y="74" text-anchor="middle" font-size="13">Download 100%</text><text x="300" y="94" text-anchor="middle" font-size="11" class="mut">bandwidth ∝ block size</text>
+      <line x1="380" y1="79" x2="445" y2="79" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="450" y="44" width="160" height="70" rx="8" fill="none" stroke="var(--c2015)" stroke-width="2"/>
+      <text x="530" y="74" text-anchor="middle" font-size="13">Re-execute every tx</text><text x="530" y="94" text-anchor="middle" font-size="11" class="mut">CPU ∝ gas used</text>
+      <line x1="610" y1="79" x2="675" y2="79" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <text x="715" y="84" text-anchor="middle" font-size="22">✅</text>
+
+      <text x="20" y="178" font-size="15" font-weight="700" fill="var(--c2030)">2030: every node samples + checks a proof</text>
+      <rect x="20" y="194" width="130" height="70" rx="8" fill="none" stroke="var(--c2030)" stroke-width="2"/>
+      <text x="85" y="224" text-anchor="middle" font-size="13">New block</text><text x="85" y="244" text-anchor="middle" font-size="11" class="mut">+ SNARK proof</text>
+      <line x1="150" y1="214" x2="215" y2="214" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <line x1="150" y1="250" x2="215" y2="285" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="220" y="190" width="160" height="50" rx="8" fill="none" stroke="var(--c2030)" stroke-width="2"/>
+      <text x="300" y="212" text-anchor="middle" font-size="13">PeerDAS: sample ~8 cells</text><text x="300" y="229" text-anchor="middle" font-size="11" class="mut">“does all the data exist?”</text>
+      <g transform="translate(232,256)">
+        <!-- column grid -->
+        <rect x="0" y="0" width="136" height="44" rx="4" fill="none" stroke="var(--line)"/>
+      </g>
+      <g id="cells"></g>
+      <rect x="450" y="190" width="160" height="50" rx="8" fill="none" stroke="var(--c2030)" stroke-width="2"/>
+      <text x="530" y="212" text-anchor="middle" font-size="13">Verify SNARK</text><text x="530" y="229" text-anchor="middle" font-size="11" class="mut">“was it computed right?”</text>
+      <line x1="380" y1="215" x2="445" y2="215" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <line x1="610" y1="215" x2="675" y2="215" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <text x="715" y="220" text-anchor="middle" font-size="22">✅</text>
+      <text x="450" y="268" font-size="12" class="mut">Cost ≈ constant: milliseconds,</text>
+      <text x="450" y="284" font-size="12" class="mut">a few KB to ~100s of KB of proof,</text>
+      <text x="450" y="300" font-size="12" class="mut">regardless of how much gas the block used.</text>
+    </svg>
+    <p class="cap">Top: the 2015 model, where cost grows with block size. Bottom: the 2030 model, where cost stays roughly flat as blocks grow, so the network can scale without pushing out small nodes.</p>
+  </div>
+
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3 style="margin-top:0">Data Availability Sampling (PeerDAS)</h3>
+      <div class="eli5">Imagine a 100-page book has been “padded” so that <b>any 50 pages</b> are enough to rebuild the whole thing. To hide even one page for good, a cheater must hide <b>more than half</b> the book. So if you open 8 random pages and they’re all there, the odds the cheater got away with it are tiny.</div>
+      <p><b>How it works:</b> Each blob (128 KiB) is <b>erasure-coded to 2×</b> (256 KiB) using Reed-Solomon codes and committed with <b>KZG</b>. The extended data is split into <b>128 columns</b>. Each node stores and samples only a few columns (custody of at least 4, sampling 8 per slot; validators custody more). Any 64 of the 128 columns are enough to rebuild everything.</p>
+      <p>Shipped in <b>Fusaka (Dec 2025)</b> as <a href="https://eips.ethereum.org/EIPS/eip-7594" target="_blank" rel="noopener">EIP-7594</a>. The essay calls this the point where Ethereum <i>“began its transition”</i>.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">SNARK / STARK verification</h3>
+      <div class="eli5">A SNARK is a short receipt that says “I ran this program on this input and got this output”, built so that a fake receipt is mathematically impossible in practice. Checking the receipt is far quicker than redoing the work.</div>
+      <p><b>How it works:</b> A <b>zkEVM</b> (often a RISC-V zkVM running an EVM implementation) proves an entire block’s execution. Validators check the proof and skip re-execution. Recursive STARKs let many proofs be folded into one, and STARKs rely only on hashes, which makes them <b>post-quantum</b>.</p>
+      <p>Progress: real-time (&lt;12s) L1 block proving became feasible on GPU clusters in 2025. Track it live at <a href="https://ethproofs.org" target="_blank" rel="noopener">ethproofs.org</a>.</p>
+    </div>
+  </div>
+
+  <h3>🧮 Interactive: how safe is sampling?</h3>
+  <div class="card">
+    <p style="margin-top:0">The attacker withholds just enough columns that the data <b>cannot be rebuilt</b> (with a 2× extension, that means more than half). You pick random columns. What is the chance <b>every</b> one you pick happens to be available, so you are fooled?</p>
+    <div class="ctrl">
+      <label>Samples per node: <output id="sOut">8</output><input type="range" id="sIn" min="1" max="40" value="8"></label>
+      <label>Columns withheld by attacker: <output id="wOut">65</output> / 128<input type="range" id="wIn" min="1" max="128" value="65"></label>
+      <label>Honest nodes sampling independently: <output id="nOut">100</output><input type="range" id="nIn" min="1" max="2000" value="100"></label>
+    </div>
+    <div class="grid g3">
+      <div><div class="l" style="font-size:13px;color:var(--muted)">P(one node fooled)</div><div class="big" id="pOne">—</div></div>
+      <div><div class="l" style="font-size:13px;color:var(--muted)">≈ “1 in …”</div><div class="big" id="pOneIn">—</div></div>
+      <div><div class="l" style="font-size:13px;color:var(--muted)">Expected # of nodes fooled</div><div class="big" id="pAny">—</div></div>
+    </div>
+    <p id="dasMsg" style="font-size:14px;color:var(--muted)"></p>
+    <details><summary>Show the math</summary>
+      <p>Sampling <i>s</i> distinct columns out of <i>N</i>=128, where <i>w</i> are withheld and <i>N−w</i> are available. You are fooled only if all <i>s</i> samples land on available columns (hypergeometric):</p>
+      <pre>P(fooled) = C(N−w, s) / C(N, s)        ≈ ((N−w)/N)^s  for small s
+
+Worst-case attacker: w = 65 (just enough to block reconstruction)
+s = 8  → C(63,8)/C(128,8) = 0.00271   ≈ 1 in 369
+s = 16 → 3.9 × 10⁻⁶                  ≈ 1 in 255,000
+s = 32 → 6.2 × 10⁻¹³</pre>
+      <p>If the attacker withholds fewer than 64 columns, the data can still be rebuilt from what’s available, so nothing is lost. That is why the 2× erasure code matters so much.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<section id="txjourney" data-nav="Tx journey">
+  <h2><span class="num">05</span>The new transaction journey: FOCIL, private mempools, multi-party building</h2>
+  <p class="sub">“Block construction authority: single miner makes block → multi-party block construction.”</p>
+  <div class="svgbox">
+    <svg viewBox="0 0 780 300" role="img" aria-label="Transaction journey 2015 vs 2030">
+      <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+      <text x="20" y="26" font-size="14" font-weight="700" fill="var(--c2015)">2015</text>
+      <g font-size="13">
+        <rect x="70" y="10" width="90" height="34" rx="17" fill="none" stroke="var(--c2015)" stroke-width="2"/><text x="115" y="32" text-anchor="middle">User</text>
+        <line x1="160" y1="27" x2="215" y2="27" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar2)"/>
+        <rect x="220" y="10" width="140" height="34" rx="8" fill="none" stroke="var(--c2015)" stroke-width="2"/><text x="290" y="32" text-anchor="middle">Public mempool 👀</text>
+        <line x1="360" y1="27" x2="415" y2="27" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar2)"/>
+        <rect x="420" y="10" width="140" height="34" rx="8" fill="none" stroke="var(--c2015)" stroke-width="2"/><text x="490" y="32" text-anchor="middle">One miner decides</text>
+        <line x1="560" y1="27" x2="615" y2="27" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar2)"/>
+        <rect x="620" y="10" width="90" height="34" rx="8" fill="none" stroke="var(--c2015)" stroke-width="2"/><text x="665" y="32" text-anchor="middle">Block</text>
+      </g>
+      <text x="220" y="64" font-size="11.5" class="mut">Front-running / MEV visible to all</text>
+      <text x="420" y="64" font-size="11.5" class="mut">Can censor you</text>
+
+      <text x="20" y="120" font-size="14" font-weight="700" fill="var(--c2030)">2030</text>
+      <g font-size="13">
+        <rect x="70" y="140" width="90" height="34" rx="17" fill="none" stroke="var(--c2030)" stroke-width="2"/><text x="115" y="162" text-anchor="middle">User</text>
+        <line x1="160" y1="157" x2="200" y2="157" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar2)"/>
+        <rect x="205" y="120" width="170" height="74" rx="8" fill="none" stroke="var(--c2030)" stroke-width="2"/>
+        <text x="290" y="142" text-anchor="middle">Private mempool 🔒</text>
+        <text x="290" y="162" text-anchor="middle" font-size="11.5" class="mut">mixnet / onion routing</text>
+        <text x="290" y="180" text-anchor="middle" font-size="11.5" class="mut">sigs+proofs verified &amp; aggregated</text>
+        <line x1="375" y1="140" x2="430" y2="110" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar2)"/>
+        <line x1="375" y1="175" x2="430" y2="205" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar2)"/>
+        <rect x="435" y="84" width="170" height="50" rx="8" fill="none" stroke="var(--c2030)" stroke-width="2"/>
+        <text x="520" y="105" text-anchor="middle">FOCIL committee (16)</text><text x="520" y="122" text-anchor="middle" font-size="11.5" class="mut">each publishes an inclusion list</text>
+        <rect x="435" y="182" width="170" height="50" rx="8" fill="none" stroke="var(--c2030)" stroke-width="2"/>
+        <text x="520" y="203" text-anchor="middle">Builder(s)</text><text x="520" y="220" text-anchor="middle" font-size="11.5" class="mut">order + optimize (ePBS)</text>
+        <line x1="605" y1="110" x2="655" y2="150" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar2)"/>
+        <line x1="605" y1="205" x2="655" y2="168" stroke="var(--muted)" stroke-width="2" marker-end="url(#ar2)"/>
+        <rect x="660" y="140" width="90" height="34" rx="8" fill="none" stroke="var(--c2030)" stroke-width="2"/><text x="705" y="162" text-anchor="middle">Block</text>
+      </g>
+      <text x="435" y="262" font-size="11.5" class="mut">Attesters reject any block that ignores the inclusion lists, so censoring requires</text>
+      <text x="435" y="278" font-size="11.5" class="mut">all 16 includers to collude (1-of-N honesty assumption).</text>
+    </svg>
+  </div>
+
+  <div class="grid g3" style="margin-top:14px">
+    <div class="card"><h3 style="margin-top:0">FOCIL <span class="tag y30">EIP-7805</span></h3>
+      <div class="eli5">Before the chef (builder) cooks, 16 random waiters each write down a few orders that <i>must</i> be served. If the chef skips any of them, the inspectors refuse the dish.</div>
+      <p>Fork-Choice-enforced Inclusion Lists. A committee of 16 validators per slot each broadcasts a small list of mempool txs. The block is only valid in fork choice if it includes them (when there’s room). This gives <b>“guaranteed real-time transaction inclusion”</b>. Selected as a headliner for <b>Hegotá</b>.</p>
+    </div>
+    <div class="card"><h3 style="margin-top:0">Builders &amp; ePBS <span class="tag y25">EIP-7732</span></h3>
+      <div class="eli5">Specialists (builders) arrange the transactions for maximum efficiency, but the protocol itself runs the auction so nobody has to trust a middleman.</div>
+      <p>Enshrined Proposer-Builder Separation moves the builder auction into the protocol (Glamsterdam). Multi-party building, as in TEE-based <a href="https://buildernet.org" target="_blank" rel="noopener">BuilderNet</a>, spreads the builder role across several operators.</p>
+    </div>
+    <div class="card"><h3 style="margin-top:0">Private / encrypted mempools</h3>
+      <div class="eli5">You hand in a sealed envelope. Nobody, the builder included, can read it until its place in line is fixed. That ends “front-running” (someone seeing your trade and jumping ahead of it).</div>
+      <p>Techniques: threshold encryption (e.g. <a href="https://www.shutter.network" target="_blank" rel="noopener">Shutter</a>), TEEs, and eventually obfuscation (iO). Network-level privacy uses mixnets / onion routing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<section id="consensus" data-nav="Faster finality">
+  <h2><span class="num">06</span>Few-slot finality &amp; faster slots</h2>
+  <p class="sub">“Consensus: PoW → PoS → much better optimized PoS.”</p>
+  <div class="eli5"><b>Finality</b> is the point after which a transaction can’t be undone without destroying a huge amount of staked ETH. Right now it takes about 13 minutes. The goal is a few seconds, about as long as a card payment takes to approve.</div>
+  <div class="card">
+    <h3 style="margin-top:0">Time until your transaction is irreversible</h3>
+    <div id="latBars"></div>
+    <p style="font-size:13px;color:var(--muted)">Bar length is on a log scale. 2015 and 2030 values come from the essay; “Today” uses 12s slots and Casper FFG finality at 2 epochs (64 slots).</p>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><h3 style="margin-top:0">What changes technically</h3>
+      <ul>
+        <li><b>Few-slot / 3-slot finality (3SF)</b> replaces the 2-epoch Gasper wait with finality in a handful of slots.</li>
+        <li><b>Shorter slots</b> (12s → 6s, then 4s) are on the Strawmap/Lean roadmap.</li>
+        <li><b>Hash-based, post-quantum signatures</b> with SNARK aggregation will replace BLS aggregation (Lean Consensus, formerly “Beam Chain”).</li>
+      </ul>
+    </div>
+    <div class="card"><h3 style="margin-top:0">What it means for your dApp</h3>
+      <ul>
+        <li>Bridges and exchanges can credit deposits in <b>seconds rather than 13+ minutes</b>.</li>
+        <li>Cross-L2 interop gets faster, because L2s can settle against a finalized L1 much sooner.</li>
+        <li>Re-org handling in your Python indexers gets simpler. Assume a short re-org window, but keep the logic.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<section id="parallel" data-nav="Structure of computation">
+  <h2><span class="num">07</span>Structure of computation: why your Solidity design will affect gas</h2>
+  <p class="sub">“In a simple blockchain, 1 byte = 1 byte and 1 gas = 1 gas.” That stops being true.</p>
+  <div class="eli5">Picture one checkout lane versus ten. If every customer has to queue behind everyone else (shared state), adding lanes doesn’t help. If customers are independent, all ten lanes run at once. Future gas rules will charge less for “independent customer” transactions.</div>
+  <div class="svgbox">
+    <svg viewBox="0 0 760 230" role="img" aria-label="Serial versus parallel execution">
+      <text x="20" y="24" font-size="14" font-weight="700" fill="var(--c2015)">Serial: one inscrutable mega-tx</text>
+      <g id="serialRow"></g>
+      <text x="20" y="120" font-size="14" font-weight="700" fill="var(--c2030)">Parallel: encapsulated dependencies, proofs checked in the mempool</text>
+      <g id="parRows"></g>
+    </svg>
+    <p class="cap">The same 6 state transitions (A→B…E→F). In the future model, only the order-dependent state changes go onchain, and the supporting evidence (“here’s why that’s allowed”: signatures, proofs) is checked in parallel and aggregated <i>before</i> block inclusion.</p>
+  </div>
+
+  <h3>🧮 Interactive: parallel speed-up (Amdahl’s law)</h3>
+  <div class="card">
+    <div class="ctrl">
+      <label>% of your workload that conflicts (touches shared state): <output id="cOut">30</output>%<input type="range" id="cIn" min="0" max="100" value="30"></label>
+      <label>Parallel execution cores: <output id="kOut">16</output><input type="range" id="kIn" min="1" max="64" value="16"></label>
+    </div>
+    <div class="grid g3">
+      <div><div style="font-size:13px;color:var(--muted)">Max speed-up</div><div class="big" id="spd">—</div></div>
+      <div><div style="font-size:13px;color:var(--muted)">Effective throughput vs serial</div><div class="big" id="thr">—</div></div>
+      <div><div style="font-size:13px;color:var(--muted)">Lesson</div><div id="lesson" style="font-size:14px"></div></div>
+    </div>
+    <p style="font-size:13px;color:var(--muted)">speed-up = 1 / (c + (1−c)/k). The conflicting fraction caps your speed-up at 1/c, no matter how many cores there are.</p>
+  </div>
+
+  <h3>Solidity patterns that will age well</h3>
+  <div class="grid g2">
+    <div>
+      <p><b style="color:var(--bad)">❌ Hot global slot</b>: every tx writes the same storage slot, so nothing can run in parallel.</p>
+<pre><code>contract Counter {
+    uint256 public totalDeposits;            // every tx writes here
+    mapping(address =&gt; uint256) public bal;
+
+    function deposit() external payable {
+        bal[msg.sender] += msg.value;
+        totalDeposits   += msg.value;        // ← conflict hotspot
+    }
+}</code></pre>
+    </div>
+    <div>
+      <p><b style="color:var(--good)">✅ Per-user state + lazy aggregation</b>: transactions only conflict when they come from the same user.</p>
+<pre><code>contract ShardedCounter {
+    mapping(address =&gt; uint256) public bal;
+    // Totals computed off-chain / in a view, or
+    // aggregated periodically and proven with a ZK proof.
+    event Deposited(address indexed who, uint256 amt);
+
+    function deposit() external payable {
+        bal[msg.sender] += msg.value;        // disjoint slots
+        emit Deposited(msg.sender, msg.value);
+    }
+}</code></pre>
+    </div>
+  </div>
+  <ul>
+    <li>Watch <a href="https://eips.ethereum.org/EIPS/eip-7928" target="_blank" rel="noopener">EIP-7928 Block-Level Access Lists</a> (Glamsterdam). Blocks declare which slots they touch, so clients can execute and prefetch in parallel.</li>
+    <li>Move signature / proof checks off the critical path: verify once, aggregate (ERC-4337 aggregators, BLS/SNARK aggregation), and post only the result.</li>
+    <li>Design for <b>commutative</b> operations where you can (increments to per-user slots, append-only logs). Only non-commutative ordering needs to sit onchain.</li>
+  </ul>
+</section>
+
+<!-- ====================================================== -->
+<section id="storage" data-nav="Storage & light clients">
+  <h2><span class="num">08</span>Lighter nodes: distributed history &amp; state, verifying light clients</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="margin-top:0">Distributed history &amp; state</h3>
+      <div class="eli5">A library where every member keeps a few shelves at home. Together they hold the complete collection. Nobody needs a warehouse, and the books are still never lost.</div>
+      <ul>
+        <li><b>EIP-4444 / partial history expiry</b>: nodes stop serving very old history by default. Clients dropped pre-Merge history in 2025.</li>
+        <li><b>Portal Network-style</b> distributed storage: each node stores a small fraction.</li>
+        <li><b>Stateless clients</b> (Verkle or binary trees + proofs): nodes verify blocks without holding the full state, and “often don’t need to store inner tree nodes”.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Light clients that verify everything</h3>
+      <div class="eli5">Today a phone wallet asks a server “is this right?” and trusts the answer. In 2030 the phone checks a proof itself, so it no longer has to trust the server.</div>
+      <p>2010: light clients check <i>consensus</i> and trust that the majority is honest about <i>validity</i>.<br>2030: they check consensus + data availability (sampling) + compute validity (SNARK). That is <b>full-node-grade security on a phone or in a browser</b>.</p>
+      <p>Related: <a href="https://github.com/a16z/helios" target="_blank" rel="noopener">Helios</a> (Rust light client, runs in browsers via WASM).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<section id="privacy" data-nav="Privacy stack">
+  <h2><span class="num">09</span>The privacy stack</h2>
+  <p class="sub">Privacy covers four things: writes, account policy, reads and the network layer.</p>
+  <div class="grid g4">
+    <div class="card"><h3 style="margin-top:0">✍️ Writes</h3><p>ZK-SNARKs hide sender, receiver and amount while proving the tx is valid.</p><p style="font-size:13px;color:var(--muted)">e.g. Privacy Pools, Railgun, Aztec</p></div>
+    <div class="card"><h3 style="margin-top:0">🧾 Account policy</h3><p>Private account abstraction keeps your multisig thresholds, spending limits and recovery rules secret.</p><p style="font-size:13px;color:var(--muted)">ERC-4337 / EIP-7702 + ZK</p></div>
+    <div class="card"><h3 style="margin-top:0">🔍 Reads</h3><p><b>PIR</b> (Private Information Retrieval) and <b>TEE + ORAM</b> let you query an RPC without it learning what you asked for.</p></div>
+    <div class="card"><h3 style="margin-top:0">🌐 Network</h3><p>Onion routing and mixnets keep your IP address from being linked to your transaction.</p><p style="font-size:13px;color:var(--muted)">e.g. Nym, Tor</p></div>
+  </div>
+  <div class="note"><b>Further out: obfuscation (iO).</b> The “holy grail” that removes the trade-off between privacy and general-purpose computation, giving encrypted programs that many asynchronous participants can use. Vitalik covered it in a 3-part 2026 series (<a href="https://vitalik.eth.limo/general/2026/06/29/obfuscation1.html" target="_blank" rel="noopener">I</a>, <a href="https://vitalik.eth.limo/general/2026/07/28/obfuscation_part_ii_diamond_io.html" target="_blank" rel="noopener">II</a>, <a href="https://vitalik.eth.limo/general/2026/08/21/obfuscation_part_iii_local_mixing.html" target="_blank" rel="noopener">III</a>). The rest of the essay doesn’t depend on it.</div>
+</section>
+
+<!-- ====================================================== -->
+<section id="tradeoffs" data-nav="User trade-offs">
+  <h2><span class="num">10</span>What changes for users: the trade-off sheet</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Property</th><th><span class="tag y15">Ethereum 2015</span></th><th><span class="tag y30">Ethereum 2030+</span></th></tr></thead>
+    <tbody>
+      <tr><td class="t">Uptime</td><td>✅ 100%</td><td>✅ 100%</td></tr>
+      <tr><td class="t">Censorship resistance</td><td>✅ Yes</td><td>✅✅ Strong: guaranteed real-time inclusion via FOCIL</td></tr>
+      <tr><td class="t">Execution as programmed</td><td>✅ Guaranteed</td><td>✅ Guaranteed</td></tr>
+      <tr><td class="t">Irreversibility</td><td>✅</td><td>✅ (and reached far faster)</td></tr>
+      <tr><td class="t">Privacy</td><td>➕ Often stronger than servers</td><td>➕ General-purpose privacy; many special-purpose apps get very strong privacy</td></tr>
+      <tr><td class="t">Cost</td><td>➖ Very high</td><td>➖ High for general computation, much lower for specialized computation</td></tr>
+      <tr><td class="t">Latency</td><td>➖ ~17s block, ~200s for 12 confs</td><td>➖ (milder) ~4–8s slot, ~8–32s finality</td></tr>
+      <tr><td class="t">Node requirements</td><td>➖ Run a beefy node or trust someone</td><td>➖ (milder) Still run a node for the best guarantees, but requirements are much lighter</td></tr>
+    </tbody>
+  </table></div>
+  <div class="eli5">The essay’s most important point: decentralization used to be a <b>cost</b> paid for safety. With proofs, it can sometimes be a <b>performance advantage</b>. Many nodes store data in parallel, compute in parallel inside the mempool, and hide metadata in a way a single server cannot.</div>
+</section>
+
+<!-- ====================================================== -->
+<section id="roadmap" data-nav="Roadmap">
+  <h2><span class="num">11</span>Roadmap timeline</h2>
+  <p class="sub">Dates for planned forks are estimates. Check <a href="https://forkcast.org" target="_blank" rel="noopener">forkcast.org</a>, <a href="https://strawmap.org" target="_blank" rel="noopener">strawmap.org</a> and <a href="https://leanroadmap.org" target="_blank" rel="noopener">leanroadmap.org</a>.</p>
+  <div class="timeline">
+    <div class="ev"><div class="when">2015 · Frontier</div>PoW, EVM, “download and re-execute” model.</div>
+    <div class="ev"><div class="when">2022 · The Merge</div>Switch to Proof of Stake (energy use down ~99.95%).</div>
+    <div class="ev"><div class="when">2024 · Dencun (EIP-4844)</div>Blobs: cheap temporary data for L2s (target 3 / max 6). L2 fees fell more than 10×.</div>
+    <div class="ev"><div class="when">2025 · Pectra</div>EIP-7702 (EOA smart accounts), blobs 6/9, max effective balance 2048 ETH.</div>
+    <div class="ev"><div class="when">Dec 2025 · Fusaka</div><b>PeerDAS (EIP-7594)</b> plus Blob-Parameter-Only forks (blobs → 10/15 → 14/21). Gas limit raised to 60M. <i>“Ethereum began its transition.”</i></div>
+    <div class="ev fut"><div class="when">2026 · Glamsterdam</div>ePBS (EIP-7732), Block-Level Access Lists (EIP-7928) for parallel execution.</div>
+    <div class="ev fut"><div class="when">2027 · Hegotá</div>FOCIL (EIP-7805) and other proposals. <b>Likely the last “normal” fork</b> that a 2015 developer would recognize.</div>
+    <div class="ev fut"><div class="when">2027–2030 · Lean Ethereum</div>Recursive STARKs, zkEVM-verified L1, few-slot finality, 4–8s slots, post-quantum signatures, automated formal verification, distributed history and state.</div>
+    <div class="ev fut"><div class="when">Beyond</div>Possible obfuscation (iO) for fully private general computation.</div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<section id="glossary" data-nav="Glossary">
+  <h2><span class="num">12</span>Glossary in plain language</h2>
+  <p class="sub">Each term has a plain-English explanation, followed in grey by the precise version.</p>
+  <dl class="glossary card">
+    <dt>Cryptographic world computer</dt><dd>One shared computer the whole world can use, whose correctness rests on math (proofs) rather than everyone redoing the work.<span class="tech">Blockchain consensus + ZK verification + DAS + privacy cryptography + decentralized off-chain infrastructure.</span></dd>
+    <dt>SNARK (Succinct Non-interactive ARgument of Knowledge)</dt><dd>A tiny, quick-to-check receipt proving that a computation was done correctly.<span class="tech">Proof size is polylog or constant in the computation size. Examples: Groth16 (~200 bytes, needs a trusted setup), PLONK, and STARKs (hash-based, no trusted setup, post-quantum).</span></dd>
+    <dt>Zero-knowledge (ZK)</dt><dd>Proving something is true without revealing why. For example, “I’m over 18” without showing your birthday.<span class="tech">The verifier learns nothing beyond the statement’s validity.</span></dd>
+    <dt>STARK / Recursive STARK</dt><dd>A SNARK built only from hash functions, so quantum computers can’t break it. “Recursive” means a proof that checks other proofs, which lets you fold thousands into one.<span class="tech">Transparent setup, FRI-based. Recursion enables proof aggregation and incrementally verifiable computation.</span></dd>
+    <dt>zkEVM</dt><dd>A machine that produces a proof of “this Ethereum block was executed correctly”.<span class="tech">Often an EVM client compiled to RISC-V and run inside a zkVM (SP1, RISC Zero, Jolt, ZisK, OpenVM…).</span></dd>
+    <dt>Data availability (DA)</dt><dd>Making sure the data behind a block was actually published, so anyone could check or rebuild it.<span class="tech">The issue is withheld data, not invalid data. A valid-looking block whose data is missing can freeze L2s.</span></dd>
+    <dt>PeerDAS</dt><dd>Each node checks a few random puzzle pieces instead of downloading the whole puzzle.<span class="tech">EIP-7594: 1D Reed-Solomon extension, KZG cell proofs, 128 columns, gossip-based column subnets.</span></dd>
+    <dt>Erasure coding</dt><dd>Adding clever redundancy so that any half of the data can rebuild the whole. CDs and QR codes use the same idea.<span class="tech">Reed-Solomon over a polynomial: evaluate a degree-k polynomial at 2k points, and any k recover it.</span></dd>
+    <dt>KZG commitment</dt><dd>A short fingerprint of data that lets you later prove “piece #37 really belongs to this data”.<span class="tech">Polynomial commitment over BLS12-381, set up by the 2023 KZG ceremony (141k participants). Not post-quantum.</span></dd>
+    <dt>Blob</dt><dd>A cheap, temporary data attachment (128 KiB) that L2s use to post their batches.<span class="tech">EIP-4844, 4096 field elements × 32 bytes, pruned after ~18 days, with its own fee market.</span></dd>
+    <dt>Finality / few-slot finality</dt><dd>The moment a transaction can no longer be reversed. “Few-slot” means seconds instead of ~13 minutes.<span class="tech">Economic finality: reverting requires ≥1/3 of stake to be slashed.</span></dd>
+    <dt>Slot</dt><dd>The fixed time window in which one block can be proposed (12s today).</dd>
+    <dt>FOCIL</dt><dd>16 random validators each insist on a few transactions, and a block that ignores them is rejected. This makes censorship very hard.<span class="tech">EIP-7805 Fork-Choice-enforced Inclusion Lists, with a 1-of-N honesty assumption.</span></dd>
+    <dt>Mempool</dt><dd>The waiting room where transactions sit before they get into a block.</dd>
+    <dt>Private / encrypted mempool</dt><dd>A waiting room where transactions are sealed envelopes, so nobody can front-run them.</dd>
+    <dt>Builder / PBS / ePBS</dt><dd>Specialists who assemble blocks, separate from the validators who propose them. ePBS puts this split into the protocol itself.<span class="tech">EIP-7732.</span></dd>
+    <dt>MEV</dt><dd>Profit made by reordering, inserting or censoring other people’s transactions, such as sandwiching your swap.</dd>
+    <dt>Account abstraction</dt><dd>Making your wallet programmable: social recovery, spending limits, paying gas in USDC, and so on.<span class="tech">ERC-4337, EIP-7702 and native AA proposals.</span></dd>
+    <dt>PIR / ORAM / TEE</dt><dd>Ways to read data from a server without it learning what you read. A TEE is a sealed hardware vault (e.g. Intel TDX) that even its owner can’t look inside.</dd>
+    <dt>Mixnet / onion routing</dt><dd>Passing your message through several relays, each knowing only the previous and next hop, so your IP can’t be linked to your transaction.</dd>
+    <dt>Formal verification</dt><dd>Using math to prove that code matches its spec for <i>every</i> possible input, not only the cases you tested.<span class="tech">Lean 4, Coq, K framework, Certora, Halmos. Vitalik’s May 2026 post covers AI-assisted FV.</span></dd>
+    <dt>Post-quantum</dt><dd>Cryptography that stays secure even against large quantum computers.<span class="tech">Hash-based signatures (XMSS/Winternitz variants used in Lean Consensus), lattice schemes, STARKs.</span></dd>
+    <dt>Obfuscation (iO)</dt><dd>An encrypted program that anyone can run but nobody can read. In theory it unlocks fully private smart contracts.</dd>
+    <dt>Hegotá</dt><dd>The Ethereum upgrade planned for 2027 (name = Heka + Bogotá). Per Vitalik, probably the last “normal-looking” fork.</dd>
+    <dt>Strawmap / Lean Ethereum</dt><dd>Living roadmaps for the deep redesign of Ethereum’s consensus, data and execution layers.</dd>
+  </dl>
+</section>
+
+<!-- ====================================================== -->
+<section id="getstarted" data-nav="Getting started (dev)">
+  <h2><span class="num">13</span>Getting started: hands-on tracks for our team</h2>
+  <p class="sub">Matched to our stack: Solidity/EVM, Python backends, React/Next.js, and AI with Claude, Gemini and open models.</p>
+
+  <details open><summary>Track A: Verify a ZK proof in Solidity (Noir → Solidity verifier) · ~1 hour</summary>
+    <p>This is the quickest way to get a feel for “SNARK verification” on the EVM. <a href="https://noir-lang.org/docs" target="_blank" rel="noopener">Noir</a> is a Rust-like ZK language, and Barretenberg (<code>bb</code>) generates a Solidity verifier contract.</p>
+<pre><code># 1. Install toolchains
+curl -L https://raw.githubusercontent.com/noir-lang/noirup/main/install | bash &amp;&amp; noirup
+curl -L https://raw.githubusercontent.com/AztecProtocol/aztec-packages/master/barretenberg/bb/bootstrap.sh | bash  # installs bbup
+bbup
+
+# 2. New circuit
+nargo new age_check &amp;&amp; cd age_check</code></pre>
+<pre><code>// src/main.nr: prove you are ≥ 18 without revealing your age
+fn main(age: u8, threshold: pub u8) {
+    assert(age &gt;= threshold);
+}</code></pre>
+<pre><code># Prover.toml → age = "29"  threshold = "18"
+nargo execute                                   # witness
+bb prove -b ./target/age_check.json -w ./target/age_check.gz -o ./target --oracle_hash keccak
+bb write_vk -b ./target/age_check.json -o ./target --oracle_hash keccak
+bb write_solidity_verifier -k ./target/vk -o ./Verifier.sol
+# → deploy Verifier.sol with Foundry; call verify(proof, publicInputs)</code></pre>
+    <p style="font-size:13.5px;color:var(--muted)">CLI flags change between Noir/bb versions. If a command fails, check the <a href="https://noir-lang.org/docs/how_to/how-to-solidity-verifier" target="_blank" rel="noopener">official “Solidity verifier” guide</a>. Alternative stack: <a href="https://github.com/iden3/circom" target="_blank" rel="noopener">circom</a> + <a href="https://github.com/iden3/snarkjs" target="_blank" rel="noopener">snarkjs</a> (<code>snarkjs zkey export solidityverifier</code>).</p>
+  </details>
+
+  <details><summary>Track B: zkVM: prove arbitrary Rust and verify on an EVM chain (SP1 / RISC Zero) · ~half day</summary>
+    <p>This is the technology behind “SNARK-verified L1 blocks”. You write normal Rust, and the zkVM proves it ran correctly.</p>
+<pre><code>curl -L https://sp1up.succinct.xyz | bash &amp;&amp; sp1up
+cargo prove new --evm my_project &amp;&amp; cd my_project
+# program/src/main.rs: the code being proven (e.g. Fibonacci, a Merkle check, an EVM state transition)
+cd script &amp;&amp; RUST_LOG=info cargo run --release -- --execute   # dry-run, prints cycle count
+RUST_LOG=info cargo run --release --bin evm -- --system groth16  # proof + Solidity fixture
+# contracts/ : Foundry project using SP1VerifierGateway; run `forge test`</code></pre>
+    <ul>
+      <li>SP1 template: <a href="https://github.com/succinctlabs/sp1-project-template" target="_blank" rel="noopener">succinctlabs/sp1-project-template</a> · Contracts: <a href="https://github.com/succinctlabs/sp1-contracts" target="_blank" rel="noopener">sp1-contracts</a></li>
+      <li>RISC Zero: <a href="https://github.com/risc0/risc0-foundry-template" target="_blank" rel="noopener">risc0-foundry-template</a></li>
+      <li>Leaderboard of real-time L1 proving: <a href="https://ethproofs.org" target="_blank" rel="noopener">ethproofs.org</a></li>
+    </ul>
+  </details>
+
+  <details><summary>Track C: Send a blob transaction from TypeScript (viem) · ~30 min</summary>
+    <p>Blobs are the data layer that PeerDAS samples. Useful if you post data or batches, or run an app-chain.</p>
+<pre><code>npm i viem c-kzg</code></pre>
+<pre><code>// sendBlob.ts: run against Sepolia/Hoodi with a funded TEST key
+import { createWalletClient, http, parseGwei, stringToHex, toBlobs } from 'viem'
+import { privateKeyToAccount } from 'viem/accounts'
+import { sepolia } from 'viem/chains'
+import * as cKzg from 'c-kzg'
+import { setupKzg } from 'viem'
+import { mainnetTrustedSetupPath } from 'viem/node'
+
+const kzg = setupKzg(cKzg, mainnetTrustedSetupPath)
+const account = privateKeyToAccount(process.env.TEST_PK as `0x${string}`)
+const client = createWalletClient({ account, chain: sepolia, transport: http() })
+
+const blobs = toBlobs({ data: stringToHex('hello cryptographic world computer') })
+const hash = await client.sendTransaction({
+  blobs, kzg, maxFeePerBlobGas: parseGwei('30'),
+  to: '0x0000000000000000000000000000000000000000',
+})
+console.log('blob tx:', hash)</code></pre>
+    <p style="font-size:13.5px;color:var(--muted)">Docs: <a href="https://viem.sh/docs/guides/blob-transactions" target="_blank" rel="noopener">viem blob transactions guide</a>. In Python, web3.py also supports type-3 transactions. See the <a href="https://web3py.readthedocs.io" target="_blank" rel="noopener">web3.py docs</a> plus <a href="https://github.com/ethereum/c-kzg-4844" target="_blank" rel="noopener">c-kzg-4844</a> Python bindings.</p>
+  </details>
+
+  <details><summary>Track D: Python: simulate PeerDAS sampling &amp; read the consensus specs · ~1 hour</summary>
+    <p>The consensus specs are <b>executable Python</b>, which makes them a natural fit for our Python developers.</p>
+<pre><code>import random
+from math import comb
+
+N, HALF = 128, 64             # columns in extended blob; need ≥64 to reconstruct
+
+def p_fooled(samples: int, withheld: int) -&gt; float:
+    return comb(N - withheld, samples) / comb(N, samples)
+
+def simulate(samples=8, withheld=65, trials=200_000):
+    available = set(random.sample(range(N), N - withheld))
+    fooled = sum(all(c in available for c in random.sample(range(N), samples))
+                 for _ in range(trials))
+    return fooled / trials
+
+print(f"analytic  {p_fooled(8, 65):.5f}")   # 0.00271
+print(f"simulated {simulate():.5f}")</code></pre>
+<pre><code>git clone https://github.com/ethereum/consensus-specs &amp;&amp; cd consensus-specs
+make install_test &amp;&amp; make pyspec
+# Read specs/fulu/das-core.md (PeerDAS) and specs/_features/eip7805 (FOCIL)</code></pre>
+  </details>
+
+  <details><summary>Track E: Parallel-friendly &amp; formally verified Solidity with Foundry + Halmos · ~half day</summary>
+    <p>Two habits worth building now: (1) avoid hot shared storage slots, and (2) <b>prove</b> invariants rather than only fuzzing them.</p>
+<pre><code>forge init pcw &amp;&amp; cd pcw
+pip install halmos           # symbolic execution for Foundry tests (a16z)</code></pre>
+<pre><code>// test/Sharded.t.sol: a property that Halmos proves for ALL inputs
+function check_depositNeverDecreasesBalance(address who, uint96 amt) public {
+    vm.deal(who, amt);
+    uint256 beforeBal = c.bal(who);
+    vm.prank(who); c.deposit{value: amt}();
+    assert(c.bal(who) &gt;= beforeBal);
+}
+// run: halmos --function check_</code></pre>
+    <ul>
+      <li><a href="https://github.com/a16z/halmos" target="_blank" rel="noopener">a16z/halmos</a> · <a href="https://docs.certora.com" target="_blank" rel="noopener">Certora Prover</a> · <a href="https://github.com/runtimeverification/kontrol" target="_blank" rel="noopener">Kontrol</a></li>
+      <li>Check storage-slot conflicts by tracing which slots your txs touch: <code>cast run --trace</code> or <code>debug_traceTransaction</code> with the <code>prestateTracer</code>.</li>
+    </ul>
+  </details>
+
+  <details><summary>Track F: React/Next.js: a verifying light client in the browser · ~half day</summary>
+    <p>Stop blindly trusting your RPC. <a href="https://github.com/a16z/helios" target="_blank" rel="noopener">Helios</a> verifies consensus and state proofs locally and works as an EIP-1193 provider.</p>
+<pre><code>npm i @a16z/helios     # WASM build; see repo README for current package name/API</code></pre>
+<pre><code>// lib/provider.ts (client component)
+import { createHeliosProvider } from '@a16z/helios'
+export async function getVerifiedProvider() {
+  const helios = await createHeliosProvider({
+    executionRpc: process.env.NEXT_PUBLIC_RPC!,       // untrusted RPC
+    consensusRpc: 'https://www.lightclientdata.org',
+    network: 'mainnet',
+  }, 'ethereum')
+  await helios.waitSynced()
+  return helios  // pass to viem: custom(helios)
+}</code></pre>
+  </details>
+
+  <details><summary>Track G: AI × cryptographic world computer: where Claude/Gemini/open models fit</summary>
+    <p>The essay says ZK complexity “is already being heavily optimized with AI tools”, and that automated formal verification is a pillar of the post-Hegotá roadmap. Concrete projects for our team:</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Idea</th><th>How</th><th>Tools</th></tr></thead>
+      <tbody>
+        <tr><td class="t">AI-written formal specs</td><td>Feed a Solidity contract to Claude and have it draft Halmos <code>check_</code> properties or Certora CVL rules. Run them in CI, then iterate on counterexamples in an agent loop.</td><td>Claude Agent SDK / Claude Code, Halmos, Certora</td></tr>
+        <tr><td class="t">Lean 4 proofs</td><td>Use an LLM as a proof copilot for circuit or protocol lemmas. The proof checker catches hallucinations.</td><td>Lean 4 + Mathlib, <a href="https://verified-zkevm.org" target="_blank" rel="noopener">verified-zkevm.org</a></td></tr>
+        <tr><td class="t">Circuit auditing</td><td>Have the LLM look for under-constrained signals in circom/Noir, cross-checked with static analyzers.</td><td><a href="https://github.com/trailofbits/circomspect" target="_blank" rel="noopener">circomspect</a>, <a href="https://github.com/Veridise/picus" target="_blank" rel="noopener">Picus</a></td></tr>
+        <tr><td class="t">Parallelism linter</td><td>An agent reads traces and access lists and flags hot slots / serial bottlenecks, with gas forecasts for future pricing.</td><td>Python + <code>debug_traceTransaction</code> + Claude tools</td></tr>
+        <tr><td class="t">Verifiable AI inference</td><td>Prove that a small model produced an output, then verify the proof onchain.</td><td><a href="https://github.com/zkonduit/ezkl" target="_blank" rel="noopener">EZKL</a>, zkVMs</td></tr>
+        <tr><td class="t">MCP server for the chain</td><td>Expose “read via light client” and “verify proof” as MCP tools, so agents get <i>verified</i> chain data.</td><td>MCP Python SDK + Helios / web3.py</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+</section>
+
+<!-- ====================================================== -->
+<section id="resources" data-nav="Learning resources">
+  <h2><span class="num">14</span>Learning resources</h2>
+  <div class="grid g2">
+    <div class="card"><h3 style="margin-top:0">📄 Primary sources &amp; roadmaps</h3><ul class="res">
+      <li><span class="k">Article</span><a href="https://vitalik.eth.limo/general/2026/09/27/the_cryptographic_world_computer.html" target="_blank" rel="noopener">The cryptographic world computer</a> (Vitalik, Sep 2026)</li>
+      <li><span class="k">Roadmap</span><a href="https://strawmap.org" target="_blank" rel="noopener">strawmap.org</a> · <a href="https://leanroadmap.org" target="_blank" rel="noopener">leanroadmap.org</a> · <a href="https://forkcast.org" target="_blank" rel="noopener">forkcast.org</a></li>
+      <li><span class="k">Roadmap</span><a href="https://ethereum.org/en/roadmap/" target="_blank" rel="noopener">ethereum.org/roadmap</a></li>
+      <li><span class="k">Article</span><a href="https://vitalik.eth.limo/general/2024/10/17/futures2.html" target="_blank" rel="noopener">Possible futures of Ethereum: The Surge</a> (and the Merge / Scourge / Verge / Purge / Splurge parts)</li>
+      <li><span class="k">Article</span><a href="https://vitalik.eth.limo/general/2026/05/18/fv.html" target="_blank" rel="noopener">Vitalik on formal verification</a> (May 2026)</li>
+      <li><span class="k">Article</span><a href="https://vitalik.eth.limo/general/2022/02/28/complexity.html" target="_blank" rel="noopener">Encapsulated vs systemic complexity</a></li>
+    </ul></div>
+    <div class="card"><h3 style="margin-top:0">📐 Specs &amp; research</h3><ul class="res">
+      <li><span class="k">EIP</span><a href="https://eips.ethereum.org/EIPS/eip-7594" target="_blank" rel="noopener">EIP-7594 PeerDAS</a> · <a href="https://eips.ethereum.org/EIPS/eip-4844" target="_blank" rel="noopener">EIP-4844 Blobs</a></li>
+      <li><span class="k">EIP</span><a href="https://eips.ethereum.org/EIPS/eip-7805" target="_blank" rel="noopener">EIP-7805 FOCIL</a> · <a href="https://eips.ethereum.org/EIPS/eip-7732" target="_blank" rel="noopener">EIP-7732 ePBS</a> · <a href="https://eips.ethereum.org/EIPS/eip-7928" target="_blank" rel="noopener">EIP-7928 BALs</a></li>
+      <li><span class="k">Research</span><a href="https://ethresear.ch/t/peerdas-a-simpler-das-approach-using-battle-tested-p2p-components/16541" target="_blank" rel="noopener">PeerDAS, ethresear.ch</a></li>
+      <li><span class="k">Research</span><a href="https://ethresear.ch/t/fork-choice-enforced-inclusion-lists-focil-a-simple-committee-based-inclusion-list-proposal/19870" target="_blank" rel="noopener">FOCIL, ethresear.ch</a></li>
+      <li><span class="k">Research</span><a href="https://ethresear.ch/search?q=3-slot%20finality" target="_blank" rel="noopener">3-slot finality (3SF) threads</a></li>
+      <li><span class="k">Tracker</span><a href="https://ethproofs.org" target="_blank" rel="noopener">ethproofs.org</a>, real-time zkEVM L1 proving</li>
+    </ul></div>
+    <div class="card"><h3 style="margin-top:0">🎥 Videos</h3>
+      <p style="font-size:13px;color:var(--muted);margin-top:0">These are YouTube search links, so you always land on the latest talks.</p>
+      <ul class="res">
+      <li><span class="k">Video</span><a href="https://www.youtube.com/results?search_query=Justin+Drake+Beam+Chain+Lean+Ethereum" target="_blank" rel="noopener">Justin Drake: Beam Chain / Lean Ethereum</a></li>
+      <li><span class="k">Video</span><a href="https://www.youtube.com/results?search_query=PeerDAS+explained+data+availability+sampling" target="_blank" rel="noopener">PeerDAS / Data availability sampling explained</a></li>
+      <li><span class="k">Video</span><a href="https://www.youtube.com/results?search_query=FOCIL+inclusion+lists+ethereum+talk" target="_blank" rel="noopener">FOCIL &amp; inclusion lists talks</a></li>
+      <li><span class="k">Video</span><a href="https://www.youtube.com/results?search_query=Vitalik+Buterin+Devcon+keynote" target="_blank" rel="noopener">Vitalik Devcon / EthCC keynotes</a></li>
+      <li><span class="k">Video</span><a href="https://www.youtube.com/results?search_query=ZK+whiteboard+sessions+zkhack" target="_blank" rel="noopener">ZK Whiteboard Sessions (ZK Hack)</a>, best ZK primer series</li>
+      <li><span class="k">Video</span><a href="https://www.youtube.com/@EthereumFoundation" target="_blank" rel="noopener">Ethereum Foundation channel</a> (ACD calls, Devcon)</li>
+    </ul></div>
+    <div class="card"><h3 style="margin-top:0">💻 GitHub repositories</h3><ul class="res">
+      <li><span class="k">Specs</span><a href="https://github.com/ethereum/consensus-specs" target="_blank" rel="noopener">ethereum/consensus-specs</a> · <a href="https://github.com/ethereum/execution-specs" target="_blank" rel="noopener">execution-specs</a></li>
+      <li><span class="k">Lean</span><a href="https://github.com/leanEthereum" target="_blank" rel="noopener">github.com/leanEthereum</a></li>
+      <li><span class="k">KZG</span><a href="https://github.com/ethereum/c-kzg-4844" target="_blank" rel="noopener">ethereum/c-kzg-4844</a></li>
+      <li><span class="k">zkVM</span><a href="https://github.com/succinctlabs/sp1" target="_blank" rel="noopener">succinctlabs/sp1</a> · <a href="https://github.com/risc0/risc0" target="_blank" rel="noopener">risc0/risc0</a> · <a href="https://github.com/a16z/jolt" target="_blank" rel="noopener">a16z/jolt</a></li>
+      <li><span class="k">ZK DSL</span><a href="https://github.com/noir-lang/noir" target="_blank" rel="noopener">noir-lang/noir</a> · <a href="https://github.com/iden3/circom" target="_blank" rel="noopener">iden3/circom</a> · <a href="https://github.com/iden3/snarkjs" target="_blank" rel="noopener">snarkjs</a></li>
+      <li><span class="k">Privacy</span><a href="https://github.com/ethereum/kohaku" target="_blank" rel="noopener">ethereum/kohaku</a> (wallet privacy toolkit) · <a href="https://github.com/0xbow-io" target="_blank" rel="noopener">0xbow (Privacy Pools)</a> · <a href="https://github.com/AztecProtocol" target="_blank" rel="noopener">Aztec</a></li>
+      <li><span class="k">Light</span><a href="https://github.com/a16z/helios" target="_blank" rel="noopener">a16z/helios</a></li>
+      <li><span class="k">FV</span><a href="https://github.com/a16z/halmos" target="_blank" rel="noopener">a16z/halmos</a> · <a href="https://github.com/runtimeverification/kontrol" target="_blank" rel="noopener">Kontrol</a></li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<section id="actions" data-nav="Team actions">
+  <h2><span class="num">15</span>Suggested next steps for the team</h2>
+  <div class="grid g3">
+    <div class="card"><div class="tag y25">Now (Q4 2026)</div><ul>
+      <li>Run Tracks A and C as a team hack session.</li>
+      <li>Audit our contracts for hot storage slots, and refactor toward per-user state.</li>
+      <li>Add Halmos properties to CI for core contracts.</li>
+    </ul></div>
+    <div class="card"><div class="tag y30">Next (2027 · Hegotá)</div><ul>
+      <li>Plan for FOCIL: censorship resistance makes onchain auctions and liquidations more reliable.</li>
+      <li>Prototype a zkVM-verified off-chain service (Track B).</li>
+      <li>Ship a Helios-backed “verified reads” mode in our Next.js apps.</li>
+    </ul></div>
+    <div class="card"><div class="tag y15">Later (2028–2030)</div><ul>
+      <li>Plan migration to post-quantum signatures (account abstraction makes this possible).</li>
+      <li>Build privacy-by-default flows (ZK writes, PIR reads).</li>
+      <li>Invest in AI-driven formal verification as a core competency.</li>
+    </ul></div>
+  </div>
+</section>
+
+<footer>
+  Briefing based on Vitalik Buterin, “The cryptographic world computer” (27 Sep 2026), with background from public Ethereum specs and EIPs. Figures marked as current reflect protocol parameters as of early 2026, and planned-fork contents and dates may change. Code snippets are starting points: pin versions and check each tool’s docs before running. Use testnets and test keys only.
+</footer>
+</main>
+
+<script>
+/* ============ CONFIG: edit numbers here ============ */
+const CONFIG = {
+  das: { columns: 128 },
+  latency: [ // seconds until irreversible
+    { label: "2015 PoW (12 confs)", s: 200, color: "var(--c2015)" },
+    { label: "Today (Gasper, 2 epochs)", s: 768, color: "var(--c2025)" },
+    { label: "2030 worst case", s: 32, color: "var(--c2030)" },
+    { label: "2030 best case", s: 8, color: "var(--c2030)" },
+    { label: "Card payment auth", s: 3, color: "var(--muted)" }
+  ]
+};
+
+/* ---------- nav ---------- */
+const toc = document.getElementById('toc');
+document.querySelectorAll('section[data-nav]').forEach(s=>{
+  const a=document.createElement('a'); a.href='#'+s.id; a.textContent=s.dataset.nav; toc.appendChild(a);
+});
+
+/* ---------- theme toggle ---------- */
+document.getElementById('themeBtn').onclick=()=>{
+  const r=document.documentElement;
+  const dark = r.dataset.theme ? r.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme = dark ? 'light' : 'dark';
+};
+
+/* ---------- edit mode + save ---------- */
+const doc=document.getElementById('doc'), editBtn=document.getElementById('editBtn');
+editBtn.onclick=()=>{
+  const on = doc.getAttribute('contenteditable')!=='true';
+  doc.setAttribute('contenteditable', on?'true':'false');
+  document.body.classList.toggle('editing', on);
+  editBtn.classList.toggle('on', on);
+  editBtn.textContent = on ? '✓ Done editing' : '✎ Edit mode';
+};
+document.getElementById('saveBtn').onclick=()=>{
+  const clone=document.documentElement.cloneNode(true);
+  clone.querySelector('#doc').removeAttribute('contenteditable');
+  clone.querySelector('body').classList.remove('editing');
+  clone.querySelector('#toc').innerHTML='';
+  clone.querySelectorAll('.copy').forEach(b=>b.remove());
+  ['#cells','#serialRow','#parRows','#latBars'].forEach(sel=>{const el=clone.querySelector(sel); if(el) el.innerHTML='';});
+  clone.removeAttribute('data-theme');
+  const html='<!doctype html>\n'+clone.outerHTML;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+  a.download='cryptographic-world-computer.html'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+};
+
+/* ---------- copy buttons ---------- */
+document.querySelectorAll('pre').forEach(p=>{
+  const b=document.createElement('button'); b.className='copy'; b.textContent='copy'; b.contentEditable='false';
+  b.onclick=()=>{navigator.clipboard?.writeText(p.innerText.replace(/copy$|copied$/,'').trim()); b.textContent='copied'; setTimeout(()=>b.textContent='copy',1200);};
+  p.appendChild(b);
+});
+
+/* ---------- PeerDAS mini grid in diagram ---------- */
+(function(){
+  const g=document.getElementById('cells'); const ns='http://www.w3.org/2000/svg';
+  const cols=16, sampled=new Set([2,5,9,14]);
+  for(let i=0;i<cols;i++){
+    for(let r=0;r<2;r++){
+      const c=document.createElementNS(ns,'rect');
+      c.setAttribute('x',236+i*8.2); c.setAttribute('y',262+r*18); c.setAttribute('width',6.5); c.setAttribute('height',14); c.setAttribute('rx',1.5);
+      c.setAttribute('fill', sampled.has(i)?'var(--c2030)':'var(--line)');
+      g.appendChild(c);
+    }
+  }
+  const t=document.createElementNS(ns,'text'); t.setAttribute('x',300); t.setAttribute('y',318); t.setAttribute('text-anchor','middle'); t.setAttribute('font-size','11'); t.setAttribute('class','mut'); t.textContent='blue = columns this node samples';
+  g.appendChild(t);
+})();
+
+/* ---------- DAS calculator ---------- */
+function lnC(n,k){ if(k<0||k>n) return -Infinity; let s=0; for(let i=0;i<k;i++) s+=Math.log(n-i)-Math.log(i+1); return s; }
+function fmt(p){ if(p===0) return '0'; if(p>=0.01) return (p*100).toFixed(2)+'%'; return p.toExponential(2); }
+function fmtN(x){ if(!isFinite(x)) return '∞'; if(x>=1e9) return x.toExponential(1); return Math.round(x).toLocaleString(); }
+function das(){
+  const N=CONFIG.das.columns, s=+sIn.value, w=+wIn.value, n=+nIn.value;
+  sOut.value=s; wOut.value=w; nOut.value=n;
+  const p = (N-w<s) ? 0 : Math.exp(lnC(N-w,s)-lnC(N,s));
+  pOne.textContent=fmt(p); pOneIn.textContent = p>0 ? fmtN(1/p) : '∞';
+  pAny.textContent = (p*n<0.01 && p*n>0) ? (p*n).toExponential(2) : (p*n).toFixed(2);
+  dasMsg.textContent = w < N/2
+    ? `Only ${w} columns withheld: the remaining ${N-w} ≥ ${N/2} are enough to rebuild everything, so the data is effectively available and this attack fails anyway.`
+    : `With ${w} of ${N} columns withheld the data is unrecoverable. Each node catches the attack with probability ${fmt(1-p)}. Across ${n} nodes, about ${fmtN(n*(1-p))} sound the alarm.`;
+}
+['sIn','wIn','nIn'].forEach(id=>document.getElementById(id).addEventListener('input',das)); das();
+
+/* ---------- latency bars ---------- */
+(function(){
+  const box=document.getElementById('latBars'); const max=Math.log10(1000);
+  CONFIG.latency.forEach(r=>{
+    const row=document.createElement('div'); row.className='barrow';
+    const pct=Math.max(4, Math.log10(r.s)/max*100);
+    const human = r.s>=60 ? (r.s/60).toFixed(1)+' min' : r.s+' s';
+    row.innerHTML=`<span>${r.label}</span><div class="track"><div class="bar" style="width:${pct}%;background:${r.color}"></div></div><span>${human}</span>`;
+    box.appendChild(row);
+  });
+})();
+
+/* ---------- serial vs parallel SVG ---------- */
+(function(){
+  const ns='http://www.w3.org/2000/svg'; const steps=['A→B','B→C','C→D','D→E','E→F'];
+  const sr=document.getElementById('serialRow'), pr=document.getElementById('parRows');
+  function box(g,x,y,w,txt,fill,op=1){
+    const r=document.createElementNS(ns,'rect'); r.setAttribute('x',x); r.setAttribute('y',y); r.setAttribute('width',w); r.setAttribute('height',28); r.setAttribute('rx',6); r.setAttribute('fill',fill); r.setAttribute('opacity',op); g.appendChild(r);
+    const t=document.createElementNS(ns,'text'); t.setAttribute('x',x+w/2); t.setAttribute('y',y+19); t.setAttribute('text-anchor','middle'); t.setAttribute('font-size','11.5'); t.setAttribute('fill','#fff'); t.textContent=txt; g.appendChild(t);
+  }
+  let x=20; steps.forEach(s=>{ box(sr,x,40,62,s,'var(--c2015)'); x+=64; box(sr,x,40,74,'why allowed','var(--c2015)',.55); x+=76; });
+  const tl=document.createElementNS(ns,'text'); tl.setAttribute('x',20); tl.setAttribute('y',90); tl.setAttribute('font-size','11.5'); tl.setAttribute('class','mut'); tl.textContent='Total time ≈ sum of every step (everything waits in line)'; sr.appendChild(tl);
+  steps.forEach((s,i)=>{ box(pr,20+i*84,136,80,'why allowed','var(--c2030)',.55); });
+  const a=document.createElementNS(ns,'text'); a.setAttribute('x',450); a.setAttribute('y',155); a.setAttribute('font-size','11.5'); a.setAttribute('class','mut'); a.textContent='← proofs/sigs checked in parallel, aggregated off the critical path'; pr.appendChild(a);
+  steps.forEach((s,i)=>{ box(pr,20+i*64,176,62,s,'var(--c2030)'); });
+  const b=document.createElementNS(ns,'text'); b.setAttribute('x',350); b.setAttribute('y',195); b.setAttribute('font-size','11.5'); b.setAttribute('class','mut'); b.textContent='← only ordered state changes go onchain'; pr.appendChild(b);
+})();
+
+/* ---------- Amdahl ---------- */
+function amd(){
+  const c=+cIn.value/100, k=+kIn.value; cOut.value=cIn.value; kOut.value=k;
+  const sp=1/(c+(1-c)/k);
+  spd.textContent=sp.toFixed(1)+'×'; thr.textContent=Math.round(sp*100)+'%';
+  lesson.textContent = c>0 ? `Even with infinite cores you would hit only ${(1/c).toFixed(1)}×. Shrink the conflicting share by moving to per-user state.` : 'No conflicts, so the speed-up scales with the core count. This is the ideal to design toward.';
+}
+['cIn','kIn'].forEach(id=>document.getElementById(id).addEventListener('input',amd)); amd();
+</script>
+</body>
+</html>
