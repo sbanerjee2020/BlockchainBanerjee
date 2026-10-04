@@ -1,0 +1,1641 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Perps, RWAs and Hyperliquid: The Perpetuals Desk</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="A field guide to perpetual futures, real-world assets and Hyperliquid, updated October 3, 2026: how perps work, where US traders can use them, Hyperliquid economics, ETFs, risks, and how to build." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink:#182226;
+    --ink-soft:#4A5A5E;
+    --paper:#F1F4F3;
+    --paper-raised:#FFFFFF;
+    --border:rgba(24,34,38,.13);
+    --accent:#0E7C86;
+    --accent-strong:#0A5A62;
+    --accent-soft:#DCEEEF;
+    --amber:#B5691E;
+    --amber-soft:#F5E6D2;
+    --long:#187A4E;
+    --long-soft:#DCEFE3;
+    --short:#B03B24;
+    --short-soft:#F6DFD8;
+    --violet:#6B4FA0;
+    --violet-soft:#EAE3F5;
+    --teal2:#1D6E5C;
+    --teal2-soft:#DCEEE7;
+    --shadow: 0 1px 2px rgba(24,34,38,.06), 0 8px 24px -12px rgba(24,34,38,.18);
+    --disp: "Fraunces", Georgia, serif;
+    --body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#E7EDEC;
+      --ink-soft:#9FB0AE;
+      --paper:#0E1517;
+      --paper-raised:#16201F;
+      --border:rgba(231,237,236,.14);
+      --accent:#57C7CE;
+      --accent-strong:#8FDDE1;
+      --accent-soft:rgba(87,199,206,.14);
+      --amber:#E3A458;
+      --amber-soft:rgba(227,164,88,.13);
+      --long:#4FC98A;
+      --long-soft:rgba(79,201,138,.13);
+      --short:#E88571;
+      --short-soft:rgba(232,133,113,.13);
+      --violet:#B7A0E8;
+      --violet-soft:rgba(183,160,232,.14);
+      --teal2:#7FD1BC;
+      --teal2-soft:rgba(127,209,188,.14);
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#E7EDEC;
+    --ink-soft:#9FB0AE;
+    --paper:#0E1517;
+    --paper-raised:#16201F;
+    --border:rgba(231,237,236,.14);
+    --accent:#57C7CE;
+    --accent-strong:#8FDDE1;
+    --accent-soft:rgba(87,199,206,.14);
+    --amber:#E3A458;
+    --amber-soft:rgba(227,164,88,.13);
+    --long:#4FC98A;
+    --long-soft:rgba(79,201,138,.13);
+    --short:#E88571;
+    --short-soft:rgba(232,133,113,.13);
+    --violet:#B7A0E8;
+    --violet-soft:rgba(183,160,232,.14);
+    --teal2:#7FD1BC;
+    --teal2-soft:rgba(127,209,188,.14);
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:var(--disp); text-wrap:balance; margin:0; color:var(--ink);}
+  a{color:var(--accent);}
+  ::selection{background:var(--accent-soft);}
+  .tabular{font-variant-numeric:tabular-nums;}
+
+  /* ---------- Layout shell ---------- */
+  .shell{max-width:1240px; margin:0 auto; display:grid; grid-template-columns:250px minmax(0,1fr); gap:0;}
+  @media (max-width:960px){ .shell{grid-template-columns:1fr;} }
+
+  /* ---------- Sticky TOC ---------- */
+  nav.toc{
+    position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;
+    padding:36px 20px 40px 32px; border-right:1px solid var(--border);
+  }
+  @media (max-width:960px){
+    nav.toc{position:static; height:auto; border-right:none; border-bottom:1px solid var(--border); padding:20px 24px;}
+  }
+  .toc-brand{display:flex; align-items:center; gap:10px; margin-bottom:28px;}
+  .toc-mark{width:30px; height:30px; border-radius:8px; background:var(--accent); flex:none; position:relative;}
+  .toc-mark svg{position:absolute; inset:0; width:100%; height:100%;}
+  .toc-brand-text{font-family:var(--mono); font-size:12.5px; letter-spacing:.06em; color:var(--ink-soft); text-transform:uppercase;}
+  .toc-title{font-family:var(--disp); font-size:19px; font-weight:600; line-height:1.15; margin-bottom:2px;}
+  .toc ul{list-style:none; margin:0; padding:0;}
+  .toc > ul{margin-top:22px;}
+  .toc li{margin:0;}
+  .toc .sec-link{
+    display:block; padding:9px 10px; margin:2px 0; border-radius:7px; font-size:13.5px; font-weight:600;
+    color:var(--ink); text-decoration:none; letter-spacing:.01em;
+  }
+  .toc .sec-link .num{font-family:var(--mono); color:var(--accent); margin-right:8px; font-size:12px;}
+  .toc .sec-link.new .num{color:var(--violet);}
+  .toc .sec-link.newest .num{color:var(--teal2);}
+  .toc .sub-link{
+    display:block; padding:5px 10px 5px 30px; font-size:12.5px; color:var(--ink-soft); text-decoration:none; border-radius:7px;
+  }
+  .toc a:hover{background:var(--accent-soft); color:var(--ink);}
+  .toc-divider{margin:16px 10px 6px; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--violet); font-weight:600;}
+  .toc-divider.newest{color:var(--teal2);}
+  .toc-foot{margin-top:28px; padding-top:18px; border-top:1px solid var(--border); font-size:11.5px; color:var(--ink-soft); font-family:var(--mono); line-height:1.7;}
+
+  /* ---------- Main column ---------- */
+  main{min-width:0; padding:56px 48px 120px; max-width:820px;}
+  @media (max-width:640px){ main{padding:36px 20px 90px;} }
+
+  .kicker{
+    font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:600;
+  }
+  header.masthead{margin-bottom:56px;}
+  header.masthead h1{font-size:clamp(32px,5vw,46px); font-weight:600; margin:10px 0 16px; max-width:16ch;}
+  header.masthead p{font-size:17px; color:var(--ink-soft); max-width:56ch; margin:0 0 22px;}
+  .who-for{
+    display:flex; flex-wrap:wrap; gap:8px; font-family:var(--mono); font-size:11.5px;
+  }
+  .who-for span{
+    border:1px solid var(--border); border-radius:100px; padding:5px 12px; color:var(--ink-soft);
+  }
+  .who-for span.new{color:var(--violet); border-color:var(--violet-soft); background:var(--violet-soft);}
+  .who-for span.newest{color:var(--teal2); border-color:var(--teal2-soft); background:var(--teal2-soft);}
+
+  .edition-note{
+    border:1px solid var(--violet-soft); background:var(--violet-soft); border-radius:10px; padding:16px 20px; margin:0 0 40px;
+    font-size:14px;
+  }
+  .edition-note strong{color:var(--violet);}
+  .edition-note.v3{border-color:var(--teal2-soft); background:var(--teal2-soft); margin-top:12px;}
+  .edition-note.v3 strong{color:var(--teal2);}
+
+  section.section{padding-top:68px; scroll-margin-top:24px;}
+  section.section:first-of-type{padding-top:0;}
+  .section-head{display:flex; align-items:baseline; gap:18px; margin-bottom:6px; padding-bottom:22px; border-bottom:2px solid var(--ink);}
+  .section-head .idx{font-family:var(--disp); font-size:52px; font-weight:500; line-height:1; color:var(--accent);}
+  .section-head.new .idx{color:var(--violet);}
+  .section-head.newest .idx{color:var(--teal2);}
+  .section-head h2{font-size:clamp(24px,4vw,32px); font-weight:600;}
+  .section-dek{color:var(--ink-soft); font-size:15px; margin:16px 0 40px; max-width:60ch;}
+
+  h3.q{
+    font-size:20px; font-weight:600; margin:44px 0 14px; padding-top:2px; scroll-margin-top:24px;
+    display:flex; gap:10px; align-items:baseline;
+  }
+  h3.q .q-mark{color:var(--accent); font-family:var(--mono); font-size:14px;}
+  .new h3.q .q-mark{color:var(--violet);}
+  .newest h3.q .q-mark{color:var(--teal2);}
+  p{margin:0 0 16px; max-width:66ch;}
+  ul.plain, ol.plain{margin:0 0 16px; padding-left:22px; max-width:64ch;}
+  ul.plain li, ol.plain li{margin-bottom:8px;}
+  strong{font-weight:600;}
+  code, .code{font-family:var(--mono); font-size:.92em; background:var(--accent-soft); padding:.1em .4em; border-radius:4px;}
+  .new code, .new .code{background:var(--violet-soft);}
+  .newest code, .newest .code{background:var(--teal2-soft);}
+
+  /* ---------- Callouts ---------- */
+  .callout{
+    border:1px solid var(--border); border-left:4px solid var(--accent); background:var(--paper-raised);
+    border-radius:10px; padding:20px 22px; margin:26px 0; box-shadow:var(--shadow);
+  }
+  .callout h4{font-size:13px; text-transform:uppercase; letter-spacing:.08em; font-family:var(--mono); font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:8px;}
+  .callout.example{border-left-color:var(--accent);}
+  .callout.example h4{color:var(--accent-strong);}
+  .callout.watch{border-left-color:var(--amber); background:var(--amber-soft);}
+  .callout.watch h4{color:var(--amber);}
+  .callout.watch p, .callout.watch li{color:var(--ink);}
+  .callout.tech{border-left-color:var(--violet); background:var(--violet-soft);}
+  .callout.tech h4{color:var(--violet);}
+  .callout.caution{border-left-color:var(--teal2); background:var(--teal2-soft);}
+  .callout.caution h4{color:var(--teal2);}
+  .callout p:last-child{margin-bottom:0;}
+  .callout table{margin:0;}
+
+  .stat-row{display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 4px;}
+  .stat{
+    flex:1 1 140px; border:1px solid var(--border); border-radius:9px; padding:12px 14px; background:var(--paper-raised);
+  }
+  .stat .n{font-family:var(--mono); font-size:20px; font-weight:600; color:var(--accent-strong); display:block;}
+  .stat.violet .n{color:var(--violet);}
+  .stat.teal2 .n{color:var(--teal2);}
+  .stat .l{font-size:11.5px; color:var(--ink-soft); line-height:1.3;}
+
+  figure{margin:30px 0; padding:0;}
+  figure svg{width:100%; height:auto; display:block;}
+  figcaption{font-size:12.5px; color:var(--ink-soft); margin-top:10px; text-align:center; font-family:var(--mono);}
+
+  /* ---------- Tables ---------- */
+  .tablewrap{overflow-x:auto; margin:24px 0; border:1px solid var(--border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:14px;}
+  th,td{padding:12px 14px; text-align:left; border-bottom:1px solid var(--border); vertical-align:top;}
+  thead th{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); background:var(--paper);}
+  tbody tr:last-child td{border-bottom:none;}
+  td.hi{color:var(--accent-strong); font-weight:600;}
+  td.hi.v{color:var(--violet);}
+  td.hi.t{color:var(--teal2);}
+  td .tag{display:inline-block; font-family:var(--mono); font-size:10.5px; padding:2px 7px; border-radius:100px; background:var(--long-soft); color:var(--long); margin-top:4px;}
+
+  /* ---------- Sources ---------- */
+  .sources{margin-top:28px; padding-top:18px; border-top:1px dashed var(--border);}
+  .sources h4{font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); margin-bottom:10px; font-weight:600;}
+  .sources ol{margin:0; padding-left:18px; font-size:13px; color:var(--ink-soft);}
+  .sources li{margin-bottom:5px;}
+  .sources a{color:var(--ink-soft); text-decoration-color:var(--border);}
+  .sources a:hover{color:var(--accent);}
+  .sources li.primary{color:var(--ink);}
+  .sources li.primary a{color:var(--violet); font-weight:600;}
+  .sources li.primary.t a{color:var(--teal2);}
+
+  .toollist{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; margin:20px 0;}
+  .toolcard{border:1px solid var(--border); border-radius:9px; padding:13px 14px; background:var(--paper-raised);}
+  .toolcard .t{font-weight:600; font-size:13.5px; margin-bottom:3px;}
+  .toolcard .d{font-size:12px; color:var(--ink-soft); line-height:1.45;}
+  .toolcard a.link{display:inline-block; margin-top:8px; font-family:var(--mono); font-size:11px;}
+
+  .analytics-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; margin:22px 0;}
+  .acard{border:1px solid var(--border); border-radius:11px; padding:16px 18px; background:var(--paper-raised); box-shadow:var(--shadow);}
+  .acard .kind{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.08em; padding:2px 8px; border-radius:100px; display:inline-block; margin-bottom:10px;}
+  .acard .kind.live{background:var(--long-soft); color:var(--long);}
+  .acard .kind.native{background:var(--violet-soft); color:var(--violet);}
+  .acard .kind.agg{background:var(--accent-soft); color:var(--accent-strong);}
+  .acard .kind.research{background:var(--teal2-soft); color:var(--teal2);}
+  .acard .name{font-weight:600; font-size:15px; margin-bottom:6px;}
+  .acard .desc{font-size:12.5px; color:var(--ink-soft); line-height:1.5; margin-bottom:10px;}
+  .acard a{font-family:var(--mono); font-size:11.5px;}
+
+  .stepline{list-style:none; margin:24px 0; padding:0; counter-reset:step;}
+  .stepline li{
+    counter-increment:step; position:relative; padding:2px 0 26px 42px; border-left:2px solid var(--border); margin-left:14px;
+  }
+  .stepline li:last-child{border-left-color:transparent; padding-bottom:2px;}
+  .stepline li::before{
+    content:counter(step); position:absolute; left:-15px; top:0; width:28px; height:28px; border-radius:50%;
+    background:var(--accent); color:var(--paper-raised); font-family:var(--mono); font-weight:600; font-size:12.5px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .new .stepline li::before{background:var(--violet);}
+  .newest .stepline li::before{background:var(--teal2);}
+  .stepline .st{font-weight:600; margin-bottom:4px; font-size:15px;}
+  .stepline p{margin-bottom:0; font-size:14.5px;}
+
+  .divider-quote{
+    font-family:var(--disp); font-size:22px; font-weight:500; color:var(--ink); border-left:3px solid var(--accent);
+    padding:4px 0 4px 22px; margin:36px 0; max-width:56ch; line-height:1.4;
+  }
+
+  footer.end{
+    margin-top:90px; padding-top:28px; border-top:2px solid var(--ink); font-size:13px; color:var(--ink-soft);
+  }
+  footer.end p{max-width:70ch;}
+
+  @media print{ nav.toc{display:none;} .shell{grid-template-columns:1fr;} }
+
+  /* ---------- Additions (Oct 2026 edition) ---------- */
+  .updated{font-family:var(--mono); font-size:12px; color:var(--ink-soft); margin:-24px 0 36px;}
+  p.note{font-size:13px; color:var(--ink-soft); max-width:70ch;}
+  .takeaways{border:1px solid var(--border); background:var(--paper-raised); border-radius:12px; padding:24px 28px; margin:0 0 48px; box-shadow:var(--shadow);}
+  .takeaways h2{font-size:21px; margin-bottom:14px;}
+  .takeaways ol{margin:0; padding-left:22px;}
+  .takeaways li{margin-bottom:10px; max-width:70ch;}
+  ol.timeline{list-style:none; margin:24px 0 28px 8px; padding:0; border-left:2px solid var(--border);}
+  ol.timeline li{position:relative; padding:0 0 16px 24px; margin:0; max-width:70ch;}
+  ol.timeline li::before{content:""; position:absolute; left:-8px; top:5px; width:12px; height:12px; border-radius:50%; background:var(--accent); border:2px solid var(--paper);}
+  ol.timeline li:last-child::before{background:var(--amber);}
+  ol.timeline .d{font-family:var(--mono); font-size:12px; color:var(--accent-strong); font-weight:600; display:block;}
+  ol.timeline .t{font-weight:600;}
+  pre.code-block{background:#0A1E23; color:#E7EDEC; border-radius:10px; padding:16px 18px; overflow-x:auto; font-size:13px; line-height:1.55; margin:14px 0;}
+  pre.code-block code{background:none; padding:0; color:inherit; font-family:var(--mono);}
+  .sources ol.refs li{margin-bottom:6px;}
+  .author-card{border:1px solid var(--border); background:var(--paper-raised); border-radius:12px; padding:28px 30px; box-shadow:var(--shadow); display:flex; gap:26px; align-items:flex-start; flex-wrap:wrap;}
+  .author-photo{width:120px; height:120px; border-radius:50%; object-fit:cover; flex:none;}
+  .author-body{flex:1 1 340px; min-width:0;}
+  .author-body h3{font-size:26px; margin-bottom:2px;}
+  .author-role{font-family:var(--mono); font-size:13px; color:var(--accent-strong); margin-bottom:14px !important;}
+  .author-links{list-style:none; padding:0; margin:16px 0; display:flex; flex-wrap:wrap; gap:8px 18px; font-size:14px;}
+  .author-links li{margin:0;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<nav class="toc" id="toc">
+  <div class="toc-brand">
+    <div class="toc-mark"><svg viewBox="0 0 30 30"><polyline points="4,20 10,13 15,17 26,6" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div>
+      <div class="toc-title">The Perpetuals Desk</div>
+      <div class="toc-brand-text">Updated Oct 3, 2026</div>
+    </div>
+  </div>
+  <ul>
+    <li><a class="sec-link" href="#takeaways"><span class="num">&middot;</span>Key takeaways</a></li>
+    <li><a class="sec-link" href="#s1"><span class="num">01</span>Perpetuals, plainly</a>
+      <ul>
+        <li><a class="sub-link" href="#s1-1">What is a perp?</a></li>
+        <li><a class="sub-link" href="#s1-2">Why now?</a></li>
+        <li><a class="sub-link" href="#s1-3">Can I trade from the US?</a></li>
+      </ul>
+    </li>
+    <li><a class="sec-link" href="#s2"><span class="num">02</span>Hyperliquid</a>
+      <ul>
+        <li><a class="sub-link" href="#s2-1">What it is</a></li>
+        <li><a class="sub-link" href="#s2-2">Where it came from</a></li>
+        <li><a class="sub-link" href="#s2-3">Why the big deal</a></li>
+        <li><a class="sub-link" href="#s2-4">Where HYPE trades</a></li>
+        <li><a class="sub-link" href="#s2-5">Path onshore</a></li>
+        <li><a class="sub-link" href="#s2-6">How a team plugs in</a></li>
+        <li><a class="sub-link" href="#s2-7">Buybacks &amp; fees</a></li>
+        <li><a class="sub-link" href="#s2-8">HYPE ETFs vs BTC/ETH</a></li>
+        <li><a class="sub-link" href="#s2-9">PURR &amp; the MSTR playbook</a></li>
+        <li><a class="sub-link" href="#s2-10">Bitwise's Matt Hougan</a></li>
+        <li><a class="sub-link" href="#s2-11">Risk register</a></li>
+        <li><a class="sub-link" href="#s2-12">Revenue vs all of crypto</a></li>
+      </ul>
+    </li>
+    <li><a class="sec-link" href="#s3"><span class="num">03</span>Trading, step by step</a>
+      <ul>
+        <li><a class="sub-link" href="#s3-1">Choosing a venue</a></li>
+        <li><a class="sub-link" href="#s3-2">Placing a first trade</a></li>
+        <li><a class="sub-link" href="#s3-3">Watchlist: risk &amp; rules</a></li>
+      </ul>
+    </li>
+  </ul>
+  <div class="toc-divider">Deep dive</div>
+  <ul>
+    <li><a class="sec-link new" href="#s4"><span class="num">04</span>Architecture &amp; RWA thesis</a>
+      <ul>
+        <li><a class="sub-link" href="#s4-1">HyperCore &amp; HyperBFT</a></li>
+        <li><a class="sub-link" href="#s4-2">HIP-3, deep dive</a></li>
+        <li><a class="sub-link" href="#s4-3">HIP-4, deep dive</a></li>
+        <li><a class="sub-link" href="#s4-4">The RWA case</a></li>
+      </ul>
+    </li>
+    <li><a class="sec-link new" href="#s5"><span class="num">05</span>Building on Hyperliquid</a>
+      <ul>
+        <li><a class="sub-link" href="#s5-1">trade[XYZ] &amp; peers</a></li>
+        <li><a class="sub-link" href="#s5-2">Builder codes</a></li>
+        <li><a class="sub-link" href="#s5-3">Ways to build</a></li>
+        <li><a class="sub-link" href="#s5-4">Step by step</a></li>
+      </ul>
+    </li>
+    <li><a class="sec-link new" href="#s6"><span class="num">06</span>Perp &amp; RWA analytics</a></li>
+  </ul>
+  <div class="toc-divider newest">Competitor</div>
+  <ul>
+    <li><a class="sec-link newest" href="#s7"><span class="num">07</span>Injective</a>
+      <ul>
+        <li><a class="sub-link" href="#s7-1">What is Injective?</a></li>
+        <li><a class="sub-link" href="#s7-2">Injective in RWA-perps</a></li>
+        <li><a class="sub-link" href="#s7-3">Similar projects</a></li>
+        <li><a class="sub-link" href="#s7-4">Where to track them</a></li>
+      </ul>
+    </li>
+    <li><a class="sec-link" href="#about"><span class="num">&middot;</span>About the author</a></li>
+  </ul>
+  <div class="toc-foot">Educational reference only:<br>not investment, legal or tax advice.<br>Data as of October 3, 2026.</div>
+</nav>
+
+<main>
+
+<header class="masthead">
+  <span class="kicker">A field guide, updated October 3, 2026</span>
+  <h1>Perps, RWAs and Hyperliquid</h1>
+  <p>How perpetual futures work, why they are spreading from crypto into stocks, oil and gold, where US traders can use them, how Hyperliquid built the leading venue and its token economics, who is wrapping HYPE in ETFs, what could go wrong, and how to build on it.</p>
+  <div class="who-for">
+    <span>As of: October 3, 2026</span>
+    <span>Written for: traders, builders and executives</span>
+    <span class="new">US-regulated venues covered</span>
+  </div>
+</header>
+
+<div class="takeaways" id="takeaways">
+  <h2>Key takeaways</h2>
+  <ol>
+    <li><strong>Perps are the dominant crypto derivative, and they are moving on-chain.</strong> 2025 volume was about $85T on centralized exchanges and $6.4T on-chain; on-chain volume rose from about 3% to a 13% peak of centralized volume before easing to 10% in April 2026. <sup><a href="#ref2">[2]</a></sup></li>
+    <li><strong>RWAs are arriving through perps, not tokens.</strong> RWA perps traded $524.8B in Q1 2026 versus $313.0B in all of 2025, and ran about 15x RWA spot volume in April. <sup><a href="#ref30">[30]</a><a href="#ref2">[2]</a></sup></li>
+    <li><strong>US access is regulated and custodial.</strong> Coinbase (July 2025), Kraken (June 2026) and, announced September 29, Robinhood. Hyperliquid, and wallets built on it such as MetaMask and Phantom, exclude US persons; Kraken's parent has proposed an onshore route that is not approved. <sup><a href="#ref8">[8]</a><a href="#ref6">[6]</a><a href="#ref44">[44]</a></sup></li>
+    <li><strong>Hyperliquid leads.</strong> 58% of on-chain perp open interest and about 33% of 30-day volume on DefiLlama (before counting HIP-3 markets listed separately), and number one in on-chain revenue ($429M to September 15), from a team of about 11 with no venture funding. <sup><a href="#ref3">[3]</a><a href="#ref25">[25]</a></sup></li>
+    <li><strong>The token economics are strong but volume-dependent.</strong> About 97% of fees buy back HYPE, yet gross protocol revenue is down 43% from its Q3 2025 peak. A USDC-reserve yield adds buyback income from October 2026 that does not depend on volume. <sup><a href="#ref34">[34]</a><a href="#ref35">[35]</a></sup></li>
+    <li><strong>Wall Street is wrapping HYPE.</strong> Three US spot ETFs hold $478M (about 2.5% of HYPE's market cap) after a record start and a pause; PURR holds roughly 33 to 35M HYPE as a leveraged treasury play. <sup><a href="#ref37">[37]</a><a href="#ref43">[43]</a></sup></li>
+    <li><strong>Price the risks.</strong> Oracle failures (Ventuals, May 2026), concentration (about 27 validators), scheduled supply (Oct 6 unlock, Oct 7 OTC sale), regulation and legal gray areas on pre-IPO exposure. <sup><a href="#ref42">[42]</a><a href="#ref40">[40]</a></sup></li>
+    <li><strong>Builders can earn without running an exchange.</strong> Builder codes pay up to 0.1% of perp orders routed (Phantom has earned $20.6M); a HIP-3 market needs 500,000 HYPE (about $45M). <sup><a href="#ref46">[46]</a><a href="#ref57">[57]</a></sup></li>
+  </ol>
+</div>
+
+<!-- ================= SECTION 1 ================= -->
+<section class="section" id="s1">
+  <div class="section-head"><span class="idx">01</span><h2>Perpetuals, plainly</h2></div>
+  <p class="section-dek">A perpetual future ("perp") is the single instrument behind most of the leverage in crypto. Before looking at Hyperliquid or any US venue, get this mechanism solid: it is the same math everywhere it shows up.</p>
+
+  <h3 class="q" id="s1-1"><span class="q-mark">Q</span>What is perpetual futures trading, and why is it such a big deal?</h3>
+
+  <p><strong>A regular futures contract</strong> locks in a price for an asset on a set expiry date, like a forward-dated invoice. <strong>A perpetual future has no expiry.</strong> You can hold it for an hour or three years. It behaves like leveraged spot trading, except you never actually own the coin, stock, or barrel of oil: you own a contract whose value tracks it.</p>
+
+  <p>The trick is keeping a contract with no expiry date glued to the real ("spot") price of the asset, since there is no expiry date to force convergence. Exchanges solve this with the <strong>funding rate</strong>: a small periodic payment between longs (buyers) and shorts (sellers). <sup><a href="#ref1">[1]</a></sup></p>
+
+  <figure>
+    <svg viewBox="0 0 700 235" role="img" aria-label="Funding rate mechanism diagram">
+      <line x1="40" y1="120" x2="660" y2="120" style="stroke:var(--border); stroke-width:1"/>
+      <text x="40" y="30" style="font:600 12px var(--mono); fill:var(--ink-soft);">PERP TRADES ABOVE SPOT</text>
+      <text x="40" y="46" style="font:400 11.5px var(--body); fill:var(--ink-soft);">too many longs pushed the price up</text>
+      <rect x="40" y="60" width="280" height="46" rx="8" style="fill:var(--long-soft)"/>
+      <text x="60" y="88" style="font:600 14px var(--mono); fill:var(--long)">Longs pay shorts →</text>
+
+      <text x="380" y="30" style="font:600 12px var(--mono); fill:var(--ink-soft);">PERP TRADES BELOW SPOT</text>
+      <text x="380" y="46" style="font:400 11.5px var(--body); fill:var(--ink-soft);">too many shorts pushed the price down</text>
+      <rect x="380" y="60" width="280" height="46" rx="8" style="fill:var(--short-soft)"/>
+      <text x="400" y="88" style="font:600 14px var(--mono); fill:var(--short)">← Shorts pay longs</text>
+
+      <circle cx="350" cy="150" r="30" style="fill:var(--accent-soft); stroke:var(--accent); stroke-width:2"/>
+      <text x="350" y="146" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--accent-strong)">SPOT</text>
+      <text x="350" y="160" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--accent-strong)">PRICE</text>
+      <line x1="40" y1="150" x2="320" y2="150" style="stroke:var(--long); stroke-width:2; stroke-dasharray:4 3"/>
+      <line x1="380" y1="150" x2="660" y2="150" style="stroke:var(--short); stroke-width:2; stroke-dasharray:4 3"/>
+      <text x="40" y="200" style="font:400 12px var(--body); fill:var(--ink-soft);">Result: the payment nudges traders back toward spot, every 1 to 8 hours, forever.</text><text x="40" y="218" style="font:400 12px var(--body); fill:var(--ink-soft);">That periodic nudge is what lets a contract with no expiry date track a real-world price.</text>
+    </svg>
+    <figcaption>Fig. 1 — The funding rate see-saw that anchors a "perpetual" to reality</figcaption>
+  </figure>
+
+  <p>Why does this matter so much? Three reasons:</p>
+  <ul class="plain">
+    <li><strong>Leverage without borrowing.</strong> Post $1,000 as margin, control a $10,000 position. There is no loan paperwork and no collateral custody at a lender; the exchange nets your margin against your open risk in real time.</li>
+    <li><strong>It is the dominant way the world trades crypto.</strong> Perpetuals account for the large majority of crypto derivatives volume, because they never force you to "roll" a position at expiry.</li>
+    <li><strong>It went from crypto curiosity to systemic financial story in 2026.</strong> Regulators, CME, Kraken, Coinbase, Robinhood, Kalshi, wallets like MetaMask and Phantom, and Hyperliquid are now competing to host this flow, and it is spreading from crypto into stocks, oil, gold and indices.</li>
+  </ul>
+
+  <div class="callout example">
+    <h4>Worked example: a $1,000 BTC perp trade</h4>
+    <p>BTC spot is <span class="code">$110,000</span>. You open a <strong>long</strong> with $1,000 margin at <strong>10x leverage</strong>.</p>
+    <div class="stat-row">
+      <div class="stat"><span class="n tabular">$10,000</span><span class="l">Notional position size (margin x leverage)</span></div>
+      <div class="stat"><span class="n tabular">0.0909 BTC</span><span class="l">Contract exposure ($10,000 / $110,000)</span></div>
+      <div class="stat"><span class="n tabular">about 10%</span><span class="l">Adverse move that wipes out the margin (varies by venue)</span></div>
+    </div>
+    <p style="margin-top:14px;">BTC rises <strong>5%</strong> to $115,500 and your $10,000 notional gains <strong>$500</strong>. Against your $1,000 margin that is a <strong>+50% return</strong>. Leverage cuts both ways: a 5% move <em>against</em> you erases half your margin, and a ~10% adverse move at 10x gets you close to liquidation, where the exchange force-closes the position before losses exceed your margin. The numbers are illustrative.</p>
+  </div>
+
+  <h3 class="q" id="s1-2"><span class="q-mark">Q</span>Why are perps suddenly so interesting?</h3>
+  <p>Three forces converged in 2026:</p>
+  <ol class="plain">
+    <li><strong>Scale, and a shift on-chain.</strong> CoinGecko's 2026 perpetuals report puts 2025 perp volume at <strong>$85.3 trillion</strong> on centralized exchanges and <strong>$6.38 trillion</strong> on-chain, roughly four times the on-chain figure for 2024. On-chain volume rose from about <strong>3% to a 13% peak</strong> of centralized volume during 2025 (10% in April 2026), and DefiLlama shows on-chain perp venues at about <strong>$614 billion over the 30 days to October 3, 2026</strong>. <sup><a href="#ref2">[2]</a><a href="#ref3">[3]</a></sup></li>
+    <li><strong>The US spent years locked out.</strong> Because the CFTC treats leveraged, margined, no-delivery crypto contracts as regulated derivatives, the big offshore perp venues (Binance, Bybit, OKX, Hyperliquid) geo-block US persons. An enormous, liquid market grew up offshore, out of reach of US retail.</li>
+    <li><strong>That wall started coming down.</strong> A joint SEC/CFTC digital-asset taxonomy (March 17, 2026) clarified the CFTC's jurisdiction, and regulated US perps arrived: Coinbase (July 2025), Kraken (June 2026) and, announced on September 29, 2026, Robinhood. <sup><a href="#ref4">[4]</a><a href="#ref5">[5]</a><a href="#ref6">[6]</a></sup></li>
+  </ol>
+
+  <h3 class="q" id="s1-3"><span class="q-mark">Q</span>Can I actually trade crypto perps from the US?</h3>
+  <p><strong>Yes, but only on a short list of CFTC-regulated US venues,</strong> not on the offshore platforms and not through the wallet front-ends built on them.</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Venue</th><th>Status for US residents</th><th>What it actually is</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">Coinbase Financial Markets</td><td>Live since Jul 21, 2025</td><td>"Perpetual-style" futures with a 5-year expiry, up to 10x intraday on crypto, via a CFTC-registered broker and exchange inside a normal Coinbase account. <sup><a href="#ref8">[8]</a></sup></td></tr>
+        <tr><td class="hi">Kraken Derivatives US</td><td>Live since Jun 15, 2026</td><td>True no-expiry perpetuals listed on Bitnomial (9 assets at launch), carried by a CFTC-registered broker. <sup><a href="#ref4">[4]</a><a href="#ref9">[9]</a></sup></td></tr>
+        <tr><td class="hi">Robinhood Derivatives</td><td>Announced Sep 29, 2026; "coming months"</td><td>Perps on BTC, ETH, SOL, XRP, DOGE, ADA, LINK and HYPE through Bitstamp: 10x on BTC/ETH, 3x on the rest, 1 basis point per trade through year-end. <sup><a href="#ref6">[6]</a></sup></td></tr>
+        <tr><td class="hi">Kalshi (BTCPERP)</td><td>Approved May 2026</td><td>A CFTC-approved "true" Bitcoin perpetual listed on a regulated exchange. <sup><a href="#ref7">[7]</a></sup></td></tr>
+        <tr><td class="hi">CME Group</td><td>Dated futures, not true perps</td><td>The traditional, most institutional venue, moving to 24/7 trading of crypto futures and options, but contracts still expire and roll. <sup><a href="#ref5">[5]</a></sup></td></tr>
+        <tr><td class="hi">Binance, Bybit, OKX, Hyperliquid, and wallets built on Hyperliquid (MetaMask Perps, Phantom perps)</td><td>Blocked</td><td>Offshore or Hyperliquid-routed products that exclude US persons. Using a VPN breaches their terms, forfeits consumer protection, and can create legal and tax exposure. <sup><a href="#ref10">[10]</a><a href="#ref11">[11]</a></sup></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout watch">
+    <h4>Live legal uncertainty</h4>
+    <p><strong>CME is challenging the CFTC's approval</strong> of onshore "true perpetual" products, and CME and ICE are lobbying regulators about Hyperliquid itself. Today the regulated products are live, but a court or a rule change could reshape what is allowed. Treat this as a fast-moving regulatory story, not settled law. <sup><a href="#ref4">[4]</a><a href="#ref12">[12]</a><a href="#ref13">[13]</a></sup></p>
+  </div>
+
+  <div class="sources">
+    <h4>Sources &amp; further reading: Section 1</h4>
+    <ol class="refs">
+      <li value="1" id="ref1">a16z crypto: <a href="https://a16zcrypto.com/posts/article/what-are-perpetual-futures/#the-market-opportunity-for-perps" target="_blank" rel="noopener">"What Are Perpetual Futures?"</a> (the market opportunity for perps)</li>
+      <li value="2" id="ref2">CoinGecko Research: <a href="https://www.coingecko.com/research/publications/state-of-crypto-perpetuals-report-2026" target="_blank" rel="noopener">"State of Crypto Perpetuals Report 2026"</a> (published May 21, 2026; data to Apr 30, 2026)</li>
+      <li value="3" id="ref3">DefiLlama: <a href="https://defillama.com/perps" target="_blank" rel="noopener">Perp DEX volume rankings</a> and <a href="https://defillama.com/open-interest" target="_blank" rel="noopener">Open interest rankings</a> (read Oct 3, 2026)</li>
+      <li value="4" id="ref4">Kraken Blog — <a href="https://blog.kraken.com/product/kraken-derivatives/announcing-cftc-regulated-us-perps" target="_blank" rel="noopener">"Announcing CFTC-regulated perpetual futures for US Traders"</a></li>
+      <li value="5" id="ref5">TechTimes — <a href="https://www.techtimes.com/articles/326705/20260904/coinbase-files-domestic-stock-perps-under-security-futures-cme-suit-clouds-launch.htm" target="_blank" rel="noopener">"Coinbase Files for Domestic Stock Perps Under Security Futures: CME Suit Clouds Launch"</a></li>
+      <li value="6" id="ref6">Robinhood Newsroom: <a href="https://robinhood.com/us/en/newsroom/hood-summit-2026/" target="_blank" rel="noopener">HOOD Summit 2026</a> (Sep 29, 2026); Blockhead: <a href="https://www.blockhead.co/2026/09/30/robinhood-brings-leveraged-crypto-perpetual-futures-to-us-customers-launches-ai-trading-agents/" target="_blank" rel="noopener">"Robinhood brings leveraged crypto perpetual futures to US customers, launches AI trading agents"</a> (Sep 30, 2026)</li>
+      <li value="7" id="ref7">bex.co — <a href="https://bex.co/blog/2026/03/19/cftc-perpetual-futures-us-markets-200b-offshore-volume" target="_blank" rel="noopener">"The US Moves to Legalize Perpetual Futures: A Game-Changer for Crypto Markets"</a></li>
+      <li value="8" id="ref8">Coinbase blog: <a href="https://www.coinbase.com/blog/perpetual-futures-have-arrived-in-the-us" target="_blank" rel="noopener">"Perpetual futures have arrived in the US"</a> (Jul 21, 2025) and <a href="https://www.coinbase.com/blog/coinbase-brings-global-crypto-derivatives-to-us-market" target="_blank" rel="noopener">"Coinbase brings global crypto derivatives to US market"</a> (May 29, 2026)</li>
+      <li value="9" id="ref9">Kraken Support: <a href="https://support.kraken.com/articles/us-futures-fees" target="_blank" rel="noopener">US futures fees</a> and <a href="https://support.kraken.com/articles/us-perpetual-futures" target="_blank" rel="noopener">US perpetual futures</a></li>
+      <li value="10" id="ref10">MetaMask: <a href="https://metamask.io/perps" target="_blank" rel="noopener">Perps</a> and <a href="https://metamask.io/news/introducing-metamask-perps" target="_blank" rel="noopener">"Introducing MetaMask Perps"</a> (Oct 8, 2025)</li>
+      <li value="11" id="ref11">Phantom Help Center: <a href="https://help.phantom.com/articles/trade-perps-in-phantom-42292249388307" target="_blank" rel="noopener">Trade perps in Phantom</a> and <a href="https://help.phantom.com/hc/en-us/articles/48634486197651-Feature-availability-by-region" target="_blank" rel="noopener">Feature availability by region</a></li>
+      <li value="12" id="ref12">CryptoSlate — <a href="https://cryptoslate.com/america-is-importing-cryptos-perpetual-futures-liquidation-engine/" target="_blank" rel="noopener">"Multi-trillion-dollar offshore engine... arrives in America — and CME is suing to crush it"</a></li>
+      <li value="13" id="ref13">Coin Bureau (YouTube): <a href="https://www.youtube.com/watch?v=HRLzu9xdLDQ" target="_blank" rel="noopener">"Why Wall Street Is Really Afraid of Hyperliquid"</a> (May 28, 2026; commentary)</li>
+    </ol>
+    <h4 style="margin-top:16px;">Analytics &amp; learning sites to bookmark</h4>
+    <div class="toollist">
+      <div class="toolcard"><div class="t">DefiLlama /perps</div><div class="d">On-chain perp DEX volume, open interest and market share, updated daily.</div></div>
+      <div class="toolcard"><div class="t">Coinglass.com</div><div class="d">Live funding rates, open interest, and liquidation heatmaps across major perp venues.</div></div>
+      <div class="toolcard"><div class="t">CFTC.gov</div><div class="d">The primary US regulator for derivatives: rule releases, orders, enforcement actions.</div></div>
+      <div class="toolcard"><div class="t">kraken.com/learn</div><div class="d">Plain-English explainers on futures mechanics, margin, and US compliance.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 2 ================= -->
+<section class="section" id="s2">
+  <div class="section-head"><span class="idx">02</span><h2>Hyperliquid</h2></div>
+  <p class="section-dek">The platform most responsible for turning perpetuals from a crypto-native niche into a mainstream financial story in 2026: how it began, why it leads, how its token economics work, who is wrapping it, and what could go wrong.</p>
+  <p class="updated">Updated October 3, 2026 with live data from DefiLlama, CoinGecko, SoSoValue and Hyperliquid's own docs.</p>
+
+  <h3 class="q" id="s2-1"><span class="q-mark">Q</span>What is Hyperliquid?</h3>
+  <p>Hyperliquid is its own purpose-built Layer-1 blockchain, designed to run a <strong>fully on-chain order book</strong>, the same style of matching engine a stock exchange or Binance uses, instead of the slower automated-market-maker pools most DeFi exchanges rely on. It has two halves:</p>
+  <ul class="plain">
+    <li><strong>HyperCore</strong>: the trading engine itself. The order book, matching, margining and liquidation logic run on-chain at speeds that feel like a centralized exchange.</li>
+    <li><strong>HyperEVM</strong>: a Solidity-compatible smart-contract layer next to HyperCore, so standard Hardhat and Foundry tooling works. Contracts here can read live HyperCore data (balances, positions, oracle prices) and send trading actions. <sup><a href="#ref20">[20]</a></sup></li>
+  </ul>
+  <p>It is non-custodial (you connect a wallet; there is no account or KYC to trade), lists hundreds of perpetual markets, and has begun listing non-crypto instruments through its HIP-3 framework: stocks, commodities, indices and even an S&amp;P 500 perpetual. Section 4 goes deep on how this works under the hood, and Section 5 on how to build on it.</p>
+
+  <h3 class="q" id="s2-2"><span class="q-mark">Q</span>Where did Hyperliquid come from?</h3>
+  <p>The origin story matters for the investment case, because it explains the design choices: no venture capital, a tiny team, and a bias for transparent, on-chain accounting. Jeff Yan, a former Hudson River Trading quant, ran an anonymous trading firm, Chameleon, then built Hyperliquid after the FTX collapse. The core team is about <strong>11 people</strong> and raised <strong>no outside capital</strong>. Yan's stated ambition: "I hope Hyperliquid becomes the internet for money." <sup><a href="#ref26">[26]</a><a href="#ref28">[28]</a><a href="#ref27">[27]</a></sup></p>
+  <ol class="timeline">
+    <li><span class="d">2020</span><span class="t">Chameleon Trading.</span> Yan starts an anonymous market-making firm.</li>
+    <li><span class="d">2022 to 2023</span><span class="t">FTX collapses.</span> Yan shuts Chameleon and builds a Layer-1 chain in about three months. <sup><a href="#ref26">[26]</a></sup></li>
+    <li><span class="d">May 2023</span><span class="t">HLP vault.</span> The trading strategies go into an on-chain vault anyone can deposit into, with "no fees and no carry". It bootstraps liquidity without paying market makers. <sup><a href="#ref28">[28]</a></sup></li>
+    <li><span class="d">June 2023</span><span class="t">Mainnet.</span> The order book goes live on its own chain.</li>
+    <li><span class="d">Nov 29, 2024</span><span class="t">HYPE genesis.</span> 310M HYPE (31% of supply) is airdropped to users, with no venture or investor allocation. <sup><a href="#ref14">[14]</a></sup></li>
+    <li><span class="d">Feb 2025</span><span class="t">HyperEVM.</span> Smart contracts arrive on the same chain.</li>
+    <li><span class="d">Oct 13, 2025</span><span class="t">HIP-3.</span> Anyone who meets the stake can deploy perp markets.</li>
+    <li><span class="d">Mar 18, 2026</span><span class="t">S&amp;P 500 perp.</span> trade.xyz licenses the index from S&amp;P Dow Jones Indices. <sup><a href="#ref30">[30]</a></sup></li>
+    <li><span class="d">May 2026</span><span class="t">HIP-4 and ETFs.</span> Outcome markets go live (May 2) and the first US spot HYPE ETFs list. <sup><a href="#ref22">[22]</a></sup></li>
+    <li><span class="d">Sep 23, 2026</span><span class="t">Record high.</span> HYPE reaches $97.96 (CoinGecko), up from about $63 in June. <sup><a href="#ref28">[28]</a></sup></li>
+  </ol>
+
+  <h3 class="q" id="s2-3"><span class="q-mark">Q</span>Why is Hyperliquid such a big deal?</h3>
+  <div class="stat-row">
+    <div class="stat"><span class="n tabular">58%</span><span class="l">of on-chain perp open interest ($8.4B of $14.3B), Oct 3, 2026</span></div>
+    <div class="stat"><span class="n tabular">$203B</span><span class="l">30-day perp volume, about 33% of on-chain perp volume</span></div>
+    <div class="stat"><span class="n tabular">$2.95T</span><span class="l">perp volume in 2025</span></div>
+    <div class="stat"><span class="n tabular">~11</span><span class="l">people on the core team, with no outside capital</span></div>
+    <div class="stat"><span class="n tabular">~97%</span><span class="l">of trading fees used to buy back HYPE</span></div>
+    <div class="stat"><span class="n tabular">#1</span><span class="l">on-chain revenue in 2026 ($429M to Sep 15)</span></div>
+  </div>
+  <p style="margin-top:18px;">The structural reason it matters: Hyperliquid proved a fully on-chain order book can match the speed and depth of a centralized exchange while staying transparent and non-custodial. Multicoin found that at 1 basis point from the mid-price, Hyperliquid's BTC book held about <strong>$3.1M versus Binance's $2.3M</strong>, and its open interest was about <strong>21% of Binance's</strong> in June 2026. Pantera calls perps "one of the dominant trading instruments in global financial markets" and Hyperliquid the venue for it. <sup><a href="#ref3">[3]</a><a href="#ref28">[28]</a><a href="#ref29">[29]</a></sup></p>
+
+  <figure>
+    <svg viewBox="0 0 700 190" role="img" aria-label="Hyperliquid market share bar chart">
+      <text x="10" y="20" style="font:600 11px var(--mono); fill:var(--ink-soft);">HYPERLIQUID'S SHARE OF THE PERP MARKET</text>
+      <text x="170" y="55" style="font:500 12px var(--body); fill:var(--ink-soft);">On-chain perp open interest (Oct 3, 2026)</text>
+      <rect x="170" y="62" width="440" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="170" y="62" width="255" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="433" y="77" style="font:600 12px var(--mono); fill:var(--accent-strong)">58%</text>
+      <text x="170" y="105" style="font:500 12px var(--body); fill:var(--ink-soft);">On-chain perp 30-day volume (Oct 3, 2026)</text>
+      <rect x="170" y="112" width="440" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="170" y="112" width="145" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="323" y="127" style="font:600 12px var(--mono); fill:var(--accent-strong)">33%</text>
+      <text x="170" y="150" style="font:500 12px var(--body); fill:var(--ink-soft);">All perp volume incl. CEXs (April 2026)</text>
+      <rect x="170" y="157" width="440" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="170" y="157" width="17" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="195" y="172" style="font:600 12px var(--mono); fill:var(--accent-strong)">3.9%</text>
+    </svg>
+    <figcaption>Fig. 2: Hyperliquid's share by market segment. Sources: DefiLlama (Oct 3, 2026); CoinGecko (Apr 2026)</figcaption>
+  </figure>
+  <p class="note">Open-interest figures differ by source and definition. DefiLlama reports $8.4B for Hyperliquid on Oct 3, while Hyperliquid's own API summed to about $16.8B across all perp dexes including HIP-3 markets. Always quote the source with the number. <sup><a href="#ref3">[3]</a></sup></p>
+
+  <h3 class="q" id="s2-4"><span class="q-mark">Q</span>Where can HYPE be bought, and since when?</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Event</th><th>Date</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">HYPE genesis</td><td class="tabular">Nov 29, 2024</td><td>310M HYPE (31% of the 1B fixed supply) airdropped to roughly 90,000+ early users; no public sale. <sup><a href="#ref14">[14]</a></sup></td></tr>
+        <tr><td class="hi">Robinhood (spot)</td><td>During 2025</td><td>HYPE became one of 45+ assets on Robinhood Crypto (exact date not documented in available sources). <sup><a href="#ref15">[15]</a></sup></td></tr>
+        <tr><td class="hi">Robinhood (US perps)</td><td class="tabular">Announced Sep 29, 2026</td><td>HYPE is on the launch list for Robinhood's US perpetuals (3x leverage). Launch "in the coming months". <sup><a href="#ref6">[6]</a></sup></td></tr>
+        <tr><td class="hi">Coinbase</td><td class="tabular">Jan 29, 2026</td><td>Added HYPE to its listing roadmap. Spot trading status on Coinbase's main exchange should be confirmed on Coinbase's own asset page before assuming it is live. <sup><a href="#ref16">[16]</a><a href="#ref17">[17]</a></sup></td></tr>
+        <tr><td class="hi">US spot ETFs</td><td class="tabular">May 12 to Jun 3, 2026</td><td>THYP (21Shares), BHYP (Bitwise) and HYPG (Grayscale, staking). See 2.8. <sup><a href="#ref36">[36]</a></sup></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout watch">
+    <h4>Check before you assume</h4>
+    <p>Listing status changes fast. Confirm availability and your eligibility on the venue's own page before trading.</p>
+  </div>
+
+  <h3 class="q" id="s2-5"><span class="q-mark">Q</span>When will Hyperliquid come onshore in the US?</h3>
+  <p><strong>No firm date exists.</strong> Hyperliquid's own app still blocks US IP addresses, and its terms treat US persons as restricted. What has changed is that a path is being drawn:</p>
+
+  <figure>
+    <svg viewBox="0 0 700 150" role="img" aria-label="Hyperliquid onshore timeline">
+      <line x1="30" y1="75" x2="670" y2="75" style="stroke:var(--border); stroke-width:2"/>
+      <circle cx="60" cy="75" r="6" style="fill:var(--accent)"/>
+      <text x="60" y="55" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--ink-soft)">MAR 17</text>
+      <text x="60" y="100" text-anchor="middle" style="font:400 11px var(--body); fill:var(--ink)">SEC+CFTC digital-<tspan x="60" dy="13">asset taxonomy</tspan></text>
+      <circle cx="205" cy="75" r="6" style="fill:var(--accent)"/>
+      <text x="205" y="55" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--ink-soft)">AUG 19</text>
+      <text x="205" y="100" text-anchor="middle" style="font:400 11px var(--body); fill:var(--ink)">Trump: CFTC working<tspan x="205" dy="13">to bring HL onshore</tspan></text>
+      <circle cx="350" cy="75" r="6" style="fill:var(--accent)"/>
+      <text x="350" y="55" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--ink-soft)">AUG 31</text>
+      <text x="350" y="100" text-anchor="middle" style="font:400 11px var(--body); fill:var(--ink)">Bloomberg: HL in talks<tspan x="350" dy="13">with Payward (Kraken)</tspan></text>
+      <circle cx="495" cy="75" r="6" style="fill:var(--accent)"/>
+      <text x="495" y="55" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--ink-soft)">SEP 16</text>
+      <text x="495" y="100" text-anchor="middle" style="font:400 11px var(--body); fill:var(--ink)">Payward plan: HIP-3 perps<tspan x="495" dy="13">via Bitnomial, unapproved</tspan></text>
+      <circle cx="640" cy="75" r="7" style="fill:var(--paper-raised); stroke:var(--amber); stroke-width:2.5"/>
+      <text x="640" y="55" text-anchor="middle" style="font:700 11px var(--mono); fill:var(--amber)">OCT 3</text>
+      <text x="640" y="100" text-anchor="middle" style="font:600 11px var(--body); fill:var(--amber)">Still blocked<tspan x="640" dy="13">for US traders</tspan></text>
+    </svg>
+    <figcaption>Fig. 3: The path to "onshore", as of October 3, 2026</figcaption>
+  </figure>
+
+  <ul class="plain">
+    <li><strong>Aug 19:</strong> President Trump said CFTC Chair Mike Selig was working to bring Hyperliquid into the US "in a fully compliant fashion"; HYPE jumped 11%. <sup><a href="#ref18">[18]</a></sup></li>
+    <li><strong>Aug 31:</strong> Bloomberg reported Hyperliquid was in talks with Payward, Kraken's parent. <sup><a href="#ref44">[44]</a></sup></li>
+    <li><strong>Sep 16:</strong> Payward detailed a plan: Bitnomial would be the regulated exchange and clearinghouse, NinjaTrader Clearing would carry accounts, and matching would happen on Hyperliquid, starting with HIP-3 markets. It needs CFTC approval, has no launch date, and a former SEC counsel estimated <strong>10 to 12 months at minimum</strong>. <sup><a href="#ref44">[44]</a></sup></li>
+    <li><strong>Sep 9:</strong> The Hyperliquid Policy Center backed the CFTC in CME's lawsuit. <sup><a href="#ref19">[19]</a></sup></li>
+    <li><strong>Right now:</strong> nothing about actual US market access has changed. This is a live negotiation, not a done deal.</li>
+  </ul>
+
+  <h3 class="q" id="s2-6"><span class="q-mark">Q</span>How can a blockchain and AI team participate?</h3>
+  <p>Split this into two lanes, because they carry very different compliance profiles for a US-based team:</p>
+  <div class="callout example">
+    <h4>Lane A: Build (open to a US team)</h4>
+    <ol class="plain">
+      <li><strong>Ship a front-end or bot with a builder code.</strong> Earn up to 0.1% of the perp orders you route, with no matching engine to build (Section 5).</li>
+      <li><strong>Ship a HyperEVM dApp.</strong> Standard Solidity tooling works; contracts can read HyperCore state. <sup><a href="#ref20">[20]</a></sup></li>
+      <li><strong>Deploy a HIP-3 market</strong> for an asset class nobody serves, by staking 500,000 HYPE (about $45M at $89.87). It is capital-heavy and operationally demanding (Sections 4 and 5). <sup><a href="#ref21">[21]</a></sup></li>
+      <li><strong>Build the AI layer.</strong> The API is built for algorithmic access: signal generation, risk monitoring and execution agents inside hard limits.</li>
+      <li><strong>Run a validator.</strong> Stake HYPE to help secure consensus: infrastructure, not trading.</li>
+    </ol>
+  </div>
+  <div class="callout watch">
+    <h4>Lane B: Trade (blocked for US persons)</h4>
+    <p>Building tools, running a validator or writing bots against the API is different from <em>trading as a US person on Hyperliquid's markets</em>, which the platform restricts. Do not use a VPN to bypass the block, and get legal advice on whether your own product makes you a venue or broker.</p>
+  </div>
+
+  <h3 class="q" id="s2-7"><span class="q-mark">Q</span>What is the significance of HYPE's buybacks and fees?</h3>
+  <p>The mechanism institutions keep pointing to is the <strong>buyback engine</strong>: roughly <strong>97% of trading fees</strong> flow to an Assistance Fund that buys HYPE on the open market and permanently removes it from circulation. About <strong>49 million HYPE (4.9% of maximum supply)</strong> has been retired so far, and cumulative buybacks are around <strong>$1.3 billion</strong>. The more the platform is used, the smaller the supply gets. <sup><a href="#ref23">[23]</a><a href="#ref24">[24]</a><a href="#ref33">[33]</a></sup></p>
+
+  <figure>
+    <svg viewBox="0 0 700 215" role="img" aria-label="HYPE buyback flywheel diagram">
+      <defs>
+        <marker id="fwA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--ink-soft)"/></marker>
+        <marker id="fwB" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--violet)"/></marker>
+      </defs>
+      <rect x="360" y="6" width="210" height="42" rx="9" style="fill:var(--violet-soft); stroke:var(--violet); stroke-width:1.5"/>
+      <text x="465" y="23" text-anchor="middle" style="font:600 11.5px var(--mono); fill:var(--violet)">+ USDC reserve yield</text>
+      <text x="465" y="39" text-anchor="middle" style="font:500 10.5px var(--mono); fill:var(--violet)">$135-182M a year from Oct 2026</text>
+      <path d="M465,48 V68" style="stroke:var(--violet); stroke-width:1.5; fill:none; marker-end:url(#fwB)"/>
+      <rect x="20" y="70" width="150" height="54" rx="9" style="fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.5"/><text x="95.0" y="93" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--accent-strong)">Trading</text><text x="95.0" y="110" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--accent-strong)">volume</text><rect x="205" y="70" width="150" height="54" rx="9" style="fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.5"/><text x="280.0" y="93" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--accent-strong)">Protocol fees</text><text x="280.0" y="110" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--accent-strong)">(~97% routed)</text><rect x="390" y="70" width="150" height="54" rx="9" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/><text x="465.0" y="93" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--long)">Buyback fund</text><text x="465.0" y="110" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">buys and burns HYPE</text><rect x="575" y="70" width="115" height="54" rx="9" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/><text x="632.5" y="93" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--long)">Supply down</text><text x="632.5" y="110" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">price support</text>
+      <path d="M170,97 H202" style="stroke:var(--ink-soft); stroke-width:1.5; fill:none; marker-end:url(#fwA)"/><path d="M355,97 H387" style="stroke:var(--ink-soft); stroke-width:1.5; fill:none; marker-end:url(#fwA)"/><path d="M540,97 H572" style="stroke:var(--ink-soft); stroke-width:1.5; fill:none; marker-end:url(#fwA)"/>
+      <path d="M632,124 V158 H95 V128" style="stroke:var(--ink-soft); stroke-width:1.5; fill:none; stroke-dasharray:4 3; marker-end:url(#fwA)"/>
+      <text x="350" y="182" text-anchor="middle" style="font:500 12px var(--body); fill:var(--long)">Bull market: more traders, more volume, so the flywheel speeds up</text>
+      <text x="350" y="202" text-anchor="middle" style="font:500 12px var(--body); fill:var(--short)">Bear market: fewer traders, less volume, fewer buybacks, so it slows</text>
+    </svg>
+    <figcaption>Fig. 4: The buyback flywheel: fee-funded today, partly volume-independent from October 2026</figcaption>
+  </figure>
+
+  <div class="callout example">
+    <h4>Worked example: buybacks versus a scheduled unlock</h4>
+    <p>In Q2 2026, buybacks ran at about <span class="code">$148.6M</span> for the quarter, roughly <span class="code">$1.6M a day</span>. The monthly core-contributor unlock on <strong>October 6, 2026</strong> is about 9.92M HYPE, or roughly <span class="code">$0.86B</span> at $87 to $90.</p>
+    <div class="stat-row">
+      <div class="stat"><span class="n tabular">~$1.6M</span><span class="l">buyback spend per day at the Q2 2026 pace ($148.6M / 91 days)</span></div>
+      <div class="stat"><span class="n tabular">~$0.86B</span><span class="l">value of the Oct 6 unlock (9.92M HYPE)</span></div>
+      <div class="stat"><span class="n tabular">~17 months</span><span class="l">of buybacks to match it ($860M / $1.6M a day = about 527 days)</span></div>
+    </div>
+    <p style="margin-top:14px;">That sounds alarming, and it is the right sizing question, but context matters: actual claims against the scheduled unlock have been only about 1.4% to 17.6% of the scheduled amount in recent months. Whether insiders sell, stake or hold is what moves the price, not the schedule on paper. <sup><a href="#ref34">[34]</a><a href="#ref41">[41]</a></sup></p>
+  </div>
+
+  <p>The engine is volume-dependent, and volume has cooled from its peak. Quarterly <strong>gross protocol revenue fell from about $357M in Q3 2025 to about $202M in Q2 2026, a 43% drop</strong>, even as the token set record highs, and the share of revenue paid out to builders and market deployers rose from under 6% to about 18%. <sup><a href="#ref34">[34]</a></sup></p>
+
+  <figure>
+    <svg viewBox="0 0 700 215" role="img" aria-label="Quarterly gross protocol revenue bar chart">
+      <text x="10" y="20" style="font:600 11px var(--mono); fill:var(--ink-soft);">QUARTERLY GROSS PROTOCOL REVENUE ($M): DOWN 43% FROM THE Q3 2025 PEAK</text>
+      <text x="120" y="52" style="font:500 12px var(--body); fill:var(--ink-soft);">Q3 2025</text>
+      <rect x="120" y="58" width="480" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="120" y="58" width="480" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="610" y="73" style="font:600 12px var(--mono); fill:var(--accent-strong)">$356.7M</text>
+      <text x="120" y="95" style="font:500 12px var(--body); fill:var(--ink-soft);">Q4 2025</text>
+      <rect x="120" y="101" width="480" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="120" y="101" width="397" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="527" y="116" style="font:600 12px var(--mono); fill:var(--accent-strong)">$295.0M</text>
+      <text x="120" y="138" style="font:500 12px var(--body); fill:var(--ink-soft);">Q1 2026</text>
+      <rect x="120" y="144" width="480" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="120" y="144" width="293" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="423" y="159" style="font:600 12px var(--mono); fill:var(--accent-strong)">$217.5M</text>
+      <text x="120" y="181" style="font:500 12px var(--body); fill:var(--ink-soft);">Q2 2026</text>
+      <rect x="120" y="187" width="480" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="120" y="187" width="272" height="20" rx="4" style="fill:var(--short)"/>
+      <text x="402" y="202" style="font:600 12px var(--mono); fill:var(--short)">$201.8M</text>
+    </svg>
+    <figcaption>Fig. 5: Records in price, revenue off its peak. Source: OAK Research (Q2 2026)</figcaption>
+  </figure>
+
+  <p>Two things partly offset the volume dependence. First, in June 2026 validators passed <strong>AQA v2</strong>, which routes about 90% of the yield on roughly <strong>$5B of USDC reserves</strong> to buybacks (an estimated <strong>$135M to $182M a year</strong>), with accrual from August 26 and a first payment around October 3: income that does not depend on trading volume. Second, token buybacks across the whole crypto industry hit a record <strong>$638M</strong> by the end of August 2026, and Hyperliquid plus one other protocol made up about 90% of it. Some analysts now describe this as a <strong>buyback yield of roughly 3.9%</strong>: the share of HYPE's market value retired each year. <sup><a href="#ref35">[35]</a><a href="#ref24">[24]</a></sup></p>
+  <p>On DefiLlama's definitions, Hyperliquid's fees were <strong>$620M so far in 2026</strong> (to October 3) against $972M for all of 2025, and protocol-retained revenue was $465M against $818M. <sup><a href="#ref32">[32]</a></sup></p>
+
+  <h3 class="q" id="s2-8"><span class="q-mark">Q</span>What is happening with HYPE ETFs, and how do they compare with Bitcoin and Ethereum ETFs?</h3>
+  <p>Three US spot funds now exist, launched within weeks of each other:</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Fund</th><th>Issuer</th><th>Launched</th><th>Fee</th><th>Staking</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">THYP</td><td>21Shares</td><td class="tabular">May 12, 2026</td><td class="tabular">0.30%</td><td>Partial (about two-thirds staked)</td></tr>
+        <tr><td class="hi">BHYP</td><td>Bitwise</td><td class="tabular">May 15, 2026</td><td class="tabular">0.34% (0% for the first month)</td><td>Yes</td></tr>
+        <tr><td class="hi">HYPG</td><td>Grayscale</td><td class="tabular">Jun 3, 2026</td><td class="tabular">0.29% (lowest)</td><td>Yes (staking ETF)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 154" role="img" aria-label="ETF absorption in first 10 days as percent of asset market cap">
+      <text x="10" y="16" style="font:600 11px var(--mono); fill:var(--ink-soft);">SHARE OF THE ASSET'S MARKET CAP ABSORBED IN THE FIRST 10 TRADING DAYS (%)</text>
+      <text x="122" y="47" text-anchor="end" style="font:500 12px var(--body); fill:var(--ink-soft);">HYPE ETFs</text>
+      <rect x="130" y="34" width="430" height="18" rx="4" style="fill:var(--border)"/>
+      <rect x="130" y="34" width="430" height="18" rx="4" style="fill:var(--accent)"/>
+      <text x="568" y="47" style="font:600 12px var(--mono); fill:var(--accent)">1.04%</text>
+      <text x="122" y="76" text-anchor="end" style="font:500 12px var(--body); fill:var(--ink-soft);">Bitcoin ETFs</text>
+      <rect x="130" y="63" width="430" height="18" rx="4" style="fill:var(--border)"/>
+      <rect x="130" y="63" width="244" height="18" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="382" y="76" style="font:600 12px var(--mono); fill:var(--ink-soft)">0.59%</text>
+      <text x="122" y="105" text-anchor="end" style="font:500 12px var(--body); fill:var(--ink-soft);">Ethereum ETFs</text>
+      <rect x="130" y="92" width="430" height="18" rx="4" style="fill:var(--border)"/>
+      <rect x="130" y="92" width="170" height="18" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="308" y="105" style="font:600 12px var(--mono); fill:var(--ink-soft)">0.41%</text>
+      <text x="122" y="134" text-anchor="end" style="font:500 12px var(--body); fill:var(--ink-soft);">Solana ETFs</text>
+      <rect x="130" y="121" width="430" height="18" rx="4" style="fill:var(--border)"/>
+      <rect x="130" y="121" width="128" height="18" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="266" y="134" style="font:600 12px var(--mono); fill:var(--ink-soft)">0.31%</text>
+    </svg>
+    <figcaption>Fig. 6: HYPE ETFs absorbed about 3.4x as much of their asset's market cap as Solana ETFs did in the same window</figcaption>
+  </figure>
+
+  <div class="callout example">
+    <h4>Worked example: reading the size-adjusted comparison</h4>
+    <p>Absorbing <span class="code">1.04%</span> of HYPE's market cap versus <span class="code">0.31%</span> of Solana's in the first ten days is <span class="code">1.04 / 0.31, about 3.35x</span>, which matches the "nearly three and a half times faster" framing in the source and is a useful sanity check on the figures. Multicoin independently reports more than 1% in the same window. <sup><a href="#ref23">[23]</a><a href="#ref28">[28]</a></sup></p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Spot ETF complex</th><th>HYPE</th><th>Bitcoin</th><th>Ethereum</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Assets under management</strong></td><td class="tabular">$478M (2.48% of HYPE's market cap)</td><td class="tabular">$107.8B (Sep 28)</td><td class="tabular">$17.6B (Sep 30)</td></tr>
+        <tr><td><strong>Cumulative net inflows</strong></td><td class="tabular">$346M (peak $356.6M on Sep 4)</td><td class="tabular">$57.6B</td><td class="tabular">$13.9B</td></tr>
+        <tr><td><strong>Net flow, week of Sep 28 to Oct 2</strong></td><td class="tabular">+$3.4M</td><td class="tabular">+$82.9M</td><td class="tabular">-$118M</td></tr>
+        <tr><td><strong>Fund fees</strong></td><td>0.29% to 0.34%</td><td>about 0.25% (IBIT)</td><td>not verified</td></tr>
+        <tr><td><strong>Cumulative ETF trading volume</strong></td><td>nearly $900M (about Jun 15)</td><td colspan="2">not verified</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The picture is a strong launch followed by a pause: inflows peaked at <strong>$356.6M on September 4</strong>, the week of September 7 to 11 saw <strong>$26.4M of net outflows</strong> (mostly BHYP), and flows since have been small. BTC and ETH totals are from slightly different dates (Sep 28 and Sep 30); average daily volume comparisons could not be verified. For live numbers use SoSoValue or Farside. <sup><a href="#ref37">[37]</a><a href="#ref38">[38]</a><a href="#ref39">[39]</a></sup></p>
+
+  <h3 class="q" id="s2-9"><span class="q-mark">Q</span>What are the risks and rewards of PURR, and what does MicroStrategy teach us?</h3>
+  <p><strong>Hyperliquid Strategies (Nasdaq: PURR)</strong> is, in a Coin Bureau analyst's words, "the MicroStrategy playbook pointed straight at HYPE". It began as a reverse merger in December 2025, when a former biotech shell, Sonnet BioTherapeutics, was repurposed as a HYPE treasury vehicle chaired by <strong>Bob Diamond</strong>, the former CEO of Barclays. <sup><a href="#ref23">[23]</a></sup></p>
+  <div class="stat-row">
+    <div class="stat violet"><span class="n tabular">33-35M HYPE</span><span class="l">held in September 2026 (about $3B); about 20M in June</span></div>
+    <div class="stat violet"><span class="n tabular">Premium</span><span class="l">to net asset value per share; trackers have shown roughly 1.1x to 1.3x</span></div>
+    <div class="stat violet"><span class="n tabular">Late June</span><span class="l">added to the Russell indexes, which typically triggers passive-fund buying</span></div>
+  </div>
+  <div class="callout watch">
+    <h4>The reflexivity problem: the same knife cuts both ways</h4>
+    <p>PURR reported net income of <strong>$152.5 million</strong> for one quarter, almost entirely <em>unrealized</em> mark-to-market gains on HYPE. Over the full nine months to March 31, 2026 it reported a <strong>net loss of $165.4 million</strong>. Same holding, same accounting; the sign depends on the window. <sup><a href="#ref23">[23]</a></sup></p>
+  </div>
+  <div class="callout example">
+    <h4>Worked example: how much one bad week can swing the holdings</h4>
+    <p>On roughly 33 to 35M HYPE, a <span class="code">$10</span> move in the token changes the value of PURR's holdings by:</p>
+    <p style="text-align:center;"><span class="code">33,000,000 to 35,000,000 x $10 = $330M to $350M</span></p>
+    <p>A single move that size is larger than the company's whole reported net income in most periods, which is the defining feature (and danger) of a mark-to-market treasury vehicle.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 222" role="img" aria-label="PURR reflexivity loop diagram, up-cycle and down-cycle">
+      <defs>
+        <marker id="pg" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--long)"/></marker>
+        <marker id="pr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--short)"/></marker>
+      </defs>
+      <text x="10" y="18" style="font:600 11px var(--mono); fill:var(--long)">UP-CYCLE</text>
+      <rect x="10" y="28" width="150" height="50" rx="8" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/><text x="85" y="50" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">HYPE price up</text><path d="M160,53 H182" style="stroke:var(--long); stroke-width:1.5; fill:none; marker-end:url(#pg)"/><rect x="185" y="28" width="150" height="50" rx="8" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/><text x="260" y="50" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">Paper gains on</text><text x="260" y="66" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">holdings rise</text><path d="M335,53 H357" style="stroke:var(--long); stroke-width:1.5; fill:none; marker-end:url(#pg)"/><rect x="360" y="28" width="150" height="50" rx="8" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/><text x="435" y="50" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">Stock trades at a</text><text x="435" y="66" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">premium to NAV</text><path d="M510,53 H532" style="stroke:var(--long); stroke-width:1.5; fill:none; marker-end:url(#pg)"/><rect x="535" y="28" width="150" height="50" rx="8" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/><text x="610" y="50" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">Index buying and</text><text x="610" y="66" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--long)">raises add HYPE</text>
+      <text x="10" y="116" style="font:600 11px var(--mono); fill:var(--short)">DOWN-CYCLE: THE SAME MECHANISM, REVERSED</text>
+      <text x="10" y="116" style="font:600 11px var(--mono); fill:var(--short)"></text>
+      <rect x="10" y="126" width="150" height="50" rx="8" style="fill:var(--short-soft); stroke:var(--short); stroke-width:1.5"/><text x="85" y="148" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">HYPE price down</text><path d="M160,151 H182" style="stroke:var(--short); stroke-width:1.5; fill:none; marker-end:url(#pr)"/><rect x="185" y="126" width="150" height="50" rx="8" style="fill:var(--short-soft); stroke:var(--short); stroke-width:1.5"/><text x="260" y="148" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">Paper gains</text><text x="260" y="164" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">vaporize</text><path d="M335,151 H357" style="stroke:var(--short); stroke-width:1.5; fill:none; marker-end:url(#pr)"/><rect x="360" y="126" width="150" height="50" rx="8" style="fill:var(--short-soft); stroke:var(--short); stroke-width:1.5"/><text x="435" y="148" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">Premium to NAV</text><text x="435" y="164" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">compresses</text><path d="M510,151 H532" style="stroke:var(--short); stroke-width:1.5; fill:none; marker-end:url(#pr)"/><rect x="535" y="126" width="150" height="50" rx="8" style="fill:var(--short-soft); stroke:var(--short); stroke-width:1.5"/><text x="610" y="148" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">Leverage reverses:</text><text x="610" y="164" text-anchor="middle" style="font:600 11px var(--mono); fill:var(--short)">forced selling</text>
+      <text x="350" y="208" text-anchor="middle" style="font:400 12px var(--body); fill:var(--ink-soft)">This is the MicroStrategy (MSTR) pattern: a leveraged, single-asset treasury vehicle amplifies both directions.</text>
+    </svg>
+    <figcaption>Fig. 7: PURR's reflexivity loop, and the MicroStrategy lesson it repeats</figcaption>
+  </figure>
+
+  <p><strong>The MSTR lessons that transfer directly:</strong></p>
+  <ul class="plain">
+    <li><strong>The premium to NAV is the whole game.</strong> Treasury stocks trade at premiums and discounts to their holdings; you are betting on that premium as well as the asset.</li>
+    <li><strong>Reflexivity cuts identically in both directions.</strong> Leverage and capital raises that inflate the gains also accelerate the losses.</li>
+    <li><strong>Index inclusion manufactures demand that is not conviction.</strong> Passive funds must buy regardless of valuation.</li>
+    <li><strong>Concentration is the point and the risk.</strong> One token's price is the whole thesis.</li>
+  </ul>
+  <p>It is a growing category, not a one-off: billionaire Stanley Druckenmiller's family office disclosed a new <strong>$23 million</strong> stake in a 13F filing, and Hyperion DeFi (Nasdaq: HYPD) held about 2.04M HYPE at June 30. <strong>Disclosure:</strong> Pantera, whose research is cited here, is an anchor investor in PURR. <sup><a href="#ref24">[24]</a><a href="#ref43">[43]</a><a href="#ref29">[29]</a></sup></p>
+
+  <h3 class="q" id="s2-10"><span class="q-mark">Q</span>Why does Bitwise CIO Matt Hougan's position on HYPE and BHYP matter?</h3>
+  <p>Bitwise's Chief Investment Officer has staked out one of the most aggressive institutional theses: framing Hyperliquid not as another DEX token but as a <strong>"super app" targeting the $600 trillion global asset market</strong>, the combined value of equities, bonds, commodities and currencies that RWA perps could eventually bring on-chain. <sup><a href="#ref23">[23]</a></sup></p>
+  <ul class="plain">
+    <li><strong>Why it carries weight:</strong> it is the thesis behind a regulated, SEC-registered product (BHYP) from a major asset manager, not a retail influencer take.</li>
+    <li><strong>It is backed by product action.</strong> BHYP launched May 15, 2026, and a Bitwise analyst called the launch cohort "the best single-asset crypto ETP launch since Bitcoin itself".</li>
+    <li><strong>It reframes valuation.</strong> If you accept the super-app thesis, HYPE is priced against a sliver of global market infrastructure, not against other Layer-1 tokens. Multicoin's 2028 scenarios (about $109 bear, $319 base, $689 bull per token, written when HYPE was near $63) show how wide that range is. <sup><a href="#ref28">[28]</a></sup></li>
+  </ul>
+  <div class="callout watch">
+    <h4>Weigh the source, not just the size</h4>
+    <p>Bitwise's BHYP benefits financially from HYPE adoption and inflows. That does not make the thesis wrong, but it is a direct financial interest, not disinterested research. The same applies to Pantera and Multicoin, which both disclose holdings.</p>
+  </div>
+
+  <h3 class="q" id="s2-11"><span class="q-mark">Q</span>What are the overall risks around HYPE and its ETFs?</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Risk</th><th>What happened or the mechanism</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">Oracle risk</td><td>On May 28, 2026 a SpaceX perp on <strong>Ventuals</strong>, a HIP-3 deployer, fell <strong>45% in about 30 minutes</strong> ($2,277 to $1,254) after a bad off-chain oracle input and thin liquidity: <strong>more than 400 users were liquidated across about 1,400 positions</strong>. It was not trade.xyz, and Ventuals wound down in June 2026. <sup><a href="#ref42">[42]</a><a href="#ref31">[31]</a></sup></td><td>HIP-3 and RWA markets are about 30% of Hyperliquid's 30-day volume, so this failure class scales with the growth everyone is bullish on.</td></tr>
+        <tr><td class="hi">Concentration and governance</td><td>About <strong>27 validators</strong>, a closed-source core, and the Hyper Foundation holds about <strong>49% of staked HYPE</strong>. Multicoin's Kyle Samani has called it "Binance 2.0". <sup><a href="#ref28">[28]</a><a href="#ref23">[23]</a></sup></td><td>Even Grayscale's bullish report flags the closed-source core as an auditability risk and notes limited circuit breakers in the liquidation engine.</td></tr>
+        <tr><td class="hi">Supply</td><td><strong>Oct 6:</strong> about 9.92M HYPE (~$0.86B) core-contributor unlock. <strong>Oct 7:</strong> Hyperliquid Labs unstakes and sells <strong>3.75M HYPE (~$329M)</strong> over the counter to a single institutional buyer; terms undisclosed. <sup><a href="#ref40">[40]</a></sup></td><td>Scheduled, public, and large relative to the buyback engine (see 2.7), though recent actual claims have been a fraction of schedule.</td></tr>
+        <tr><td class="hi">Regulation</td><td>US persons are restricted. CME and ICE lobby the CFTC and Congress, arguing manipulation and sanctions risk, while ICE's CEO publicly praised the platform. Payward's onshore plan is unapproved. <sup><a href="#ref13">[13]</a><a href="#ref44">[44]</a></sup></td><td>A swaps reclassification or an adverse ruling could materially change how the product is regulated.</td></tr>
+        <tr><td class="hi">Reflexivity</td><td>Revenue is down 43% from its peak (Fig. 5); PURR's mark-to-market swings run in both directions (2.9). Providers define revenue differently, so compare trends within a source. <sup><a href="#ref34">[34]</a></sup></td><td>The bull and bear cases run on the same engine, in opposite directions.</td></tr>
+        <tr><td class="hi">Legal risk on pre-IPO and RWA markets</td><td>CoinGecko reports that voided pre-IPO transfers triggered a roughly 40% decline and that "legal risk remains material". <sup><a href="#ref31">[31]</a></sup></td><td>Synthetic exposure to private companies sits in a legal gray area.</td></tr>
+        <tr><td class="hi">Wrapper risk</td><td>THYP, BHYP and HYPG add a custodian, issuer and fund-structure layer on top of an already volatile token; PURR adds a NAV-premium layer. <sup><a href="#ref24">[24]</a></sup></td><td>Holding HYPE directly removes a layer, at the cost of convenience and tax-reporting simplicity.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout watch">
+    <h4>A practical watchlist</h4>
+    <ul class="plain" style="margin-bottom:0;">
+      <li>Track <strong>quarterly protocol revenue and buybacks</strong> above almost everything else; they are the earliest tell that the flywheel is slowing.</li>
+      <li>Watch how each <strong>unlock and OTC sale</strong> actually behaves in the market, not just its size on paper.</li>
+      <li>Watch <strong>PURR's premium to the value of its HYPE</strong>. When it compresses, the leverage works downward.</li>
+      <li>Treat any technical reading (an RSI near 77 was noted in June) as dated; check momentum yourself.</li>
+      <li>If you hold exposure through an ETF, weigh the added custodial and structural layer against the convenience.</li>
+    </ul>
+  </div>
+
+  <h3 class="q" id="s2-12"><span class="q-mark">Q</span>How does Hyperliquid's revenue rank against all of crypto?</h3>
+  <p>Independent of the buyback mechanics, CoinGecko's ranking of on-chain revenue across <strong>all</strong> crypto projects for <strong>Jan 1 to Sep 15, 2026</strong> puts Hyperliquid in first place. <sup><a href="#ref25">[25]</a></sup></p>
+  <div class="stat-row">
+    <div class="stat"><span class="n tabular">#1</span><span class="l">among all tracked on-chain revenue generators, YTD 2026</span></div>
+    <div class="stat"><span class="n tabular">$429.04M</span><span class="l">Hyperliquid's YTD on-chain revenue</span></div>
+    <div class="stat"><span class="n tabular">12.62%</span><span class="l">of the entire $3.40B tracked revenue pool</span></div>
+  </div>
+  <figure>
+    <svg viewBox="0 0 700 212" role="img" aria-label="Top on-chain revenue generators bar chart, 2026 year to date">
+      <text x="10" y="16" style="font:600 11px var(--mono); fill:var(--ink-soft);">TOP ON-CHAIN REVENUE, JAN 1 - SEP 15, 2026 ($M; EXCLUDES TETHER, CIRCLE, GRAYSCALE)</text>
+      <text x="122" y="47" text-anchor="end" style="font:500 12px var(--body); fill:var(--ink-soft);">Hyperliquid</text>
+      <rect x="130" y="34" width="430" height="18" rx="4" style="fill:var(--border)"/>
+      <rect x="130" y="34" width="430" height="18" rx="4" style="fill:var(--accent)"/>
+      <text x="568" y="47" style="font:600 12px var(--mono); fill:var(--accent)">$429</text>
+      <text x="122" y="76" text-anchor="end" style="font:500 12px var(--body); fill:var(--ink-soft);">Pump.fun</text>
+      <rect x="130" y="63" width="430" height="18" rx="4" style="fill:var(--border)"/>
+      <rect x="130" y="63" width="323" height="18" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="461" y="76" style="font:600 12px var(--mono); fill:var(--ink-soft)">$322</text>
+      <text x="122" y="105" text-anchor="end" style="font:500 12px var(--body); fill:var(--ink-soft);">Axiom Pro</text>
+      <rect x="130" y="92" width="430" height="18" rx="4" style="fill:var(--border)"/>
+      <rect x="130" y="92" width="132" height="18" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="270" y="105" style="font:600 12px var(--mono); fill:var(--ink-soft)">$132</text>
+      <text x="122" y="134" text-anchor="end" style="font:500 12px var(--body); fill:var(--ink-soft);">Sky</text>
+      <rect x="130" y="121" width="430" height="18" rx="4" style="fill:var(--border)"/>
+      <rect x="130" y="121" width="130" height="18" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="268" y="134" style="font:600 12px var(--mono); fill:var(--ink-soft)">$130</text>
+      <text x="122" y="163" text-anchor="end" style="font:500 12px var(--body); fill:var(--ink-soft);">GMGN</text>
+      <rect x="130" y="150" width="430" height="18" rx="4" style="fill:var(--border)"/>
+      <rect x="130" y="150" width="126" height="18" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="264" y="163" style="font:600 12px var(--mono); fill:var(--ink-soft)">$126</text>
+      <text x="122" y="192" text-anchor="end" style="font:500 12px var(--body); fill:var(--ink-soft);">Polymarket</text>
+      <rect x="130" y="179" width="430" height="18" rx="4" style="fill:var(--border)"/>
+      <rect x="130" y="179" width="116" height="18" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="254" y="192" style="font:600 12px var(--mono); fill:var(--ink-soft)">$115</text>
+    </svg>
+    <figcaption>Fig. 8: Hyperliquid leads every tracked on-chain project by revenue, not just perp DEXs. Source: CoinGecko</figcaption>
+  </figure>
+  <div class="callout example">
+    <h4>Worked example: how concentrated is this?</h4>
+    <p>Hyperliquid ($429.04M) plus Pump.fun ($322.21M), the two largest non-stablecoin revenue generators, together made <span class="code">$429.04M + $322.21M = $751.25M</span>, and <span class="code">$751.25M / $3.40B, about 22.10%</span> of all tracked on-chain revenue. Hyperliquid led second-placed Pump.fun by about $107M. <sup><a href="#ref25">[25]</a></sup></p>
+  </div>
+  <p>The full top 15 (perps, launchpads, trading terminals, prediction markets, lending and RWA issuers) represented 56.02% of the pool, and monthly crypto revenue still averaged $1.08B from January to August 2026, down only 11.7% from 2025's average despite Bitcoin falling roughly 40%. Injective, covered in Section 7, does not appear in the top 15: trading volume and revenue capture are different metrics. <sup><a href="#ref25">[25]</a></sup></p>
+
+  <div class="sources">
+    <h4>Sources &amp; further reading: Section 2</h4>
+    <ol class="refs">
+      <li value="14" id="ref14">The Block — <a href="https://www.theblock.co/post/328631/hyperliquid-plans-to-launch-hype-token-in-nov-29-genesis-event" target="_blank" rel="noopener">"Hyperliquid plans to launch HYPE token in Nov. 29 'genesis event'"</a></li>
+      <li value="15" id="ref15">Robinhood Newsroom — <a href="https://robinhood.com/us/en/newsroom/this-year-in-crypto-2025/" target="_blank" rel="noopener">"This Year in Crypto: 2025"</a></li>
+      <li value="16" id="ref16">KuCoin News — <a href="https://www.kucoin.com/news/flash/coinbase-adds-hyperliquid-hype-to-listing-roadmap" target="_blank" rel="noopener">"Coinbase Adds Hyperliquid (HYPE) to Listing Roadmap"</a></li>
+      <li value="17" id="ref17">Coinbase — <a href="https://www.coinbase.com/price/hype-token-vip" target="_blank" rel="noopener">HYPE asset page (check live status here)</a></li>
+      <li value="18" id="ref18">CoinDesk — <a href="https://www.coindesk.com/markets/2026/08/19/hype-jumps-11-as-trump-says-cftc-is-working-to-bring-hyperliquid-to-u-s" target="_blank" rel="noopener">"HYPE jumps 11% as Trump says CFTC is working to bring Hyperliquid to U.S."</a></li>
+      <li value="19" id="ref19">The Block — <a href="https://www.theblock.co/news/regulation/2026-09-09-hyperliquid-policy-center-backs-cftc-fight-perpetual-futures-asks-court-drop-cme-case-414046" target="_blank" rel="noopener">"Hyperliquid Policy Center backs CFTC in fight over perpetual futures"</a></li>
+      <li value="20" id="ref20">QuillAudits — <a href="https://www.quillaudits.com/blog/blockchain/guide-to-hyperevm" target="_blank" rel="noopener">"A Guide to HyperEVM and Its Growing Ecosystem"</a></li>
+      <li value="21" id="ref21">Hyperliquid GitBook — <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips/hip-3-builder-deployed-perpetuals" target="_blank" rel="noopener">"HIP-3: Builder-deployed perpetuals"</a></li>
+      <li value="22" id="ref22" class="primary">CoinGecko Learn — <a href="https://www.coingecko.com/learn/hyperliquid-hip3-hip4-tokenized-stocks-and-prediction-markets" target="_blank" rel="noopener">"Hyperliquid's HIP-3 &amp; HIP-4: Tokenized Stocks and Prediction Markets"</a> <span style="color:var(--ink-soft); font-weight:400;">(reference article for this edition)</span></li>
+      <li value="23" id="ref23" class="primary">Coin Bureau (YouTube) — <a href="https://www.youtube.com/watch?v=Kqk8nAfI-O0" target="_blank" rel="noopener">"Why Big Money Is Rushing Into Hyperliquid"</a>, published Jun 15, 2026 <span style="color:var(--ink-soft); font-weight:400;">(reference video for 2.7 to 2.11; commentary/opinion, not a primary filing — figures are point-in-time as of publish date)</span></li>
+      <li value="24" id="ref24" class="primary">Coin Bureau (YouTube) — <a href="https://www.youtube.com/watch?v=EmCiLqrdhiA" target="_blank" rel="noopener">"Why Smart Money Is DUMPING AI for Crypto"</a>, published Sep 15, 2026 <span style="color:var(--ink-soft); font-weight:400;">(reference video for 2.7 to 2.11; commentary/opinion, not a primary filing — figures are point-in-time as of publish date)</span></li>
+      <li value="25" id="ref25" class="primary">CoinGecko Learn — <a href="https://www.coingecko.com/learn/top-onchain-revenue-crypto-projects-2026" target="_blank" rel="noopener">"Top On-Chain Revenue Crypto Projects 2026"</a> <span style="color:var(--ink-soft); font-weight:400;">(reference article for 2.12; data covers Jan 1–Sep 15, 2026)</span></li>
+      <li value="26" id="ref26">Colossus: <a href="https://colossus.com/article/beyond-the-sky-jeffrey-yan-hyperliquid/" target="_blank" rel="noopener">"Hyperliquid &amp; Jeffrey Yan: Beyond the Sky"</a></li>
+      <li value="27" id="ref27">When Shift Happens (YouTube): <a href="https://www.youtube.com/watch?v=2cC9IjixIww" target="_blank" rel="noopener">"Hyperliquid Founder: Why Crypto Must Fix Finance Before AI Takes Over | Jeff Yan | E159"</a> (Feb 19, 2026)</li>
+      <li value="28" id="ref28">Multicoin Capital: <a href="https://multicoin.capital/2026/06/25/hyperliquid-hype-analysis-and-valuation/" target="_blank" rel="noopener">"Hyperliquid (HYPE) Analysis &amp; Valuation"</a> (Jun 25, 2026; <a href="https://assets.ctfassets.net/qtbqvna1l0yq/2Ww5QUmNhe8q0OhTlkRzjJ/7d82ee41b8c59e1e68c32813de8d757b/Hyperliquid__HYPE__Analysis_and_Valuation_English.pdf" target="_blank" rel="noopener">full report PDF</a>)</li>
+      <li value="29" id="ref29">Pantera Capital: <a href="https://panteracapital.com/rise-of-perps-and-hyperliquid/" target="_blank" rel="noopener">"Housing All of Finance: The Rise of Perps and Hyperliquid"</a> (Jun 2, 2026; Pantera discloses a stake in PURR)</li>
+      <li value="30" id="ref30">CoinGecko Research: <a href="https://www.coingecko.com/research/publications/rwa-report-2026" target="_blank" rel="noopener">"2026 RWA Report"</a> (published May 13, 2026; data to Mar 31, 2026)</li>
+      <li value="31" id="ref31">CoinGecko: <a href="https://www.coingecko.com/en/api/reports/tokenized-equities-sep-2026" target="_blank" rel="noopener">"Tokenized Equities Report"</a> (Sep 2026; summary page)</li>
+      <li value="3">DefiLlama: <a href="https://defillama.com/perps" target="_blank" rel="noopener">Perp DEX volume rankings</a> and <a href="https://defillama.com/open-interest" target="_blank" rel="noopener">Open interest rankings</a> (read Oct 3, 2026)</li>
+      <li value="32" id="ref32">DefiLlama: <a href="https://defillama.com/protocol/hyperliquid" target="_blank" rel="noopener">Hyperliquid fees and revenue</a> (through Oct 3, 2026)</li>
+      <li value="33" id="ref33">TokenPost: <a href="https://tokenpost.com/news/investing/26215" target="_blank" rel="noopener">report on HYPE buyback and burn totals</a> (Oct 1, 2026)</li>
+      <li value="34" id="ref34">OAK Research: <a href="https://oakresearch.io/en/reports/protocols/hyperliquid-breaking-records-revenue-falling-should-worried-hype" target="_blank" rel="noopener">Hyperliquid: breaking records, revenue falling</a> (Q2 2026 data)</li>
+      <li value="35" id="ref35">Bitget News: <a href="https://www.bitget.com/news/detail/12560605457353" target="_blank" rel="noopener">validator vote AQA v2 routes USDC reserve yield to buybacks</a> (2026)</li>
+      <li value="36" id="ref36">CoinDesk: <a href="https://www.coindesk.com/markets/2026/06/03/grayscale-launches-lowest-fee-u-s-hyperliquid-etf-as-competition-heats-up-around-hype" target="_blank" rel="noopener">Grayscale launches lowest-fee US Hyperliquid ETF</a> (Jun 3, 2026)</li>
+      <li value="37" id="ref37">KuCoin News, citing SoSoValue: <a href="https://kucoin.com/news/flash/hype-spot-etf-sees-3-37m-daily-net-inflow" target="_blank" rel="noopener">HYPE spot ETF daily net inflow</a> (Oct 2, 2026)</li>
+      <li value="38" id="ref38">247WallSt: <a href="https://247wallst.com/investing/cryptocurrency/2026/09/26/what-changed-for-hyperliquid-etfs-in-september/" target="_blank" rel="noopener">What changed for Hyperliquid ETFs in September</a> (Sep 26, 2026)</li>
+      <li value="39" id="ref39">crypto.news: <a href="https://crypto.news/crypto-etf-flows-split-bitcoin-gains-ethereum-bleeds/" target="_blank" rel="noopener">crypto ETF flows split</a> (week to Oct 2, 2026); CryptoBriefing: <a href="https://cryptobriefing.com/hype-etf-outflows-26-million-september-2026/" target="_blank" rel="noopener">HYPE ETF outflows of $26M</a> (Sep 2026)</li>
+      <li value="40" id="ref40">CryptoBriefing: <a href="https://cryptobriefing.com/hyperliquid-labs-to-sell-375m-hype-tokens-in-private-deal-on-oct-7/" target="_blank" rel="noopener">Hyperliquid Labs to sell 3.75M HYPE in a private deal on Oct 7</a> (Oct 2026)</li>
+      <li value="41" id="ref41">Tokenomist: <a href="https://tokenomist.ai/research/hype-tokenomics-330k-or-9-9m-hype-unlocks" target="_blank" rel="noopener">research on HYPE unlocks</a> (unlock schedule and actual claims)</li>
+      <li value="42" id="ref42">The Block: <a href="https://www.theblock.co/post/402991" target="_blank" rel="noopener">report on the Ventuals SpaceX market liquidations</a> (May 28, 2026); The Defiant: <a href="https://thedefiant.io/news/defi/phantom-hires-ventuals-founders-after-hyperliquid-perps-venue-winds-down" target="_blank" rel="noopener">Phantom hires Ventuals founders after the venue winds down</a> (Jun 2026)</li>
+      <li value="43" id="ref43">PURR premium-to-NAV tracker: <a href="https://purrmnav.com" target="_blank" rel="noopener">purrmnav.com</a> (holdings and premium vary by date and source)</li>
+      <li value="44" id="ref44">CoinDesk: <a href="https://www.coindesk.com/markets/2026/09/16/payward-plans-to-offer-u-s-clients-onchain-perpetual-futures-on-hyperliquid" target="_blank" rel="noopener">report on Payward's plan for US on-chain perpetuals on Hyperliquid</a> (Sep 16, 2026); The Block: <a href="https://www.theblock.co/news/markets/2026-08-31-hyperliquid-eyes-us-entry-kraken-parent-payward-perpetual-futures-deal-bloomberg-413129" target="_blank" rel="noopener">report on the Hyperliquid-Payward talks</a> (Aug 31, 2026)</li>
+      <li value="6">Robinhood Newsroom: <a href="https://robinhood.com/us/en/newsroom/hood-summit-2026/" target="_blank" rel="noopener">HOOD Summit 2026</a> (Sep 29, 2026); Blockhead: <a href="https://www.blockhead.co/2026/09/30/robinhood-brings-leveraged-crypto-perpetual-futures-to-us-customers-launches-ai-trading-agents/" target="_blank" rel="noopener">"Robinhood brings leveraged crypto perpetual futures to US customers, launches AI trading agents"</a> (Sep 30, 2026)</li>
+      <li value="13">Coin Bureau (YouTube): <a href="https://www.youtube.com/watch?v=HRLzu9xdLDQ" target="_blank" rel="noopener">"Why Wall Street Is Really Afraid of Hyperliquid"</a> (May 28, 2026; commentary)</li>
+    </ol>
+    <h4 style="margin-top:16px;">Analytics &amp; learning sites to bookmark</h4>
+    <div class="toollist">
+      <div class="toolcard"><div class="t">app.hyperliquid.xyz/stats</div><div class="d">Native protocol stats: volume, open interest and fees.</div></div>
+      <div class="toolcard"><div class="t">hl.eco /market-share</div><div class="d">Hyperliquid versus centralized exchanges, plus buyback and ETF widgets.</div></div>
+      <div class="toolcard"><div class="t">SoSoValue and Farside</div><div class="d">Daily US spot ETF flows for BTC, ETH and (SoSoValue) HYPE.</div></div>
+      <div class="toolcard"><div class="t">Hyperliquid Docs</div><div class="d">API reference, builder codes, HIPs and the HyperEVM developer guide.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 3 ================= -->
+<section class="section" id="s3">
+  <div class="section-head"><span class="idx">03</span><h2>Trading, step by step</h2></div>
+  <p class="section-dek">A concrete, compliant path for a US resident: which venue to use, how to place a first trade, and the risk and legal items to keep on a permanent watchlist. Educational, not investment advice.</p>
+
+  <h3 class="q" id="s3-1"><span class="q-mark">Q</span>Which venue should a US trader choose?</h3>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th>Coinbase</th><th>Kraken</th><th>Robinhood</th><th>CME Group</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Status</strong></td><td>Live since Jul 21, 2025</td><td>Live since Jun 15, 2026</td><td>Announced Sep 29, 2026; not yet live</td><td>Live (dated futures)</td></tr>
+        <tr><td><strong>Contract type</strong></td><td>"Perpetual-style" futures, 5-year expiry</td><td>True no-expiry perpetuals (Bitnomial)</td><td>Perps via Robinhood Derivatives and Bitstamp</td><td>Standard dated futures and options</td></tr>
+        <tr><td><strong>Assets</strong></td><td>Nano BTC and ETH at launch; metals</td><td>9 at launch: BTC, ETH, SOL, XRP, ADA, LINK, DOGE, LTC, AVAX</td><td>BTC, ETH, SOL, XRP, DOGE, ADA, LINK, HYPE</td><td>Crypto plus the full commodity and equity-index suite</td></tr>
+        <tr><td><strong>Max leverage</strong></td><td>Up to 10x intraday on crypto; 20x on metals</td><td>Set by Kraken for US clients (not published at launch)</td><td>10x on BTC and ETH; 3x on the rest</td><td>Set by the exchange margin schedule</td></tr>
+        <tr><td><strong>Fees</strong></td><td>From 0.02% per contract, $0.15 minimum</td><td>$0.15 per contract per side</td><td>1 basis point per trade through year-end</td><td>Broker-dependent</td></tr>
+        <tr><td><strong>Account setup</strong></td><td>Inside a Coinbase account plus a derivatives application</td><td>On Kraken Pro, with a futures eligibility check</td><td>Inside the Robinhood app</td><td>Needs a futures broker (FCM)</td></tr>
+        <tr><td><strong>Best for</strong></td><td>Simplicity; the most mature US offering</td><td>True-perp mechanics; the likeliest bridge to Hyperliquid</td><td>Mass-market access and (planned) AI agents</td><td>Size, institutional liquidity, non-crypto assets</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Sources: Coinbase blog (Jul 21, 2025 and May 29, 2026), Kraken blog and support pages (Jun 15, 2026), Robinhood Newsroom (Sep 29, 2026), CME. Terms change; check each venue's current contract specifications. <sup><a href="#ref8">[8]</a><a href="#ref4">[4]</a><a href="#ref9">[9]</a><a href="#ref6">[6]</a></sup></p>
+
+  <div class="callout watch">
+    <h4>What about MetaMask and Phantom?</h4>
+    <p>Both wallets offer perps inside a self-custody app, but all of the liquidity and matching come from Hyperliquid and <strong>both exclude US users</strong> (MetaMask lists the US, UK, Ontario and Belgium; Phantom says perps are not available in the United States or UK). They matter to this story as distribution channels: Phantom is the top earner of Hyperliquid builder fees ($20.6M cumulative, 0.05% fee, $39.4B of volume, 137K traders by May 25, 2026) and MetaMask has routed about $7.5B at a roughly 0.1% builder fee (sources differ on the exact fee). Section 5 explains the builder-code model. <sup><a href="#ref10">[10]</a><a href="#ref11">[11]</a><a href="#ref46">[46]</a></sup></p>
+  </div>
+
+  <p><strong>Practical recommendation:</strong> for a US trader, start on a CFTC-regulated venue where the contract terms are explicit. Kraken is the closest onshore analog to Hyperliquid's true-perpetual mechanics; Coinbase is the most mature and simplest; Robinhood is the one to watch for mass-market access once it launches. Use a CME-cleared futures broker when you want commodities and equity-index futures, which the crypto venues do not yet offer in the US. Two pending items could widen the menu: Coinbase's filing for cash-settled single-stock and ETF perps (reported in September 2026) and Payward's proposed Hyperliquid-matched markets. <sup><a href="#ref45">[45]</a><a href="#ref44">[44]</a></sup></p>
+
+  <h3 class="q" id="s3-2"><span class="q-mark">Q</span>What are the actual steps to place a trade?</h3>
+  <ol class="stepline">
+    <li><span class="st">Confirm eligibility and complete derivatives onboarding</span><p>Spot KYC does not automatically cover derivatives. Coinbase and Kraken each require a separate derivatives agreement, risk disclosures, and sometimes a suitability or eligibility check before the perp account activates.</p></li>
+    <li><span class="st">Fund the derivatives account</span><p>Transfer USD or approved collateral into the derivatives wallet; margin usually cannot be pulled automatically from a spot balance mid-trade.</p></li>
+    <li><span class="st">Read the actual contract spec before the marketing name</span><p>Check tick size, contract size, the index the settlement price is drawn from, the funding interval, and whether it is a true perpetual or a dated "perpetual-style" wrapper.</p></li>
+    <li><span class="st">Size the position and choose leverage</span><p>Decide direction, notional size and leverage <em>before</em> looking at the order ticket, not while watching the price move.</p></li>
+    <li><span class="st">Set the exit before the entry</span><p>Place a stop-loss and take-profit, and know the liquidation price, before the order fills.</p></li>
+    <li><span class="st">Submit the order</span><p>Use a market order for an immediate fill or a limit order to control the entry price. Confirm margin and maintenance-margin ratio once it is open.</p></li>
+    <li><span class="st">Track funding</span><p>Perps bill or credit funding every few hours (Fig. 1). On a small account, funding drag can matter as much as price movement over a multi-day hold.</p></li>
+    <li><span class="st">Close and reconcile</span><p>Exit with an opposite order or let the stop or target trigger, then reconcile realized P&amp;L. See the tax note below.</p></li>
+  </ol>
+
+  <div class="callout example">
+    <h4>Worked example: a regulated perp trade end to end</h4>
+    <p>You go <strong>long one BTC-equivalent notional</strong> at <span class="code">$110,000</span> using <strong>5x leverage</strong>.</p>
+    <div class="stat-row">
+      <div class="stat"><span class="n tabular">$22,000</span><span class="l">Margin required (notional / leverage)</span></div>
+      <div class="stat"><span class="n tabular">+$5,500</span><span class="l">Unrealized gain if BTC rises 5% to $115,500</span></div>
+      <div class="stat"><span class="n tabular">+25%</span><span class="l">That gain as a return on the $22,000 margin</span></div>
+    </div>
+    <p style="margin-top:14px;">With a typical <strong>3% maintenance-margin</strong> requirement, the approximate liquidation price sits near <span class="code">$110,000 x (1 - 20% + 3%) = $93,500</span>, roughly a 15% adverse move at 5x leverage. Funding at a representative <span class="code">0.01% per 8 hours</span>, paid by longs when the perp trades above spot, would cost about <span class="code">$11</span> per 8-hour period on a $110,000 notional: small each time, but it compounds on a position held for weeks. Illustrative only.</p>
+  </div>
+
+  <h3 class="q" id="s3-3"><span class="q-mark">Q</span>What should stay on the permanent watchlist?</h3>
+
+  <div class="callout watch">
+    <h4>Market and execution risk</h4>
+    <ul class="plain" style="margin-bottom:0;">
+      <li>Liquidation cascades in thin, off-peak liquidity: size down into low-volume hours.</li>
+      <li>Funding-rate flips: a crowded trade can flip from paying you to costing you overnight.</li>
+      <li>A simple sizing floor: risk no more than 1% to 2% of account equity on any single trade, regardless of how much leverage the venue allows.</li>
+    </ul>
+  </div>
+
+  <div class="callout watch">
+    <h4>Legal and regulatory items to track</h4>
+    <ul class="plain" style="margin-bottom:0;">
+      <li><strong>CME and ICE versus the CFTC and Hyperliquid</strong>: still unresolved as of October 2026; a ruling or rule change could alter the onshore-perpetual approvals. <sup><a href="#ref12">[12]</a><a href="#ref13">[13]</a></sup></li>
+      <li><strong>Contract structure is not the marketing name.</strong> Coinbase's product is a 5-year dated future marketed as "perpetual-style"; Kraken's is a true no-expiry perpetual. Read the contract spec.</li>
+      <li><strong>Tax treatment.</strong> Futures on a CFTC-regulated exchange are typically Section 1256 contracts: gains get 60% long-term and 40% short-term treatment and are marked to market at year-end regardless of holding period. That differs from spot crypto; confirm current-year treatment with a tax professional, since it depends on the venue's regulatory status.</li>
+      <li><strong>Offshore trading as a US person</strong> (for example via a VPN to Hyperliquid, or through a Hyperliquid-routed wallet) sits outside this protection and carries its own legal and reporting risk. It is not a shortcut around the venues above.</li>
+      <li>Check <a href="https://www.cftc.gov" target="_blank" rel="noopener">cftc.gov</a> and <a href="https://www.nfa.futures.org" target="_blank" rel="noopener">nfa.futures.org</a> directly for current rule status rather than relying on any single article, including this one.</li>
+    </ul>
+  </div>
+
+  <div class="sources">
+    <h4>Sources &amp; further reading: Section 3</h4>
+    <ol class="refs">
+      <li value="8">Coinbase blog: <a href="https://www.coinbase.com/blog/perpetual-futures-have-arrived-in-the-us" target="_blank" rel="noopener">"Perpetual futures have arrived in the US"</a> (Jul 21, 2025) and <a href="https://www.coinbase.com/blog/coinbase-brings-global-crypto-derivatives-to-us-market" target="_blank" rel="noopener">"Coinbase brings global crypto derivatives to US market"</a> (May 29, 2026)</li>
+      <li value="4">Kraken Blog — <a href="https://blog.kraken.com/product/kraken-derivatives/announcing-cftc-regulated-us-perps" target="_blank" rel="noopener">"Announcing CFTC-regulated perpetual futures for US Traders"</a></li>
+      <li value="9">Kraken Support: <a href="https://support.kraken.com/articles/us-futures-fees" target="_blank" rel="noopener">US futures fees</a> and <a href="https://support.kraken.com/articles/us-perpetual-futures" target="_blank" rel="noopener">US perpetual futures</a></li>
+      <li value="6">Robinhood Newsroom: <a href="https://robinhood.com/us/en/newsroom/hood-summit-2026/" target="_blank" rel="noopener">HOOD Summit 2026</a> (Sep 29, 2026); Blockhead: <a href="https://www.blockhead.co/2026/09/30/robinhood-brings-leveraged-crypto-perpetual-futures-to-us-customers-launches-ai-trading-agents/" target="_blank" rel="noopener">"Robinhood brings leveraged crypto perpetual futures to US customers, launches AI trading agents"</a> (Sep 30, 2026)</li>
+      <li value="45" id="ref45">The Block — <a href="https://www.theblock.co/news/regulation/2026-09-03-coinbase-seeks-sec-greenlight-to-list-24-7-equity-perpetuals-413487" target="_blank" rel="noopener">"Coinbase seeks SEC greenlight to list 24/7 equity perpetuals"</a></li>
+      <li value="12">CryptoSlate — <a href="https://cryptoslate.com/america-is-importing-cryptos-perpetual-futures-liquidation-engine/" target="_blank" rel="noopener">"Multi-trillion-dollar offshore engine... arrives in America — and CME is suing to crush it"</a></li>
+      <li value="13">Coin Bureau (YouTube): <a href="https://www.youtube.com/watch?v=HRLzu9xdLDQ" target="_blank" rel="noopener">"Why Wall Street Is Really Afraid of Hyperliquid"</a> (May 28, 2026; commentary)</li>
+      <li value="44">CoinDesk: <a href="https://www.coindesk.com/markets/2026/09/16/payward-plans-to-offer-u-s-clients-onchain-perpetual-futures-on-hyperliquid" target="_blank" rel="noopener">report on Payward's plan for US on-chain perpetuals on Hyperliquid</a> (Sep 16, 2026); The Block: <a href="https://www.theblock.co/news/markets/2026-08-31-hyperliquid-eyes-us-entry-kraken-parent-payward-perpetual-futures-deal-bloomberg-413129" target="_blank" rel="noopener">report on the Hyperliquid-Payward talks</a> (Aug 31, 2026)</li>
+      <li value="10">MetaMask: <a href="https://metamask.io/perps" target="_blank" rel="noopener">Perps</a> and <a href="https://metamask.io/news/introducing-metamask-perps" target="_blank" rel="noopener">"Introducing MetaMask Perps"</a> (Oct 8, 2025)</li>
+      <li value="11">Phantom Help Center: <a href="https://help.phantom.com/articles/trade-perps-in-phantom-42292249388307" target="_blank" rel="noopener">Trade perps in Phantom</a> and <a href="https://help.phantom.com/hc/en-us/articles/48634486197651-Feature-availability-by-region" target="_blank" rel="noopener">Feature availability by region</a></li>
+      <li value="46" id="ref46">CoinGecko Research: <a href="https://www.coingecko.com/research/publications/top-hyperliquid-builders" target="_blank" rel="noopener">"Top Hyperliquid Builders"</a> (data as of May 25, 2026)</li>
+    </ol>
+    <h4 style="margin-top:16px;">Analytics &amp; learning sites to bookmark</h4>
+    <div class="toollist">
+      <div class="toolcard"><div class="t">CFTC.gov</div><div class="d">Official rules, orders and enforcement: the source of record.</div></div>
+      <div class="toolcard"><div class="t">NFA.futures.org</div><div class="d">Self-regulatory body for US futures brokers; verify any FCM's registration here.</div></div>
+      <div class="toolcard"><div class="t">CMEGroup.com/education</div><div class="d">CME's own margin, contract-spec and futures-mechanics courses.</div></div>
+      <div class="toolcard"><div class="t">TradingView</div><div class="d">Charting and funding-rate overlays across regulated and offshore venues.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 4 ================= -->
+<section class="section new" id="s4">
+  <div class="section-head new"><span class="idx">04</span><h2>Architecture &amp; the RWA thesis</h2></div>
+  <p class="section-dek">Why serious analysts — a16z crypto among them — treat Hyperliquid as the leading on-chain candidate to host real-world-asset (RWA) trading, not just crypto perps.</p>
+
+  <h3 class="q" id="s4-1"><span class="q-mark">Q</span>How does HyperCore actually achieve exchange-grade speed on-chain?</h3>
+  <p>Most blockchains process transactions one after another and settle in seconds at best — fine for a token swap, unworkable for a limit order book that needs to match, cancel, and liquidate continuously. HyperCore is built differently, purpose-first:</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Layer</th><th>What it does</th><th>Why it matters for RWA</th></tr></thead>
+      <tbody>
+        <tr><td class="hi v">HyperBFT consensus</td><td>A HotStuff-derived Byzantine-fault-tolerant protocol with a rotating leader and <em>pipelined</em> rounds — proposal, voting, and commitment overlap instead of running in sequence, tolerating up to 1/3 malicious validators. <sup><a href="#ref47">[47]</a></sup></td><td>Median latency of <strong>~0.1s</strong>, 99th-percentile <strong>~0.5s</strong>, one-block finality — fast enough that a stock or commodity trader wouldn't notice they're on-chain. <sup><a href="#ref47">[47]</a></sup></td></tr>
+        <tr><td class="hi v">HyperCore matching engine</td><td>A Rust-based virtual machine purpose-built for trading logic — order matching runs as a native operation, not an expensive general-purpose smart-contract call. <sup><a href="#ref47">[47]</a></sup></td><td>Throughput up to <strong>~200,000 orders/second</strong>, the difference between a toy on-chain order book and one that can absorb real institutional RWA flow. <sup><a href="#ref47">[47]</a></sup></td></tr>
+        <tr><td class="hi v">HyperEVM</td><td>An EVM-compatible execution layer next to HyperCore, able to read and act on live trading state (prices, positions, oracle feeds) from Solidity contracts. <sup><a href="#ref20">[20]</a></sup></td><td>Lets a Hardhat/Foundry team build structured products, vaults, or AI-driven strategies directly against real RWA price data, without leaving the chain.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 260" role="img" aria-label="Hyperliquid layered architecture stack">
+      <rect x="60" y="20" width="580" height="40" rx="8" style="fill:var(--violet-soft); stroke:var(--violet); stroke-width:1.5"/>
+      <text x="350" y="45" text-anchor="middle" style="font:600 13px var(--mono); fill:var(--violet)">HyperBFT — consensus (~0.1s median finality)</text>
+
+      <rect x="60" y="72" width="580" height="40" rx="8" style="fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.5"/>
+      <text x="350" y="97" text-anchor="middle" style="font:600 13px var(--mono); fill:var(--accent-strong)">HyperCore — native on-chain order book (~200k orders/sec)</text>
+
+      <rect x="60" y="124" width="270" height="40" rx="8" style="fill:var(--paper-raised); stroke:var(--border); stroke-width:1.5"/>
+      <text x="195" y="149" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--ink)">HIP-3 · perp markets</text>
+      <rect x="370" y="124" width="270" height="40" rx="8" style="fill:var(--paper-raised); stroke:var(--border); stroke-width:1.5"/>
+      <text x="505" y="149" text-anchor="middle" style="font:600 12px var(--mono); fill:var(--ink)">HIP-4 · outcome markets</text>
+
+      <rect x="60" y="176" width="580" height="40" rx="8" style="fill:var(--long-soft); stroke:var(--long); stroke-width:1.5"/>
+      <text x="350" y="201" text-anchor="middle" style="font:600 13px var(--mono); fill:var(--long)">HyperEVM — Solidity contracts reading live HyperCore state</text>
+
+      <rect x="60" y="228" width="580" height="30" rx="8" style="fill:var(--paper); stroke:var(--border); stroke-width:1"/>
+      <text x="350" y="248" text-anchor="middle" style="font:500 12px var(--body); fill:var(--ink-soft)">Front-ends &amp; builders — trade[XYZ], Outcomexyz, your app</text>
+    </svg>
+    <figcaption>Fig. 9: The full stack: one consensus layer and matching engine underneath every product</figcaption>
+  </figure>
+
+  <h3 class="q" id="s4-2"><span class="q-mark">Q</span>What exactly is HIP-3, and how does it turn Hyperliquid into an open market-listing venue?</h3>
+  <p><strong>HIP-3 ("builder-deployed perpetuals")</strong> lets any qualifying team launch its own perpetual market directly on HyperCore — without building a separate exchange, matching engine, or liquidity network. It went live on mainnet <strong>October 13, 2025</strong>. <sup><a href="#ref21">[21]</a></sup></p>
+
+  <div class="stat-row">
+    <div class="stat violet"><span class="n tabular">500,000 HYPE</span><span class="l">Security bond a deployer must stake (about $45M at HYPE $89.87)</span></div>
+    <div class="stat violet"><span class="n tabular">50%</span><span class="l">Share of trading fees the deployer earns on their own markets</span></div>
+    <div class="stat violet"><span class="n tabular">3 free</span><span class="l">Markets any deployer can launch before needing a Dutch auction for more</span></div>
+    <div class="stat violet"><span class="n tabular">100%</span><span class="l">Of the stake validators can slash for malicious oracle/market conduct</span></div>
+  </div>
+
+  <p style="margin-top:16px;">A deployer configures the asset, oracle source and fallback logic, tick size, margin model, leverage caps, and open-interest caps — then trades route through the exact same HyperCore order path as native BTC/ETH markets. <strong>That shared execution layer is the key design decision:</strong> a HIP-3 market doesn't bootstrap its own liquidity from zero — it plugs into infrastructure that's already fast and already has traders on it. Malicious behavior (bad oracle feeds, manipulated settlement) is checked by a stake-weighted validator vote that can destroy the deployer's bond, with a 7-day unstaking window to prevent an exit-scam. <sup><a href="#ref21">[21]</a><a href="#ref48">[48]</a></sup></p>
+
+  <p>The result so far: <strong>HIP-3 volume grew from $12.65B in Q4 2025 to $130.87B in Q1 2026</strong>, and by September 2026 HIP-3 and RWA markets were about <strong>30% of Hyperliquid's 30-day volume</strong>, with trade.xyz holding more than 90% of HIP-3 open interest. In March 2026 trade.xyz licensed the S&amp;P 500 from S&amp;P Dow Jones Indices. <sup><a href="#ref30">[30]</a></sup></p>
+  <figure>
+    <svg viewBox="0 0 700 135" role="img" aria-label="HIP-3 quarterly volume bar chart">
+      <text x="10" y="20" style="font:600 11px var(--mono); fill:var(--ink-soft);">HIP-3 QUARTERLY VOLUME ($B)</text>
+      <text x="150" y="52" style="font:500 12px var(--body); fill:var(--ink-soft);">Q4 2025 (launch)</text>
+      <rect x="150" y="58" width="440" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="58" width="43" height="20" rx="4" style="fill:var(--violet)"/>
+      <text x="201" y="73" style="font:600 12px var(--mono); fill:var(--violet)">$12.65B</text>
+      <text x="150" y="98" style="font:500 12px var(--body); fill:var(--ink-soft);">Q1 2026</text>
+      <rect x="150" y="104" width="440" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="104" width="440" height="20" rx="4" style="fill:var(--violet)"/>
+      <text x="598" y="119" style="font:600 12px var(--mono); fill:var(--violet)">$130.87B</text>
+    </svg>
+    <figcaption>Fig. 10: HIP-3 volume grew about tenfold in a quarter. Source: CoinGecko 2026 RWA Report</figcaption>
+  </figure>
+
+
+  <h3 class="q" id="s4-3"><span class="q-mark">Q</span>And HIP-4?</h3>
+  <p><strong>HIP-4 ("outcome trading")</strong> is Hyperliquid's prediction-market primitive — fully collateralized, expiry-based contracts that settle to exactly 0 or 1 based on a real-world event, via an authorized oracle. It reached mainnet on <strong>May 2, 2026</strong>, with <strong>Outcomexyz</strong> as the first marketplace (initially daily Bitcoin price predictions). First-month volume was about $100M, and Phantom and FOMO have integrated outcome markets. <sup><a href="#ref22">[22]</a><a href="#ref52">[52]</a></sup></p>
+  <ul class="plain">
+    <li><strong>No liquidation risk</strong> — contracts are fully collateralized, so the most you can lose is your stake, unlike a leveraged perp.</li>
+    <li><strong>Merged YES/NO order books</strong>, USDH collateral, and zero fees to open a position.</li>
+    <li><strong>Deployment is staged:</strong> Phase 1 kept markets curated by the Hyperliquid team; since <strong>August 29, 2026</strong>, builders staking 500,000 HYPE can deploy from validator-approved templates, with a fully permissionless Phase 2 gated at 1,000,000 HYPE. <sup><a href="#ref22">[22]</a></sup></li>
+    <li><strong>The composability payoff:</strong> because HIP-4 lives on the same HyperCore account as your perps, you can hold a directional perpetual position and an event-based hedge <em>in one margin account</em> — something siloed venues like Polymarket or Kalshi simply can't offer, since they aren't also your perpetuals broker.</li>
+  </ul>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th>HIP-3</th><th>HIP-4</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Product</strong></td><td>Leveraged perpetual futures</td><td>Binary outcome / event contracts</td></tr>
+        <tr><td><strong>Mainnet</strong></td><td class="tabular">Oct 13, 2025</td><td class="tabular">May 2, 2026</td></tr>
+        <tr><td><strong>Risk profile</strong></td><td>Leveraged — can be liquidated</td><td>Fully collateralized — max loss = stake</td></tr>
+        <tr><td><strong>Deployer stake</strong></td><td>500,000 HYPE</td><td>500,000 HYPE (curated) → 1,000,000 HYPE (permissionless)</td></tr>
+        <tr><td><strong>Flagship app</strong></td><td>trade[XYZ]</td><td>Outcomexyz</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="q" id="s4-4"><span class="q-mark">Q</span>So why is Hyperliquid the leading global candidate to host RWA trading?</h3>
+  <p>a16z crypto's research on the perp market opportunity frames the underlying demand clearly: centralized perp exchanges cleared <strong>$86.2 trillion</strong> in 2025 (+47% YoY) and on-chain perp DEXs did <strong>$6.7 trillion</strong> (+346% YoY), taking on-chain share of CEX volume from 2.5% to 7.8% in a single year (CoinGecko's definitions give $85.3T and $6.38T, and a higher share). <sup><a href="#ref49">[49]</a></sup></p>
+
+  <div class="callout tech">
+    <h4>The RWA case, in five points</h4>
+    <ol class="plain" style="margin-bottom:0;">
+      <li><strong>Speed that TradFi traders won't notice.</strong> Sub-second finality and ~200k orders/sec means an on-chain venue can finally match the execution quality institutional RWA flow expects — most DeFi infrastructure simply can't clear that bar.</li>
+      <li><strong>Permissionless listing removes the gatekeeper.</strong> HIP-3 means bringing a new stock, commodity, or index to market doesn't require convincing an exchange's product team — a bonded, accountable builder can just deploy it.</li>
+      <li><strong>It fills RWA's structural gap: nights and weekends.</strong> Traditional markets close; on-chain RWA perps trade 24/7. RWA perps traded <strong>$524.8B in Q1 2026 versus $313.0B in all of 2025</strong>, and in April they ran about <strong>15x RWA spot volume</strong> ($333.6B versus $21.5B). Pantera notes that when the Iran conflict began on a weekend in February 2026, Hyperliquid was the only venue trading oil. <sup><a href="#ref2">[2]</a><a href="#ref30">[30]</a><a href="#ref29">[29]</a></sup></li>
+      <li><strong>One margin account, every product.</strong> Perps (HIP-3), hedges (HIP-4), and DeFi strategies (HyperEVM) share collateral and infrastructure — a structural advantage fragmented TradFi and single-purpose DeFi venues can't replicate.</li>
+      <li><strong>Incentives are aligned end to end.</strong> A16z notes new builder categories emerging around this shift — distribution layers, market creators earning 50% fee shares, specialized liquidity providers, and perp-specific data infrastructure — while roughly 97% of protocol trading fees are used to buy back HYPE, tying the base asset directly to the volume all of this activity generates. <sup><a href="#ref49">[49]</a><a href="#ref22">[22]</a></sup></li>
+    </ol>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 135" role="img" aria-label="RWA perps versus RWA spot volume bar chart">
+      <text x="10" y="20" style="font:600 11px var(--mono); fill:var(--ink-soft);">APRIL 2026 RWA VOLUME ($B): PERPS VERSUS SPOT</text>
+      <text x="150" y="52" style="font:500 12px var(--body); fill:var(--ink-soft);">RWA perps</text>
+      <rect x="150" y="58" width="440" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="58" width="440" height="20" rx="4" style="fill:var(--amber)"/>
+      <text x="598" y="73" style="font:600 12px var(--mono); fill:var(--amber)">$333.6B</text>
+      <text x="150" y="98" style="font:500 12px var(--body); fill:var(--ink-soft);">RWA spot</text>
+      <rect x="150" y="104" width="440" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="150" y="104" width="28" height="20" rx="4" style="fill:var(--ink-soft)"/>
+      <text x="186" y="119" style="font:600 12px var(--mono); fill:var(--ink-soft)">$21.5B</text>
+    </svg>
+    <figcaption>Fig. 11: In RWAs, the derivative wrapper has beaten the tokenized-asset wrapper so far. Source: CoinGecko (April 2026)</figcaption>
+  </figure>
+  <p>The traction is already real, not theoretical: RWA instruments (equities, commodities, indices) made up as much as <strong>44% of Hyperliquid's own trading volume</strong>, and 23 of Hyperliquid's top 30 trading pairs are now tokenized stocks or commodities rather than crypto-native assets. <sup><a href="#ref49">[49]</a><a href="#ref51">[51]</a></sup> Section 7 puts this claim to the test against Injective, the strongest competing architecture.</p>
+
+  <div class="sources">
+    <h4>Sources &amp; further reading — Section 4</h4>
+    <ol class="refs">
+      <li value="1">a16z crypto: <a href="https://a16zcrypto.com/posts/article/what-are-perpetual-futures/#the-market-opportunity-for-perps" target="_blank" rel="noopener">"What Are Perpetual Futures?"</a> (the market opportunity for perps)</li>
+      <li value="22" class="primary">CoinGecko Learn — <a href="https://www.coingecko.com/learn/hyperliquid-hip3-hip4-tokenized-stocks-and-prediction-markets" target="_blank" rel="noopener">"Hyperliquid's HIP-3 &amp; HIP-4: Tokenized Stocks and Prediction Markets"</a> <span style="color:var(--ink-soft); font-weight:400;">(reference article for this edition)</span></li>
+      <li value="47" id="ref47">RockNBlock — <a href="https://rocknblock.io/blog/how-does-hyperliquid-work-a-technical-deep-dive" target="_blank" rel="noopener">"How Hyperliquid Works: Architecture, Order Book, HyperEVM"</a></li>
+      <li value="21">Hyperliquid GitBook — <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips/hip-3-builder-deployed-perpetuals" target="_blank" rel="noopener">"HIP-3: Builder-deployed perpetuals"</a></li>
+      <li value="48" id="ref48">Chainstack — <a href="https://chainstack.com/hyperliquid-hip3-builder-deployed-perpetuals-trust-boundary/" target="_blank" rel="noopener">"HIP-3, Builder-Deployed Perpetuals, and the New Market Trust Boundary"</a></li>
+      <li value="49" id="ref49">a16z crypto (same as above) &amp; OAK Research — <a href="https://oakresearch.io/en/analyses/innovations/what-is-hyperliquid-hip-3-how-it-works-and-use-cases" target="_blank" rel="noopener">"What is Hyperliquid's HIP-3? How it works and use cases"</a></li>
+      <li value="50" id="ref50">The Block / Dune — RWA and gold/equity perp volume figures, via Dune community dashboards (Section 6)</li>
+      <li value="51" id="ref51">Nansen — <a href="https://nansen.ai/post/what-is-hip-3-hyperliquid" target="_blank" rel="noopener">"What Is HIP-3? Hyperliquid's Permissionless Markets"</a></li>
+      <li value="30">CoinGecko Research: <a href="https://www.coingecko.com/research/publications/rwa-report-2026" target="_blank" rel="noopener">"2026 RWA Report"</a> (published May 13, 2026; data to Mar 31, 2026)</li>
+      <li value="2">CoinGecko Research: <a href="https://www.coingecko.com/research/publications/state-of-crypto-perpetuals-report-2026" target="_blank" rel="noopener">"State of Crypto Perpetuals Report 2026"</a> (published May 21, 2026; data to Apr 30, 2026)</li>
+      <li value="29">Pantera Capital: <a href="https://panteracapital.com/rise-of-perps-and-hyperliquid/" target="_blank" rel="noopener">"Housing All of Finance: The Rise of Perps and Hyperliquid"</a> (Jun 2, 2026; Pantera discloses a stake in PURR)</li>
+      <li value="52" id="ref52">The Block: <a href="https://www.theblock.co/post/408875" target="_blank" rel="noopener">report on HIP-4 permissionless deployment</a> (Jul 20, 2026)</li>
+      <li value="20">QuillAudits — <a href="https://www.quillaudits.com/blog/blockchain/guide-to-hyperevm" target="_blank" rel="noopener">"A Guide to HyperEVM and Its Growing Ecosystem"</a></li>
+    </ol>
+  </div>
+</section>
+
+
+<!-- ================= SECTION 5 ================= -->
+<section class="section new" id="s5">
+  <div class="section-head new"><span class="idx">05</span><h2>Building on Hyperliquid</h2></div>
+  <p class="section-dek">What the best applications look like, how builder codes turn distribution into revenue, and a verified, step-by-step path for a small team to ship an app.</p>
+
+  <h3 class="q" id="s5-1"><span class="q-mark">Q</span>What do the best applications on Hyperliquid look like?</h3>
+  <p><strong>trade[XYZ]</strong> was the first team to deploy under HIP-3 and still dominates the category: it holds <strong>over 90% of HIP-3 open interest</strong>, runs <strong>100+ markets</strong>, and was reported at about <strong>$60B of 30-day volume and 102,000 traders</strong> in late September 2026 (secondary sources). In March 2026 it licensed the S&amp;P 500 from S&amp;P Dow Jones Indices, the first licensed index perp on a decentralized venue. <sup><a href="#ref53">[53]</a><a href="#ref54">[54]</a><a href="#ref30">[30]</a></sup></p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Category</th><th>Example instruments</th></tr></thead>
+      <tbody>
+        <tr><td class="hi v">Equities</td><td>NVDA, TSLA, AAPL, MSFT, GOOGL, AMZN, COIN, MSTR and pre-IPO-linked names such as SpaceX</td></tr>
+        <tr><td class="hi v">Commodities</td><td>Gold, silver, Brent and WTI crude, copper, platinum, palladium, natural gas, aluminium, wheat, uranium</td></tr>
+        <tr><td class="hi v">Indices</td><td>S&amp;P 500, Nasdaq 100, Nikkei 225, KOSPI 200</td></tr>
+        <tr><td class="hi v">Forex</td><td>EUR/USD, USD/JPY</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Three design choices explain the structure, and each is instructive for a build:</p>
+  <ul class="plain">
+    <li><strong>These are perpetuals, not synthetic shares.</strong> No expiry, no delivery, no dividends, no voting rights. trade[XYZ] stayed inside the derivative wrapper rather than tokenizing real equity, which would pull in securities law it does not need to touch. <sup><a href="#ref53">[53]</a></sup></li>
+    <li><strong>The front-end does not custody anything.</strong> trade[XYZ]'s docs describe a non-custodial interface that does not hold user assets or operate HyperCore; its markets are "not the exclusive way" to access them. <sup><a href="#ref55">[55]</a></sup></li>
+    <li><strong>Oracle quality is the product.</strong> Ventuals, a pre-IPO HIP-3 deployer, lost a SpaceX market to a bad oracle input in May 2026 and wound down in June. A deployer's oracle and risk operations are not a footnote; they are the business.</li>
+  </ul>
+  <p>The same thin-front-end pattern shows up elsewhere: <strong>Outcomexyz</strong>, the first HIP-4 app, applies it to prediction markets, and wallets such as <strong>Phantom</strong> and <strong>MetaMask</strong> apply it to retail distribution through builder codes (below).</p>
+
+  <h3 class="q" id="s5-2"><span class="q-mark">Q</span>How do builder codes work, and what do they earn?</h3>
+  <p>Builder codes are the distribution business model. Any app can attach its own fee to the orders it routes to Hyperliquid, and the fee is credited to the app's address, with no matching engine, custody or clearing to build. The mechanics, verified against Hyperliquid's docs on October 3, 2026: <sup><a href="#ref57">[57]</a><a href="#ref58">[58]</a></sup></p>
+  <ol class="stepline">
+    <li><span class="st">The user approves a maximum fee, once</span><p>The user's <em>main</em> wallet signs an <span class="code">approveBuilderFee</span> action naming the builder address and a maximum rate (for example "0.05%"). An agent wallet cannot do this, so the approval screen is where your app earns trust: show the exact builder and fee.</p></li>
+    <li><span class="st">The app attaches the builder code to each order</span><p>The order action carries <span class="code">"builder": {"b": "&lt;address&gt;", "f": &lt;int&gt;}</span>, where <span class="code">f</span> is in tenths of a basis point (so f = 10 is 1 bp). Each order's fee cannot exceed what the user approved.</p></li>
+    <li><span class="st">The fee accrues to the builder</span><p>It is charged on top of Hyperliquid's own fee and tracked in the referral-reward system; builders claim it from the Referrals page. Builder fill files and the Info API support reconciliation.</p></li>
+  </ol>
+
+  <div class="stat-row">
+    <div class="stat"><span class="n tabular">0.1%</span><span class="l">maximum builder fee on perps (f = 100)</span></div>
+    <div class="stat"><span class="n tabular">1%</span><span class="l">maximum on spot, charged on the selling side</span></div>
+    <div class="stat"><span class="n tabular">10</span><span class="l">active builder approvals allowed per user</span></div>
+    <div class="stat"><span class="n tabular">100 USDC</span><span class="l">minimum perps account value for the builder address</span></div>
+  </div>
+
+  <div class="callout example">
+    <h4>Worked example: what a builder fee looks like</h4>
+    <p>A user places a <span class="code">$10,000</span> perp order through your app and you charge the <span class="code">0.05%</span> that Phantom reportedly charges: <span class="code">$10,000 x 0.05% = $5</span> to you, on top of Hyperliquid's own fee. At the 0.1% cap the same order pays you $10.</p>
+    <p><strong>Reality check against Phantom's reported numbers:</strong> $39.4B of cumulative volume at 0.05% is about <span class="code">$19.7M</span>, close to the <strong>$20.6M</strong> CoinGecko reports. The rate times the volume explains the revenue. The hard part is the volume. <sup><a href="#ref46">[46]</a></sup></p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 215" role="img" aria-label="Builder revenue to date bar chart">
+      <text x="10" y="20" style="font:600 11px var(--mono); fill:var(--ink-soft);">CUMULATIVE BUILDER REVENUE ($M, MAY 25, 2026)</text>
+      <text x="120" y="52" style="font:500 12px var(--body); fill:var(--ink-soft);">Phantom</text>
+      <rect x="120" y="58" width="480" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="120" y="58" width="480" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="610" y="73" style="font:600 12px var(--mono); fill:var(--accent-strong)">$20.6M</text>
+      <text x="120" y="95" style="font:500 12px var(--body); fill:var(--ink-soft);">Based</text>
+      <rect x="120" y="101" width="480" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="120" y="101" width="352" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="482" y="116" style="font:600 12px var(--mono); fill:var(--accent-strong)">$15.1M</text>
+      <text x="120" y="138" style="font:500 12px var(--body); fill:var(--ink-soft);">PVP</text>
+      <rect x="120" y="144" width="480" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="120" y="144" width="184" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="314" y="159" style="font:600 12px var(--mono); fill:var(--accent-strong)">$7.9M</text>
+      <text x="120" y="181" style="font:500 12px var(--body); fill:var(--ink-soft);">MetaMask</text>
+      <rect x="120" y="187" width="480" height="20" rx="4" style="fill:var(--border)"/>
+      <rect x="120" y="187" width="151" height="20" rx="4" style="fill:var(--accent)"/>
+      <text x="281" y="202" style="font:600 12px var(--mono); fill:var(--accent-strong)">$6.5M</text>
+    </svg>
+    <figcaption>Fig. 12: Builder revenue concentrates in a few wallets and apps. Source: CoinGecko (May 25, 2026)</figcaption>
+  </figure>
+
+  <p>Across the ecosystem, <strong>100+ teams</strong> had integrated builder codes by May 2026, and total builder revenue was reported above <strong>$90M</strong> by July (secondary source). One structural note: the share of Hyperliquid revenue paid out to builders and deployers rose from under 6% to about 18% by Q2 2026, which means distribution partners are capturing a growing part of the economics. <sup><a href="#ref46">[46]</a><a href="#ref34">[34]</a></sup></p>
+
+  <h3 class="q" id="s5-3"><span class="q-mark">Q</span>What are the ways to build, and what does each cost?</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th>1. Front-end or bot with a builder code</th><th>2. HIP-3 market</th><th>3. HyperEVM product or AI agent</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Capital</strong></td><td>Engineering time; at least 100 USDC in a perps account</td><td>500,000 HYPE staked for 183+ days (about $45M at $89.87), slashable</td><td>Engineering time; HYPE for gas</td></tr>
+        <tr><td><strong>You control</strong></td><td>Your UX, fee and strategy logic</td><td>Assets, oracle, margin and leverage rules, funding behavior</td><td>Contracts, vaults and agent logic</td></tr>
+        <tr><td><strong>Time to launch</strong></td><td>Weeks (estimate: 6 to 8)</td><td>Months: oracle integration and market-maker relationships</td><td>4 to 8 weeks on top of an app (estimate)</td></tr>
+        <tr><td><strong>Earns</strong></td><td>Up to 0.1% of perp orders; 1% of spot sells</td><td>Up to 50% of trading fees on your markets</td><td>Vault, structured-product or service fees</td></tr>
+        <tr><td><strong>Main risk</strong></td><td>Crowded distribution; wallets compete for users</td><td>Oracle failure and slashing (see Ventuals)</td><td>Smart-contract risk; audits</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="q" id="s5-4"><span class="q-mark">Q</span>Step by step: how do you ship an application?</h3>
+  <p>The lighter path first, since it is realistic for almost any team. Facts below were checked against Hyperliquid's developer docs and the official SDK on October 3, 2026; items I could not confirm are flagged. <sup><a href="#ref58">[58]</a></sup></p>
+  <ol class="stepline">
+    <li><span class="st">Pick a lane</span><p>Start by building against <em>existing</em> markets via the API. Reserve a HIP-3 deployment for when you have an asset class only you can bring.</p></li>
+    <li><span class="st">Set up the SDK</span><p>Official Python SDK (<span class="code">pip install hyperliquid-python-sdk</span>); community TypeScript SDK <span class="code">@nktkas/hyperliquid</span>; an official Rust SDK also exists (verify builder-fee support before relying on it). The API is <span class="code">POST /info</span> (public, read-only), <span class="code">POST /exchange</span> (signed writes) and a WebSocket at <span class="code">wss://api.hyperliquid.xyz/ws</span>.</p></li>
+    <li><span class="st">Prototype read-only on testnet</span><p>Testnet REST is <span class="code">api.hyperliquid-testnet.xyz</span>; the faucet gives 1,000 mock USDC (the address must have deposited on mainnet). The public Info API needs no authentication; see the examples below.</p></li>
+    <li><span class="st">Use an agent wallet for trading</span><p>The main wallet signs an <span class="code">approveAgent</span> action once; the agent key then signs orders. Limits: one unnamed plus three named agents per account, expiry of up to 180 days. Agents cannot approve builder fees or transfer funds.</p></li>
+    <li><span class="st">Approve the builder fee and trade with a builder code</span><p>See the official SDK example below. Show the user the exact builder address and maximum fee before they sign.</p></li>
+    <li><span class="st">Handle the unglamorous parts</span><p>Prices: at most 5 significant figures and the asset's decimal limits; sizes rounded to the asset's size decimals. Nonces: millisecond timestamps from an atomic counter, unique per signer; use one agent key per process. Rate limits: REST weight 1,200 per minute per IP, WebSocket 10 connections per IP; handle reconnects.</p></li>
+    <li><span class="st">Optional: add HyperEVM contracts</span><p>Mainnet chain ID 999, RPC <span class="code">https://rpc.hyperliquid.xyz/evm</span>, gas token HYPE. Contracts read HyperCore state through precompiles and write through CoreWriter at <span class="code">0x3333…3333</span> (actions are delayed a few seconds on Core). The full precompile address map was not on the pages checked, so confirm addresses in the docs. <sup><a href="#ref59">[59]</a></sup></p></li>
+    <li><span class="st">Ambitious path: deploy a HIP-3 market</span><p>Stake 500,000 HYPE (at least 183 days), define the market and oracle, supply prices and risk limits, and earn up to 50% of fees. The first three assets need no auction; more go through a shared Dutch auction. HIP-4 deployment steps are not yet documented, so plan as a consumer using builder codes. <sup><a href="#ref21">[21]</a></sup></p></li>
+    <li><span class="st">Ship, monitor and get a security review</span><p>Keep keys short-lived and out of client code, use a KMS or HSM for backend keys, monitor builder fills for reconciliation, and run an independent review before mainnet.</p></li>
+  </ol>
+
+  <div class="callout example">
+    <h4>The official SDK example: two calls</h4>
+    <pre class="code-block"><code># from hyperliquid-python-sdk, examples/basic_builder_fee.py
+approve_result = exchange.approve_builder_fee("0x8c96...7f1D", "0.001%")   # main wallet, once
+
+order_result = exchange.market_open(
+    "ETH", True, 0.05, None, 0.01,
+    builder={"b": "0x8c96...7f1D", "f": 1},   # f=1 is 0.1 bp (the demo fee)
+)</code></pre>
+    <p>The example uses a tiny demo fee of 0.001%. Real apps charge more (Phantom about 0.05%); the perp cap is 0.1%, which is <span class="code">f = 100</span>. <sup><a href="#ref60">[60]</a></sup></p>
+    <pre class="code-block"><code># read-only, no authentication
+curl -s -X POST https://api.hyperliquid.xyz/info -H 'Content-Type: application/json' \
+  -d '{"type":"l2Book","coin":"BTC"}'</code></pre>
+  </div>
+
+  <div class="callout watch">
+    <h4>Before committing capital or launching</h4>
+    <ul class="plain" style="margin-bottom:0;">
+      <li><strong>Compliance:</strong> Hyperliquid's terms reportedly designate US persons as restricted and its app geo-blocks US IPs (secondary sources; read the terms directly). Whether a front-end or bot you operate makes you a broker or venue, whether builder fees change that, and whether you must geo-block US users are questions for qualified counsel.</li>
+      <li><strong>HIP-3 slashing:</strong> validators can slash the stake (up to 100% for invalid state transitions). Budget for oracle monitoring as a first-class engineering cost.</li>
+      <li><strong>Timeline and team:</strong> a small team (one full-stack, one backend, half a security or devops) can plausibly reach a mainnet pilot in 6 to 8 weeks. This is an estimate, not a sourced figure.</li>
+    </ul>
+  </div>
+
+  <div class="sources">
+    <h4>Sources &amp; further reading: Section 5</h4>
+    <ol class="refs">
+      <li value="53" id="ref53">KuCoin News — <a href="https://www.kucoin.com/news/flash/trade-xyz-builds-92-markets-and-98-hip-3-volume-on-hyperliquid-in-8-months" target="_blank" rel="noopener">"trade[XYZ] has established 92 markets and captured 98% of HIP-3 volume"</a></li>
+      <li value="54" id="ref54">The Defiant — <a href="https://thedefiant.io/news/defi/tokenized-equity-market-on-hyperliquid-heats-up" target="_blank" rel="noopener">"Tokenized Equity Market on Hyperliquid Heats Up"</a></li>
+      <li value="55" id="ref55">trade[XYZ] Docs — <a href="https://docs.trade.xyz/" target="_blank" rel="noopener">"About trade[XYZ]"</a></li>
+      <li value="56" id="ref56">Hyperliquid Guide — <a href="https://hyperliquidguide.com/guides/trading/hyperliquid-api-guide" target="_blank" rel="noopener">"Hyperliquid API Guide: Endpoints, Signing, Python SDK &amp; Bots"</a>, and Dwellir — <a href="https://www.dwellir.com/blog/build-hyperliquid-trading-app-builder-codes" target="_blank" rel="noopener">"Build a Hyperliquid Trading App with Builder Codes"</a></li>
+      <li value="30">CoinGecko Research: <a href="https://www.coingecko.com/research/publications/rwa-report-2026" target="_blank" rel="noopener">"2026 RWA Report"</a> (published May 13, 2026; data to Mar 31, 2026)</li>
+      <li value="57" id="ref57">Hyperliquid Docs: <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/trading/builder-codes" target="_blank" rel="noopener">Builder codes</a></li>
+      <li value="58" id="ref58">Hyperliquid Docs: <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api" target="_blank" rel="noopener">API</a> (info and exchange endpoints, signing, nonces and API wallets, rate limits, tick and lot size)</li>
+      <li value="46">CoinGecko Research: <a href="https://www.coingecko.com/research/publications/top-hyperliquid-builders" target="_blank" rel="noopener">"Top Hyperliquid Builders"</a> (data as of May 25, 2026)</li>
+      <li value="34">OAK Research: <a href="https://oakresearch.io/en/reports/protocols/hyperliquid-breaking-records-revenue-falling-should-worried-hype" target="_blank" rel="noopener">Hyperliquid: breaking records, revenue falling</a> (Q2 2026 data)</li>
+      <li value="59" id="ref59">Hyperliquid Docs: <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/hyperevm" target="_blank" rel="noopener">HyperEVM</a> (including interacting with HyperCore)</li>
+      <li value="21">Hyperliquid GitBook — <a href="https://hyperliquid.gitbook.io/hyperliquid-docs/hyperliquid-improvement-proposals-hips/hip-3-builder-deployed-perpetuals" target="_blank" rel="noopener">"HIP-3: Builder-deployed perpetuals"</a></li>
+      <li value="60" id="ref60">GitHub: <a href="https://github.com/hyperliquid-dex/hyperliquid-python-sdk/blob/master/examples/basic_builder_fee.py" target="_blank" rel="noopener">hyperliquid-python-sdk, examples/basic_builder_fee.py</a></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= SECTION 6 ================= -->
+<section class="section new" id="s6">
+  <div class="section-head new"><span class="idx">06</span><h2>Perp and RWA analytics</h2></div>
+  <p class="section-dek">Where to watch live data on perps, Hyperliquid, HIP-3 markets, ETF flows and RWAs, so you are never relying on a single snapshot in an article, including this one.</p>
+
+  <h3 class="q" id="s6-1"><span class="q-mark">Q</span>Which dashboards and trackers are worth bookmarking?</h3>
+
+  <div class="analytics-grid">
+    <div class="acard">
+      <span class="kind native">Native</span>
+      <div class="name">Hyperliquid Stats</div>
+      <div class="desc">The protocol's own dashboard: volume, open interest and fees across every market, including HIP-3 and HIP-4 listings.</div>
+      <a href="https://app.hyperliquid.xyz/stats" target="_blank" rel="noopener">app.hyperliquid.xyz/stats</a>
+    </div>
+    <div class="acard">
+      <span class="kind live">Market share</span>
+      <div class="name">hl.eco: Market Share vs CEXs</div>
+      <div class="desc">Hyperliquid's share of volume and open interest against centralized exchanges, with buyback and ETF-flow widgets.</div>
+      <a href="https://hl.eco/market-share" target="_blank" rel="noopener">hl.eco/market-share</a>
+    </div>
+    <div class="acard">
+      <span class="kind agg">Aggregator</span>
+      <div class="name">DefiLlama: Perp DEX volume</div>
+      <div class="desc">On-chain perp venue volume and rankings, with 30-day and daily views. The source for most market-share figures in this guide.</div>
+      <a href="https://defillama.com/perps" target="_blank" rel="noopener">defillama.com/perps</a>
+    </div>
+    <div class="acard">
+      <span class="kind agg">Aggregator</span>
+      <div class="name">DefiLlama: Open interest</div>
+      <div class="desc">Open-interest rankings across DeFi derivatives. Check how each venue is defined (HIP-3 markets are listed separately).</div>
+      <a href="https://defillama.com/open-interest" target="_blank" rel="noopener">defillama.com/open-interest</a>
+    </div>
+    <div class="acard">
+      <span class="kind live">HIP-3</span>
+      <div class="name">Loris Tools: HIP-3 analytics</div>
+      <div class="desc">Volume, traders, fees and open interest for builder-deployed (HIP-3) markets, by deployer and symbol.</div>
+      <a href="https://loris.tools/hip3" target="_blank" rel="noopener">loris.tools/hip3</a>
+    </div>
+    <div class="acard">
+      <span class="kind live">Analytics</span>
+      <div class="name">ASXN HyperScreener</div>
+      <div class="desc">Free Hyperliquid analytics dashboard from ASXN covering markets, flows and ecosystem metrics.</div>
+      <a href="https://hyperscreener.asxn.xyz/home" target="_blank" rel="noopener">hyperscreener.asxn.xyz</a>
+    </div>
+    <div class="acard">
+      <span class="kind live">Wallets</span>
+      <div class="name">HyperTracker (CoinMarketMan)</div>
+      <div class="desc">Wallet and whale tracking for Hyperliquid, with network metrics and cohort analysis.</div>
+      <a href="https://app.coinmarketman.com/hypertracker/stats" target="_blank" rel="noopener">hypertracker/stats</a>
+    </div>
+    <div class="acard">
+      <span class="kind agg">Data</span>
+      <div class="name">The Block: DeFi derivatives</div>
+      <div class="desc">DEX derivatives and Hyperliquid data tables, including the DEX-to-CEX volume ratio.</div>
+      <a href="https://www.theblock.co/data/decentralized-finance/derivatives" target="_blank" rel="noopener">theblock.co/data</a>
+    </div>
+    <div class="acard">
+      <span class="kind live">Dune</span>
+      <div class="name">Hyperliquid: onchain perps volume, revenue and TVL</div>
+      <div class="desc">A community dashboard on perp volume, revenue and TVL, including the crypto-versus-RWA split.</div>
+      <a href="https://dune.com/sealaunch/hyperliquid" target="_blank" rel="noopener">dune.com/sealaunch/hyperliquid</a>
+    </div>
+    <div class="acard">
+      <span class="kind live">Dune</span>
+      <div class="name">Dune: DEX derivatives query</div>
+      <div class="desc">A community query on DEX derivatives, useful for cross-venue cost and volume comparisons (open it for the current chart and SQL).</div>
+      <a href="https://dune.com/queries/7717923/11678854" target="_blank" rel="noopener">dune.com/queries/7717923</a>
+    </div>
+    <div class="acard">
+      <span class="kind live">Dune</span>
+      <div class="name">Dune: prediction-market volume</div>
+      <div class="desc">Monthly prediction-market notional volume, the benchmark for HIP-4 and Polymarket-style growth.</div>
+      <a href="https://dune.com/queries/6689536/10534249" target="_blank" rel="noopener">dune.com/queries/6689536</a>
+    </div>
+    <div class="acard">
+      <span class="kind agg">RWA data</span>
+      <div class="name">Dune curated RWA dataset</div>
+      <div class="desc">Curated real-world-asset data covering tokenized and synthetic RWA perpetuals across chains.</div>
+      <a href="https://docs.dune.com/data-catalog/curated/rwa/overview" target="_blank" rel="noopener">docs.dune.com (RWA)</a>
+    </div>
+    <div class="acard">
+      <span class="kind agg">ETF flows</span>
+      <div class="name">SoSoValue and Farside</div>
+      <div class="desc">Daily US spot ETF flows and AUM for Bitcoin and Ethereum (Farside) and HYPE funds (SoSoValue).</div>
+      <a href="https://sosovalue.com" target="_blank" rel="noopener">sosovalue.com</a>
+    </div>
+    <div class="acard">
+      <span class="kind agg">Market data</span>
+      <div class="name">Talos: market data feed</div>
+      <div class="desc">Institutional-grade cross-venue crypto market data, for teams that need a feed rather than a dashboard.</div>
+      <a href="https://www.talos.com/our-solutions/data/market-data-feed" target="_blank" rel="noopener">talos.com</a>
+    </div>
+    <div class="acard">
+      <span class="kind agg">Heatmap</span>
+      <div class="name">Coinglass</div>
+      <div class="desc">Funding rates, open interest and liquidation heatmaps across perp venues.</div>
+      <a href="https://coinglass.com" target="_blank" rel="noopener">coinglass.com</a>
+    </div>
+    <div class="acard">
+      <span class="kind native">App</span>
+      <div class="name">trade[XYZ]</div>
+      <div class="desc">Live order books, funding and open interest for the equity, commodity, index and FX perps it runs.</div>
+      <a href="https://trade.xyz" target="_blank" rel="noopener">trade.xyz</a>
+    </div>
+    <div class="acard">
+      <span class="kind agg">Explorer</span>
+      <div class="name">hypurrscan.io</div>
+      <div class="desc">Community explorer for Hyperliquid: deployer accounts, staking and per-market activity.</div>
+      <a href="https://hypurrscan.io" target="_blank" rel="noopener">hypurrscan.io</a>
+    </div>
+    <div class="acard">
+      <span class="kind agg">Community</span>
+      <div class="name">ETH in DeFi</div>
+      <div class="desc">A community dashboard on Ethereum's role in DeFi, from the author's research index. Open it for the current view.</div>
+      <a href="https://mikemcdonald.github.io/eth-defi/" target="_blank" rel="noopener">eth-defi</a>
+    </div>
+    <div class="acard">
+      <span class="kind research">Research</span>
+      <div class="name">DefiLlama: who pays token holders?</div>
+      <div class="desc">A newsletter piece ranking protocols by what they return to token holders, a useful lens for buyback-driven tokens.</div>
+      <a href="https://newsletter.defillama.com/p/which-protocols-pay-token-holders-the-most-right-now" target="_blank" rel="noopener">newsletter.defillama.com</a>
+    </div>
+  </div>
+
+  <h3 class="q" id="s6-2"><span class="q-mark">Q</span>Which research is worth reading in full?</h3>
+  <div class="analytics-grid">
+    <div class="acard">
+      <span class="kind research">Research</span>
+      <div class="name">Multicoin: HYPE Analysis and Valuation</div>
+      <div class="desc">A cash-flow valuation of HYPE with bear, base and bull scenarios, plus the book-depth comparison with Binance.</div>
+      <a href="https://multicoin.capital/2026/06/25/hyperliquid-hype-analysis-and-valuation/" target="_blank" rel="noopener">multicoin.capital</a>
+    </div>
+    <div class="acard">
+      <span class="kind research">Research</span>
+      <div class="name">Pantera: Housing All of Finance</div>
+      <div class="desc">The case that perps become a dominant global trading instrument, with Hyperliquid as the venue (discloses a PURR stake).</div>
+      <a href="https://panteracapital.com/rise-of-perps-and-hyperliquid/" target="_blank" rel="noopener">panteracapital.com</a>
+    </div>
+    <div class="acard">
+      <span class="kind research">Research</span>
+      <div class="name">CoinGecko: Perpetuals, RWA and revenue reports</div>
+      <div class="desc">The State of Crypto Perpetuals 2026, the 2026 RWA Report and the on-chain revenue ranking behind many figures here.</div>
+      <a href="https://www.coingecko.com/research/publications/rwa-report-2026" target="_blank" rel="noopener">coingecko.com/research</a>
+    </div>
+    <div class="acard">
+      <span class="kind research">Profile</span>
+      <div class="name">Colossus: Hyperliquid and Jeffrey Yan</div>
+      <div class="desc">The founder story: Chameleon, the FTX collapse, and the HLP vault.</div>
+      <a href="https://colossus.com/article/beyond-the-sky-jeffrey-yan-hyperliquid/" target="_blank" rel="noopener">colossus.com</a>
+    </div>
+  </div>
+
+  <div class="callout watch">
+    <h4>Reading these dashboards</h4>
+    <p>Community dashboards are built by individuals, not by Hyperliquid, and providers define metrics differently (open interest, volume, fees and revenue all vary). Compare trends within a source rather than levels across sources, and cross-check any number that drives a decision against Hyperliquid's native stats.</p>
+  </div>
+
+  <div class="sources">
+    <h4>Sources &amp; further reading: Section 6</h4>
+    <ol class="refs">
+      <li value="61" id="ref61">GlobeNewswire — <a href="https://www.globenewswire.com/news-release/2026/08/31/3353276/0/en/dune-launches-rwa-dataset-to-make-the-tokenized-asset-market-observable-after-issuance.html" target="_blank" rel="noopener">"Dune Launches RWA Dataset to Make the Tokenized Asset Market Observable"</a></li>
+      <li value="28">Multicoin Capital: <a href="https://multicoin.capital/2026/06/25/hyperliquid-hype-analysis-and-valuation/" target="_blank" rel="noopener">"Hyperliquid (HYPE) Analysis &amp; Valuation"</a> (Jun 25, 2026; <a href="https://assets.ctfassets.net/qtbqvna1l0yq/2Ww5QUmNhe8q0OhTlkRzjJ/7d82ee41b8c59e1e68c32813de8d757b/Hyperliquid__HYPE__Analysis_and_Valuation_English.pdf" target="_blank" rel="noopener">full report PDF</a>)</li>
+      <li value="29">Pantera Capital: <a href="https://panteracapital.com/rise-of-perps-and-hyperliquid/" target="_blank" rel="noopener">"Housing All of Finance: The Rise of Perps and Hyperliquid"</a> (Jun 2, 2026; Pantera discloses a stake in PURR)</li>
+      <li value="26">Colossus: <a href="https://colossus.com/article/beyond-the-sky-jeffrey-yan-hyperliquid/" target="_blank" rel="noopener">"Hyperliquid &amp; Jeffrey Yan: Beyond the Sky"</a></li>
+      <li value="25" class="primary">CoinGecko Learn — <a href="https://www.coingecko.com/learn/top-onchain-revenue-crypto-projects-2026" target="_blank" rel="noopener">"Top On-Chain Revenue Crypto Projects 2026"</a> <span style="color:var(--ink-soft); font-weight:400;">(reference article for 2.12; data covers Jan 1–Sep 15, 2026)</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= SECTION 7 (Injective) ================= -->
+<section class="section newest" id="s7">
+  <div class="section-head newest"><span class="idx">07</span><h2>Injective</h2></div>
+  <p class="section-dek">The strongest finance-native competitor to Hyperliquid's approach — a Layer-1 built around an on-chain order book from day one, with its own take on RWA perpetuals.</p>
+
+  <h3 class="q" id="s7-1"><span class="q-mark">Q</span>What is Injective?</h3>
+  <p><strong>Injective is a Layer-1 blockchain built on the Cosmos SDK, purpose-built for finance rather than general-purpose smart contracts.</strong> Where Hyperliquid is "an exchange with an L1 wrapped around it," Injective is closer to the inverse: a general-purpose finance L1 that ships a fully decentralized order book as a first-class, chain-level module rather than a smart contract sitting on top. <sup><a href="#ref63">[63]</a><a href="#ref64">[64]</a></sup></p>
+
+  <div class="stat-row">
+    <div class="stat teal2"><span class="n tabular">650ms</span><span class="l">Block time, with instant finality</span></div>
+    <div class="stat teal2"><span class="n tabular">25,000 TPS</span><span class="l">Sustained throughput</span></div>
+    <div class="stat teal2"><span class="n tabular">~$0.0003</span><span class="l">Typical transaction fee</span></div>
+    <div class="stat teal2"><span class="n tabular">100M INJ</span><span class="l">Fixed maximum token supply — deflationary from there</span></div>
+  </div>
+
+  <p style="margin-top:16px;">Three design choices define it:</p>
+  <ul class="plain">
+    <li><strong>A native on-chain order book, not an AMM.</strong> Injective's <span class="code">Exchange module</span> handles order matching, spot, and derivatives directly at the chain level, using batch auctions to settle orders — a mechanism specifically meant to neutralize the front-running/MEV that plagues sequential, mempool-based matching. <sup><a href="#ref63">[63]</a></sup></li>
+    <li><strong>Chain-level shared infrastructure.</strong> Per CoinGecko's own framing, oracle pricing, orderbook management, matching, margin calculations, liquidation, and even the insurance fund all run as shared network services rather than something every application has to rebuild — so a new market or app plugs into the same canonical infrastructure instead of fragmenting liquidity across siloed venues. <sup><a href="#ref62">[62]</a></sup></li>
+    <li><strong>MultiVM, one shared liquidity layer.</strong> Injective's original environment is CosmWasm (WASM); an EVM mainnet — letting a standard Solidity/Hardhat stack deploy directly — launched <strong>November 11, 2025</strong>; an SVM (Solana-program) track has also been announced. All settle against the same native USDC and the same canonical order books, rather than fragmenting across bridges. <sup><a href="#ref65">[65]</a></sup></li>
+  </ul>
+  <p><strong>Tokenomics:</strong> INJ has a fixed 100M max supply and a weekly <strong>Burn Auction</strong> — a basket of protocol fees collected across the ecosystem is auctioned off, and the winning bid (paid in INJ) is destroyed permanently, directly linking real usage to token scarcity. On the regulatory side, <strong>INJ itself began trading as a CFTC-regulated future via Bitnomial on April 15, 2026</strong> — the same "license through an existing US derivatives entity" pattern behind Kraken's onshore crypto perps in Section 1. <sup><a href="#ref66">[66]</a><a href="#ref63">[63]</a></sup></p>
+
+  <h3 class="q" id="s7-2"><span class="q-mark">Q</span>What does Injective do in RWA-perps specifically?</h3>
+  <p>Injective's RWA product is built on its <strong>iAssets framework</strong> — described by CoinGecko as "programmable primitives built for position-based exposure and cross-market composability." The point is architectural: iAssets let applications route orders, monitor margin, automate strategies, and combine exposures <em>without requiring the underlying stock, commodity, or currency to be wrapped, custodied, or pre-funded on the network</em> — exposure through position, not through holding a tokenized copy of the asset. <sup><a href="#ref62">[62]</a></sup></p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Milestone / metric</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td class="hi t">Active RWA markets</td><td><strong>135 markets</strong>, all quoted against native USDC — 111 equities, 11 FX pairs, 9 commodities, 2 indices, 2 pre-IPO references. <sup><a href="#ref62">[62]</a></sup></td></tr>
+        <tr><td class="hi t">Pre-IPO perpetuals</td><td>Launched <strong>Oct 1, 2025</strong> — the first on-chain venue offering leveraged exposure to private companies (OpenAI, SpaceX, Anthropic) before any public listing. Relevant for anyone looking for pre-IPO exposure. <sup><a href="#ref67">[67]</a></sup></td></tr>
+        <tr><td class="hi t">Commodities</td><td>Gold (XAU/USDT), silver (XAG/USDT), WTI crude, each with up to <strong>50× leverage</strong>. <sup><a href="#ref67">[67]</a></sup></td></tr>
+        <tr><td class="hi t">Cumulative RWA volume</td><td><strong>$5.3B+</strong> cumulative since early 2025; <strong>$845.9M</strong> in 2026 year-to-date. Monthly volume has been accelerating: <strong>$186.5M in July 2026</strong>, then <strong>$209.7M in August 2026</strong> — August alone ran roughly 3.4× May's volume. <sup><a href="#ref62">[62]</a></sup></td></tr>
+        <tr><td class="hi t">Flagship front-end</td><td><strong>Helix</strong> — the Injective Labs-backed DEX, playing the same role for Injective that trade[XYZ] plays for Hyperliquid: a non-custodial UI trading against the shared native order book. <sup><a href="#ref68">[68]</a></sup></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="q" id="s7-3"><span class="q-mark">Q</span>What are the other similar projects?</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Project</th><th>Chain</th><th>RWA-perp positioning</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">Hyperliquid</td><td>Own L1</td><td>Dominant by volume; permissionless HIP-3 listings; the only DEX with a licensed S&amp;P 500 perpetual (Section 2, 4–6).</td></tr>
+        <tr><td class="hi t">Injective / Helix</td><td>Cosmos L1 (MultiVM)</td><td>Finance-native L1 with iAssets; the only venue offering exclusively on-chain pre-IPO perpetuals.</td></tr>
+        <tr><td class="hi">Ostium</td><td>Arbitrum</td><td>Over 90% of open interest sits in stocks/commodities/FX/indices rather than crypto — RWA-first by design, 71 trading pairs. <sup><a href="#ref69">[69]</a></sup></td></tr>
+        <tr><td class="hi">Synthetix / Kwenta</td><td>Base / Optimism</td><td>Synthetic-asset liquidity infrastructure powering perps on indices and commodities for downstream front-ends. <sup><a href="#ref70">[70]</a></sup></td></tr>
+        <tr><td class="hi">Canborsa</td><td>Canton Network</td><td>Entered beta May 2026 as the first RWA perp DEX on the institutional-grade Canton Network — one to watch, not yet at scale. <sup><a href="#ref70">[70]</a></sup></td></tr>
+        <tr><td>GMX</td><td>Arbitrum</td><td>Crypto-only perps with a "real yield" AMM model — included for contrast; it is <em>not</em> an RWA competitor.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The category as a whole is growing fast, not just individual venues: on-chain RWA-perpetual volume across stocks, indices, commodities, forex, and bonds rose <strong>162%</strong>, from $11.8B in December 2025 to $31.0B in January 2026. <sup><a href="#ref69">[69]</a></sup></p>
+
+  <div class="callout watch">
+    <h4>Volume growth ≠ revenue share</h4>
+    <p>Worth checking against a harder number: CoinGecko's Jan 1–Sep 15, 2026 ranking of on-chain revenue across <strong>all</strong> crypto protocols (Section 2.12) does not list Injective among its top 15 — that list is led by Hyperliquid at $429.04M YTD. Injective's RWA-perpetual volume above is real and growing fast, but revenue capture and trading volume are different metrics; check both before comparing the two platforms on a single number. <sup><a href="#ref71">[71]</a></sup></p>
+  </div>
+
+  <h3 class="q" id="s7-4"><span class="q-mark">Q</span>Is there a place to track these projects?</h3>
+  <div class="analytics-grid">
+    <div class="acard">
+      <span class="kind native">Native</span>
+      <div class="name">Helix (Injective)</div>
+      <div class="desc">Injective's flagship front-end — live order books, volume, and open interest across its spot, derivatives, and RWA perpetual markets.</div>
+      <a href="https://helixapp.com" target="_blank" rel="noopener">helixapp.com →</a>
+    </div>
+    <div class="acard">
+      <span class="kind native">Explorer</span>
+      <div class="name">Injective Explorer</div>
+      <div class="desc">The chain's own block explorer — transactions, validator activity, and Burn Auction history.</div>
+      <a href="https://explorer.injective.network" target="_blank" rel="noopener">explorer.injective.network →</a>
+    </div>
+    <div class="acard">
+      <span class="kind agg">Aggregator</span>
+      <div class="name">DefiLlama — Injective</div>
+      <div class="desc">Injective's DEX-volume rankings by protocol (Helix and others), placed alongside every other chain for direct comparison.</div>
+      <a href="https://defillama.com/dexs/chain/injective" target="_blank" rel="noopener">defillama.com/dexs/chain/injective →</a>
+    </div>
+    <div class="acard">
+      <span class="kind live">Dune</span>
+      <div class="name">Dune curated RWA dataset</div>
+      <div class="desc">Cross-chain, curated real-world-asset dataset spanning tokenized and synthetic RWA perpetuals — the closest thing to an apples-to-apples cross-protocol view.</div>
+      <a href="https://docs.dune.com/data-catalog/curated/rwa/overview" target="_blank" rel="noopener">docs.dune.com/.../curated/rwa →</a>
+    </div>
+    <div class="acard">
+      <span class="kind research">Research</span>
+      <div class="name">CoinGecko — Injective RWA Perpetuals</div>
+      <div class="desc">"Injective RWA Perpetuals: From Crypto to Global Markets" — the reference article for this section, with the fullest current breakdown of markets and monthly volume.</div>
+      <a href="https://www.coingecko.com/learn/injective-rwa-perpetuals-global-markets" target="_blank" rel="noopener">coingecko.com/learn →</a>
+    </div>
+    <div class="acard">
+      <span class="kind research">Research</span>
+      <div class="name">Messari — Injective RWA report</div>
+      <div class="desc">"Building the Infrastructure Layer for Onchain RWA Derivatives" — a periodic deep-dive rather than a live feed, useful for methodology and context.</div>
+      <a href="https://messari.io/report/injective-building-the-infrastructure-layer-for-onchain-rwa-derivatives" target="_blank" rel="noopener">messari.io report →</a>
+    </div>
+  </div>
+
+  <div class="sources">
+    <h4>Sources &amp; further reading — Section 7</h4>
+    <ol class="refs">
+      <li value="62" id="ref62" class="primary t">CoinGecko Learn — <a href="https://www.coingecko.com/learn/injective-rwa-perpetuals-global-markets" target="_blank" rel="noopener">"Injective RWA Perpetuals: From Crypto to Global Markets"</a> <span style="color:var(--ink-soft); font-weight:400;">(reference article for this edition)</span></li>
+      <li value="63" id="ref63">Injective — <a href="https://injective.com/blog/understanding-injective-architecture-and-consensus" target="_blank" rel="noopener">"Understanding Injective Architecture and Consensus"</a></li>
+      <li value="64" id="ref64">CoinGecko Learn — <a href="https://www.coingecko.com/learn/injective-2026-convergence-report" target="_blank" rel="noopener">"Injective in 2026: The Convergence of On-Chain Finance"</a></li>
+      <li value="65" id="ref65">Docs — <a href="https://docs.injective.network/developers-native/examples/exchange" target="_blank" rel="noopener">Injective Exchange module developer docs</a></li>
+      <li value="66" id="ref66">ChainClarity — <a href="https://chainclarity.io/injective" target="_blank" rel="noopener">"Injective (INJ) Whitepaper: On-Chain Orderbook L1 + INJ Burn"</a></li>
+      <li value="67" id="ref67">Messari — <a href="https://messari.io/report/injective-building-the-infrastructure-layer-for-onchain-rwa-derivatives" target="_blank" rel="noopener">"Injective: Building the Infrastructure Layer for Onchain RWA Derivatives"</a>; BitcoinEthereumNews — <a href="https://bitcoinethereumnews.com/tech/injectives-rwa-perpetual-volume-tops-5-3b-amid-sec-shift/" target="_blank" rel="noopener">"Injective's RWA Perpetual Volume Tops $5.3B Amid SEC Shift"</a></li>
+      <li value="68" id="ref68">CoinMarketCap — <a href="https://coinmarketcap.com/exchanges/injective-protocol/" target="_blank" rel="noopener">Helix exchange listing &amp; volume</a></li>
+      <li value="69" id="ref69">Ostium — <a href="https://www.ostium.com/blog/perps-on-rwas-best-dex-for-rwa-perpetuals-2026-guide" target="_blank" rel="noopener">"Perps on RWAs: Best DEX for RWA Perpetuals — 2026 Guide"</a>; Bankless — <a href="https://www.bankless.com/read/trading-rwa-perps-with-ostium" target="_blank" rel="noopener">"Trading RWA Perps with Ostium"</a></li>
+      <li value="70" id="ref70">BlockEden — <a href="https://blockeden.xyz/blog/2026/04/03/perpification-rwa-perpetual-futures-tokenization-a16z-thesis/" target="_blank" rel="noopener">"Perpification: Why Perpetual Futures May Eat Real-World Asset Tokenization"</a></li>
+      <li value="71" id="ref71">CoinGecko Learn — <a href="https://www.coingecko.com/learn/top-onchain-revenue-crypto-projects-2026" target="_blank" rel="noopener">"Top On-Chain Revenue Crypto Projects 2026"</a> <span style="color:var(--ink-soft); font-weight:400;">(cited for the volume-vs-revenue comparison above; see also Section 2.12)</span></li>
+    </ol>
+  </div>
+</section>
+
+
+<!-- ================= ABOUT THE AUTHOR ================= -->
+<section class="section" id="about">
+  <div class="section-head"><h2>About the author</h2></div>
+  <div class="author-card">
+    <!-- To add a headshot, place an <img class="author-photo" src="YOUR_IMAGE_URL" alt="Somnath Banerjee"> here. -->
+    <div class="author-body">
+      <h3>Somnath Banerjee</h3>
+      <p class="author-role">Co-Founder, Mosaic AI Solutions</p>
+      <p>Somnath writes at the intersection of crypto infrastructure and applied AI. He is a hands-on blockchain developer (Solidity, Hardhat, DeFi and DEX protocols) who builds with multiple large language models, and the co-founder of <a href="https://mosaicai.co" target="_blank" rel="noopener">Mosaic AI Solutions</a>.</p>
+      <p>His blog, <a href="https://sbanerjee2020.github.io/BlockchainBanerjee/" target="_blank" rel="noopener">Somnath's Blockchain Blogs</a>, covers real-world-asset tokenization, perpetuals and Hyperliquid, Robinhood Chain and Mosaic AI business cases, post-quantum Ethereum readiness, quantum computing, and options trading.</p>
+      <p>Building on Hyperliquid, or applying AI to on-chain finance? Bring a use case and let's pressure-test it together.</p>
+      <ul class="author-links">
+        <li><a href="https://www.linkedin.com/in/blockchainbanerjee/" target="_blank" rel="noopener">LinkedIn: in/blockchainbanerjee</a></li>
+        <li><a href="mailto:sbanerjee@mosaicai.co">sbanerjee@mosaicai.co</a></li>
+        <li><a href="https://calendly.com/sbanerjee-mosaicai/30min" target="_blank" rel="noopener">Book a 30-minute call</a></li>
+        <li><a href="https://github.com/sbanerjee2020" target="_blank" rel="noopener">GitHub: sbanerjee2020</a></li>
+      </ul>
+      <!-- Add any disclosures here (positions in HYPE, PURR or related products; affiliations). -->
+      <p class="note">This guide is educational and reflects the author's research as of the date shown. It is not investment, legal or tax advice.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider-quote">"Read the contract spec before the marketing name: that one habit prevents most of the expensive surprises in this market."</div>
+
+<footer class="end">
+  <p><strong>Educational reference only, current as of October 3, 2026.</strong> Perpetuals and other leveraged derivatives carry substantial risk of loss, including total loss of posted margin, and can result in losses exceeding your initial deposit on some products. Regulatory status (Section 1), venue availability (Sections 2 and 3), protocol parameters (Sections 4 and 5) and reported figures (all sections, which vary by source and snapshot date) are moving targets: verify directly with CFTC.gov, NFA.futures.org, each protocol's own docs, and each venue before committing capital. Nothing here is investment, legal or tax advice.</p>
+</footer>
+
+</main>
+</div>
+</body>
+</html>
