@@ -1,0 +1,282 @@
+<title>Tokenized Stocks: Two Roads</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a market-structure briefing — numbers ribbon, a 62-cell objection grid, two-road comparison with Nasdaq+Payward spotlighted, then why / people / videos / timeline. */
+:root{
+  --bg:#f5f7f8; --panel:#ffffff; --ink:#0f1c24; --muted:#56656e; --line:#d9e1e5;
+  --teal:#0e7c74; --teal-soft:#d8efec; --amber:#c3741a; --amber-soft:#f7e7d2; --navy:#183447;
+  --display:"Sora","Segoe UI",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1419; --panel:#121e25; --ink:#e4ecef; --muted:#93a4ad; --line:#24343d;
+  --teal:#3cc2b4; --teal-soft:#11332f; --amber:#e9a04c; --amber-soft:#3a2a15; --navy:#9cc3db; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1419; --panel:#121e25; --ink:#e4ecef; --muted:#93a4ad; --line:#24343d;
+  --teal:#3cc2b4; --teal-soft:#11332f; --amber:#e9a04c; --amber-soft:#3a2a15; --navy:#9cc3db; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1120px;margin:0 auto;padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.2rem;font-weight:600}
+h3{font-size:1rem;font-weight:600}
+p{margin:0}
+a{color:var(--teal)}
+a:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lede{max-width:68ch;color:var(--muted);font-size:1.02rem}
+header{display:grid;gap:10px}
+.src{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+section{display:grid;gap:14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+.num{font-variant-numeric:tabular-nums}
+
+/* Ticker ribbon */
+.ribbon{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden}
+.stat{padding:14px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;gap:2px;min-width:0}
+.stat b{font-family:var(--mono);font-weight:500;font-size:1.45rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.8rem;color:var(--muted)}
+.stat.warn b{color:var(--amber)} .stat.ok b{color:var(--teal)}
+
+/* Objection grid */
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}}
+.waffle{display:grid;grid-template-columns:repeat(31,1fr);gap:4px;max-width:520px}
+.cell{aspect-ratio:1;border-radius:2px;background:var(--amber)}
+.cell.yes{background:var(--teal)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.why-obj{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.why-obj li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
+.why-obj li::before{content:"";width:8px;height:8px;margin-top:7px;border-radius:50%;background:var(--amber)}
+
+/* Models */
+.models{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.models{grid-template-columns:1fr}}
+.model{display:grid;gap:10px;align-content:start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+.model.spot{border:2px solid var(--teal);background:linear-gradient(180deg,var(--teal-soft),var(--panel) 55%)}
+.tag{justify-self:start;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--line);color:var(--ink)}
+.spot .tag{background:var(--teal);color:var(--panel)}
+.model dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0;font-size:.88rem}
+.model dt{color:var(--muted);font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;padding-top:2px}
+.model dd{margin:0}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:var(--mono);font-size:.75rem}
+.flow span{padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+.flow em{font-style:normal;color:var(--muted)}
+
+/* Why */
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.why div{border-top:3px solid var(--teal);padding-top:10px;display:grid;gap:4px}
+.why small{color:var(--muted);font-size:.84rem}
+
+/* People */
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden}
+.person{padding:14px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;gap:3px;min-width:0}
+.person .role{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.person p{font-size:.86rem}
+.person.vid{background:var(--teal-soft)}
+
+/* Videos */
+.videos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.videos{grid-template-columns:1fr}}
+.video{display:grid;gap:10px;align-content:start}
+.vmeta{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+.video ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.88rem}
+.note{font-size:.8rem;color:var(--muted)}
+
+/* Timeline */
+.tl{overflow-x:auto}
+.tl ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(9,minmax(118px,1fr));gap:0;min-width:1060px;position:relative}
+.tl ol::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:var(--line)}
+.tl li{position:relative;padding:24px 10px 0 0;display:grid;gap:4px;font-size:.8rem}
+.tl li::before{content:"";position:absolute;top:3px;left:0;width:12px;height:12px;border-radius:50%;background:var(--panel);border:2px solid var(--navy)}
+.tl li.now::before{background:var(--amber);border-color:var(--amber)}
+.tl li.next::before{background:var(--teal);border-color:var(--teal)}
+.tl time{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+
+.bottom{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:820px){.bottom{grid-template-columns:1fr}}
+footer{font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:no-preference){.cell{transition:transform .15s}.cell:hover{transform:scale(1.25)}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Market structure briefing · Nov 24, 2026</div>
+  <h1>Tokenized Stocks: Two Roads</h1>
+  <p class="lede">OKXICE, the ICE + OKX venue for tokenized shares, launched Nov 23 even though 56 of the 62 companies it first targeted objected. The open question is which model issuers will accept: a third-party venue that lists unless you opt out, or the issuer-led path Nasdaq and Kraken parent Payward plan to test in Q2 2027.</p>
+  <p class="src">Source: CNBC, Tanaya Macheel, Nov 23 2026 · plus the three CNBC videos embedded in the story and their companion reports</p>
+</header>
+
+<div class="ribbon" aria-label="Key numbers">
+  <div class="stat"><b class="num">62</b><span>companies OKXICE first targeted</span></div>
+  <div class="stat warn"><b class="num">56</b><span>objected (≈90%)</span></div>
+  <div class="stat"><b class="num">6</b><span>names tradable at launch</span></div>
+  <div class="stat"><b class="num">113</b><span>assets confirmed, rolling live</span></div>
+  <div class="stat"><b class="num">30 days</b><span>issuer opt-out window (SEC Innovation Exemption)</span></div>
+  <div class="stat ok"><b class="num">$100M</b><span>Nasdaq Ventures into Payward</span></div>
+  <div class="stat ok"><b class="num">$21B</b><span>Payward valuation after deal (Bloomberg)</span></div>
+  <div class="stat ok"><b class="num">Q2 2027</b><span>Nasdaq + Payward launch target</span></div>
+</div>
+
+<section class="grid2">
+  <div class="panel" style="display:grid;gap:14px">
+    <div class="eyebrow">The objection count</div>
+    <h2>56 of 62 issuers said no to OKXICE</h2>
+    <div class="waffle" id="waffle" role="img" aria-label="62 squares: 56 amber for objecting companies, 6 teal for those that did not object"></div>
+    <div class="legend"><span><i style="background:var(--amber)"></i>Objected (56)</span><span><i style="background:var(--teal)"></i>Did not object (6)</span></div>
+    <p class="note">Per public notices Oct 4 – Nov 5. More companies, including some not on the first list, objected by Nov 20. Launch names: Coinbase, Robinhood, Strategy, Circle, Securitize, BitGo. Fidelity, Direxion, eToro, Strive and Vida Global have since joined.</p>
+  </div>
+  <div class="panel" style="display:grid;gap:14px;align-content:start">
+    <div class="eyebrow">Why they objected</div>
+    <h2>Unready, not opposed</h2>
+    <ul class="why-obj">
+      <li><span><b>The window was too short.</b> 30 days landed on earnings season and the midterms. Issuers asked for time to learn rather than rejecting the idea (Seth Ginns, Franklin Templeton).</span></li>
+      <li><span><b>Investor relations pushed back.</b> Executives were interested, but IR teams worried about timing announcements when the stock trades 24/7 (Ran Grushkowsky, MassPay).</span></li>
+      <li><span><b>Internal gaps.</b> Some heads of digital assets did not know who in their company had opted out (Carlos Domingo, Securitize).</span></li>
+      <li><span><b>Unfamiliar territory.</b> Most companies had not yet studied tokenization; OKXICE co-chair Andrew Cuomo says they warm to it as they learn about 24/7 global access.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">The long game</div>
+  <h2>Three ways to put a stock onchain</h2>
+  <div class="models">
+    <article class="model">
+      <span class="tag">Venue-led</span>
+      <h3>OKXICE (ICE + OKX)</h3>
+      <div class="flow"><span>Venue picks stock</span><em>→</em><span>Issuer notified</span><em>→</em><span>30-day objection</span><em>→</em><span>Trades 24/7</span></div>
+      <dl>
+        <dt>Who</dt><dd>Intercontinental Exchange (NYSE owner) with OKX; Securitize is tokenization partner</dd>
+        <dt>Legal basis</dt><dd>SEC Innovation Exemption, effective Sept 2026; issuer objection blocks listing</dd>
+        <dt>Status</dt><dd>Live Nov 23, 2026</dd>
+        <dt>Friction</dt><dd>~90% initial objection rate</dd>
+      </dl>
+    </article>
+    <article class="model spot">
+      <span class="tag">Issuer-led · spotlight</span>
+      <h3>Nasdaq + Kraken (Payward)</h3>
+      <div class="flow"><span>Issuer opts in</span><em>→</em><span>Nasdaq Equity Tokens</span><em>→</em><span>Existing regulated rails</span><em>→</em><span>Kraken distribution</span></div>
+      <dl>
+        <dt>Deal</dt><dd>Nasdaq Ventures invests $100M in Payward (Sept 10, 2026), taking Payward to a reported $21B valuation</dd>
+        <dt>Build</dt><dd>Infrastructure to distribute and trade tokenized equities; Payward adopts Nasdaq market-surveillance tech across its crypto and tokenized venues</dd>
+        <dt>Launch</dt><dd>Q2 2027</dd>
+        <dt>Why it matters</dt><dd>Tests whether companies embrace tokenization when they keep control. Nasdaq president Tal Cohen frames it as moving capital efficiently while keeping market trust and integrity.</dd>
+      </dl>
+    </article>
+    <article class="model">
+      <span class="tag">Wrapper</span>
+      <h3>Robinhood stock tokens</h3>
+      <div class="flow"><span>Separate entity</span><em>→</em><span>Debt security backed by shares</span><em>→</em><span>Global retail</span></div>
+      <dl>
+        <dt>Who</dt><dd>Robinhood (Vlad Tenev)</dd>
+        <dt>Consent</dt><dd>Says it does not need issuer consent for products that reference public shares</dd>
+        <dt>Rights</dt><dd>No voting rights for token holders</dd>
+        <dt>Friction</dt><dd>Public clash with AMC CEO Adam Aron</dd>
+      </dl>
+    </article>
+  </div>
+  <p class="note">Another issuer-led example: Bullish is pairing tokenized shares with Equiniti, the transfer agent it is buying for $4 billion.</p>
+</section>
+
+<section class="panel">
+  <div class="eyebrow">Why tokenization</div>
+  <h2>What institutions and investors get</h2>
+  <div class="why">
+    <div><h3>24/7 trading</h3><small>Round-the-clock, global markets instead of exchange hours.</small></div>
+    <div><h3>Faster settlement</h3><small>Ownership moves near-instantly versus multi-day settlement through intermediaries.</small></div>
+    <div><h3>Fractional ownership</h3><small>Smaller slices of high-priced assets for more investors.</small></div>
+    <div><h3>Collateral mobility</h3><small>Securities become easier to pledge and move as collateral.</small></div>
+    <div><h3>Global distribution</h3><small>Tenev: a way to deliver access to U.S. stocks worldwide.</small></div>
+    <div><h3>Bigger market</h3><small>Clear Street's Owen Lau: it grows the addressable market, though revenue is a long way off.</small></div>
+  </div>
+  <p class="note">For exchanges, it is also defensive: a way to keep control of trading infrastructure as crypto-native venues bring traditional assets onchain.</p>
+</section>
+
+<section>
+  <div class="eyebrow">The embedded interviews</div>
+  <h2>Three videos, three angles</h2>
+  <div class="videos">
+    <article class="panel video">
+      <div class="vmeta"><span>Squawk Box · Sep 9, 2026</span><span class="num">3:05</span></div>
+      <h3>Vlad Tenev, Robinhood CEO</h3>
+      <ul>
+        <li>Tokenization lets Robinhood distribute access to U.S. stocks globally.</li>
+        <li>Responding to AMC's Adam Aron: issuers control their stock's rights, not every product that references it.</li>
+        <li>Stock tokens are issued by a separate entity, backed by real shares, structured as debt.</li>
+        <li>Holders get no votes; Robinhood has not said how it will vote the underlying shares.</li>
+      </ul>
+      <a href="https://www.cnbc.com/video/2026/09/09/robinhood-ceo-on-tokenization-it-allows-us-to-distribute-access-to-u-s-stocks-globally.html">Watch on CNBC</a>
+    </article>
+    <article class="panel video">
+      <div class="vmeta"><span>CNBC Crypto · Nov 23, 2026</span><span class="num">2:22</span></div>
+      <h3>Carlos Domingo, Securitize CEO</h3>
+      <ul>
+        <li>Expects more issuers to opt in as they understand the model.</li>
+        <li>Rejections came from novelty and from misreading the notices, not from opposition.</li>
+        <li>Some regulated venues can operate without issuer consent.</li>
+        <li>Context: Securitize is OKXICE's tokenization partner and a launch listing; tokenized assets on its platform reached $4.8B in Q3.</li>
+      </ul>
+      <a href="https://www.cnbc.com/video/2026/11/23/why-securitize-ceo-carlos-domingo-expects-more-companies-to-embrace-tokenization-efforts.html">Watch on CNBC</a>
+    </article>
+    <article class="panel video">
+      <div class="vmeta"><span>Crypto World · Jul 2023</span><span class="num">11:31</span></div>
+      <h3>Finance going onchain</h3>
+      <ul>
+        <li>JPMorgan, Citi and other banks invest in tokenizing assets to speed up Wall Street.</li>
+        <li>Bernstein (2023) projected $5 trillion of assets could be tokenized within five years.</li>
+        <li>Goal: cut intermediaries out of the T+2 settlement cycle of the time.</li>
+        <li>Voices: Elliot Han (Cantor Fitzgerald), Georgetown's James Angel, who notes a stock certificate is itself a token of ownership.</li>
+      </ul>
+      <a href="https://www.cnbc.com/video/2023/07/21/how-big-banks-like-jpmorgan-and-citi-want-to-put-wall-street-on-a-blockchain.html">Watch on CNBC</a>
+    </article>
+  </div>
+  <p class="note">Video notes are drawn from CNBC's video descriptions and the companion articles, not a full transcript.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Key people</div>
+  <div class="people">
+    <div class="person vid"><span class="role">CEO · Robinhood</span><h3>Vlad Tenev</h3><p>Defends third-party stock tokens without issuer consent.</p></div>
+    <div class="person vid"><span class="role">CEO · Securitize</span><h3>Carlos Domingo</h3><p>OKXICE's tokenization partner; expects issuers to come around.</p></div>
+    <div class="person"><span class="role">President · Nasdaq</span><h3>Tal Cohen</h3><p>Led the Payward deal behind Nasdaq Equity Tokens.</p></div>
+    <div class="person"><span class="role">Co-chair · OKXICE</span><h3>Andrew Cuomo</h3><p>Former NY governor; calls 24/7 global trading transformational.</p></div>
+    <div class="person"><span class="role">CIO · Franklin Templeton crypto</span><h3>Seth Ginns</h3><p>Blames the short 30-day window for the rejections.</p></div>
+    <div class="person"><span class="role">CEO · MassPay</span><h3>Ran Grushkowsky</h3><p>Clients' IR teams worried about 24/7 announcement timing.</p></div>
+    <div class="person"><span class="role">Analyst · Clear Street</span><h3>Owen Lau</h3><p>Expands TAM; near-term revenue is limited.</p></div>
+    <div class="person"><span class="role">CEO · AMC</span><h3>Adam Aron</h3><p>Says unsanctioned tokens undercut the company–shareholder bond.</p></div>
+  </div>
+</section>
+
+<div class="bottom">
+<section class="panel" style="grid-column:1/-1">
+  <div class="eyebrow">Timeline</div>
+  <div class="tl">
+    <ol>
+      <li><time>Jul 2, 2026</time><b>Securitize lists</b><span>NYSE: SECZ, via Cantor SPAC</span></li>
+      <li><time>Sep 9</time><b>Tenev on Squawk Box</b><span>AMC clash escalates</span></li>
+      <li><time>Sep 10</time><b>Nasdaq → Payward</b><span>$100M; Q2 2027 target</span></li>
+      <li><time>Sep 2026</time><b>SEC Innovation Exemption</b><span>Temporary path for tokenized stocks</span></li>
+      <li><time>Oct 4 – Nov 5</time><b>Objection notices</b><span>56 of 62 opt out</span></li>
+      <li><time>Nov 9</time><b>Securitize Q3</b><span>$4.8B tokenized; buys River One</span></li>
+      <li><time>Nov 11</time><b>OKXICE pre-launch</b><span>Fidelity, eToro and others join</span></li>
+      <li class="now"><time>Nov 23</time><b>OKXICE goes live</b><span>6 names at launch</span></li>
+      <li class="next"><time>Q2 2027</time><b>Nasdaq + Payward</b><span>Issuer-led model tested</span></li>
+    </ol>
+  </div>
+</section>
+</div>
+
+<footer>Compiled from CNBC reporting: “Tokenized stocks face pushback as NYSE, Nasdaq pivot for a new market” (Nov 23, 2026); “Nasdaq invests $100 million in Kraken parent” (Sep 10, 2026); “Robinhood CEO says companies can’t control how their stock is tokenized” (Sep 9, 2026); Securitize Q3 report (Nov 9, 2026); “Why big banks like JPMorgan and Citi want to put Wall Street on a blockchain” (Jul 2023). <a href="https://www.cnbc.com/2026/11/23/tokenized-stocks-face-pushback-as-nyse-nasdaq-pivot-for-a-new-market-.html">Read the original article</a>.</footer>
+</div>
+
+<script>
+(function(){
+  var w=document.getElementById('waffle');
+  for(var i=0;i<62;i++){var c=document.createElement('div');c.className='cell'+(i>=56?' yes':'');w.appendChild(c);}
+})();
+</script>
