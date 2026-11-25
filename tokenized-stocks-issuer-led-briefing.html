@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tokenized Stocks &amp; The Issuer-Led Pivot</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-alt: #263349;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-indigo: #818cf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    /* Top Control Bar for Editability */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem 1.25rem;
+      margin-bottom: 2rem;
+      position: sticky;
+      top: 1rem;
+      z-index: 100;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .toolbar-info {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--text-muted);
+      transition: background-color 0.2s;
+    }
+
+    .status-dot.editing {
+      background-color: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.95rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      border-color: var(--accent-blue);
+      background: #2d3d56;
+    }
+
+    button.primary {
+      background: var(--accent-blue);
+      color: #0f172a;
+      border-color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    button.primary:hover {
+      background: #7dd3fc;
+    }
+
+    button.active-tab {
+      background: var(--accent-indigo);
+      color: #0f172a;
+      border-color: var(--accent-indigo);
+      font-weight: 600;
+    }
+
+    /* Header */
+    header {
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.75rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-blue);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
+    }
+
+    h1 {
+      font-size: 2.15rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .lead {
+      font-size: 1.08rem;
+      color: var(--text-muted);
+      max-width: 860px;
+    }
+
+    /* Section Styling */
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin-bottom: 1.75rem;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 650;
+      margin-bottom: 1.15rem;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    /* Metrics Strip */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric-card {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem;
+    }
+
+    .metric-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent-emerald);
+      line-height: 1.2;
+      margin-bottom: 0.25rem;
+    }
+
+    .metric-value.warn {
+      color: var(--accent-rose);
+    }
+
+    .metric-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Lists */
+    ul.styled-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    ul.styled-list li {
+      position: relative;
+      padding-left: 1.35rem;
+    }
+
+    ul.styled-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent-blue);
+      font-weight: bold;
+      font-size: 1.2rem;
+      line-height: 1.35;
+    }
+
+    strong {
+      color: #ffffff;
+    }
+
+    /* Two-column Issuer-Led highlight */
+    .split-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .sub-card {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+
+    .sub-card.highlight {
+      border-color: rgba(16, 185, 129, 0.5);
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, var(--surface-alt) 100%);
+    }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.94rem;
+    }
+
+    th {
+      background: var(--surface-alt);
+      color: var(--accent-blue);
+      font-weight: 600;
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0.95rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .role-tag {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 0.2rem;
+    }
+
+    /* Why Tokenization Grid */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .pillar {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.15rem;
+    }
+
+    .pillar-num {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent-indigo);
+      background: rgba(129, 140, 248, 0.15);
+      padding: 0.15rem 0.55rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Interactive Diagram Section */
+    .diagram-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .architecture-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 820px) {
+      .architecture-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .track {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      transition: all 0.25s ease;
+    }
+
+    .track.track-third-party {
+      border-top: 4px solid var(--accent-rose);
+    }
+
+    .track.track-issuer-led {
+      border-top: 4px solid var(--accent-emerald);
+    }
+
+    .track-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .track-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+    }
+
+    .badge-rose {
+      background: rgba(244, 63, 94, 0.15);
+      color: var(--accent-rose);
+    }
+
+    .badge-emerald {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-emerald);
+    }
+
+    .node-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .node {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .node:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-1px);
+    }
+
+    .node.selected {
+      border-color: var(--accent-blue);
+      background: #233249;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+    }
+
+    .node.dimmed {
+      opacity: 0.35;
+    }
+
+    .node.highlight-risk {
+      border-color: var(--accent-rose);
+      background: rgba(244, 63, 94, 0.1);
+    }
+
+    .node.highlight-safe {
+      border-color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .node-step {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .node-title {
+      font-weight: 600;
+      font-size: 0.96rem;
+    }
+
+    .connector {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .inspector-panel {
+      margin-top: 1.25rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent-blue);
+      border-radius: 10px;
+      padding: 1.15rem 1.25rem;
+    }
+
+    .inspector-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-blue);
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    /* Editable visual cue */
+    [contenteditable="true"] {
+      outline: 1px dashed rgba(56, 189, 248, 0.45);
+      border-radius: 4px;
+    }
+
+    [contenteditable="true"]:focus {
+      outline: 2px solid var(--accent-blue);
+      background-color: rgba(56, 189, 248, 0.06);
+    }
+
+    @media print {
+      .toolbar, .diagram-controls {
+        display: none !important;
+      }
+      body {
+        background: #ffffff;
+        color: #0f172a;
+        padding: 0;
+      }
+      section, .metric-card, .sub-card, .pillar, .track, .node, .inspector-panel {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+        box-shadow: none !important;
+      }
+      h2, .metric-value, .inspector-label {
+        color: #0369a1 !important;
+      }
+      strong {
+        color: #0f172a !important;
+      }
+      .lead, .metric-label, .role-tag, .node-step {
+        color: #475569 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="editable-region">
+      <span class="badge">Tokenized Stocks Market Structure Briefing • Nov, 2026</span>
+      <h1>Tokenized Stocks &amp; The Issuer-Led Pivot</h1>
+      <p class="lead">
+        The market for <strong>tokenized equities</strong> (blockchain-based digital representations of traditional stocks) hit a major inflection point in November 2026. As exchanges race to modernize market plumbing for 24/7 global trading, fierce pushback from corporate America has divided the industry into two competing structural models: <strong>Third-Party Venues</strong> versus an <strong>Issuer-Led Approach</strong>.
+      </p>
+    </header>
+
+    <!-- Section 1: Executive Summary & Key Facts -->
+    <section class="editable-region">
+      <h2>1. Executive Summary</h2>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value">113 Assets</div>
+          <div class="metric-label">Launched on OKXICE (Nov 23, 2026)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value warn">67 Firms (90%)</div>
+          <div class="metric-label">Filed formal Notices of Issuer Objection</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">+149%</div>
+          <div class="metric-label">H1 2026 tokenized equities growth ($1.7B+ cap)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">$11.3B+</div>
+          <div class="metric-label">Robinhood Chain volume by Sept 2026</div>
+        </div>
+      </div>
+
+      <ul class="styled-list">
+        <li>
+          <strong>The Flashpoint (OKXICE Launch):</strong> On November 23, 2026, <strong>OKXICE</strong>—a tokenized securities joint venture backed by crypto exchange OKX and NYSE parent Intercontinental Exchange (ICE)—launched trading with <strong>113 assets</strong> (starting with crypto-native firms like Coinbase, Robinhood, Strategy, Circle, Securitize, and BitGo, alongside institutional participants like Fidelity and eToro).
+        </li>
+        <li>
+          <strong>Massive Corporate Pushback:</strong> Roughly <strong>90% of the initial target companies</strong>—<strong>67 major firms</strong> including Goldman Sachs, Microsoft, Alphabet, and McDonald's—filed formal <em>Notices of Issuer Objection</em> to block OKXICE from listing tokenized versions of their shares.
+        </li>
+        <li>
+          <strong>Why Companies Object:</strong> Issuers are not strictly anti-tokenization; rather, they object to being rushed onto third-party platforms without consent. Executives cite fears over <strong>24/7 price volatility</strong> during thin off-hours liquidity, complex corporate disclosure timing, and fragmented investor relations.
+        </li>
+        <li>
+          <strong>Market Scale:</strong> Despite corporate friction, the tokenized equities market surged <strong>149% in the first half of 2026</strong> alone (reaching $1.7B+ in market cap), while trading volume on platforms like Robinhood Chain spiked from $526M in July to over <strong>$11.3 billion</strong> by September 2026.
+        </li>
+      </ul>
+    </section>
+
+    <!-- Section 2: Deep Dive Issuer-Led Approach -->
+    <section class="editable-region">
+      <h2>2.The "Issuer-Led Approach" (Nasdaq + Kraken/Payward)</h2>
+      <p style="margin-bottom: 1rem; color: var(--text-muted);">
+        To bypass corporate resistance, major market operators are pivoting away from unauthorized third-party wrappers toward an <strong>issuer-led model</strong> that keeps public companies in control of their cap tables, shareholder rights, and corporate governance.
+      </p>
+
+      <div class="split-cards">
+        <div class="sub-card highlight">
+          <h3>Nasdaq + Payward (Kraken)</h3>
+          <ul class="styled-list" style="margin-top: 0.75rem;">
+            <li>
+              <strong>Strategic Investment:</strong> Nasdaq Ventures invested <strong>$100 million</strong> into <strong>Payward</strong> (the parent company of crypto exchange Kraken) to co-develop regulated, always-on market infrastructure.
+            </li>
+            <li>
+              <strong>Nasdaq Equity Tokens (NETs):</strong> Scheduled for a <strong>Q2 2027 launch</strong>, this framework connects Nasdaq’s regulated order books with Payward’s <strong>xStocks</strong> ecosystem via an "equities transformation gateway."
+            </li>
+            <li>
+              <strong>How It Differs:</strong> Instead of third parties minting synthetic wrappers, NETs integrate directly into existing regulated clearing and transfer-agent rails. Issuers retain full oversight, shareholder voting and dividend rights stay intact, and Payward integrates Nasdaq's institutional market surveillance technology to prevent off-hours manipulation.
+            </li>
+          </ul>
+        </div>
+
+        <div class="sub-card">
+          <h3>Parallel Issuer-Led Moves</h3>
+          <ul class="styled-list" style="margin-top: 0.75rem;">
+            <li>
+              <strong>Bullish + Equiniti ($4B Deal):</strong> Crypto exchange <strong>Bullish</strong> is pursuing a similar issuer-centric route through its <strong>$4 billion acquisition of Equiniti</strong>, a major stock transfer agent, embedding blockchain shares directly into official shareholder registries.
+            </li>
+            <li>
+              <strong>NYSE / ICE + Securitize:</strong> Alongside its OKXICE joint venture, ICE works directly with SEC-registered digital transfer agent <strong>Securitize</strong> to enable compliant, issuer-approved native digital securities.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Key People & Video Insights -->
+    <section class="editable-region">
+      <h2>3. Key People &amp; Embedded Video Insights</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 26%;">Person &amp; Role</th>
+              <th>Core Perspective &amp; Embedded Video Takeaway</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <strong>Vlad Tenev</strong>
+                <span class="role-tag">CEO, Robinhood</span>
+              </td>
+              <td>
+                <strong>The "Open Market" View:</strong> Defends third-party stock tokenization (structured as 1:1 asset-backed instruments). Tenev argues that once a company goes public, it cannot control every financial product or derivative built around its shares—and that blocking tokenization hurts retail access.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Carlos Domingo</strong>
+                <span class="role-tag">Co-Founder &amp; CEO, Securitize</span>
+              </td>
+              <td>
+                <strong>The Institutional &amp; Risk Reality:</strong> Highlights the danger of poorly structured third-party tokens—pointing out instances where thin liquidity caused a tokenized stock (such as AMC) to trade at <strong>60x its actual share price</strong>. Advocates for SEC-compliant, issuer-approved digital transfer agents.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Arjun Sethi &amp; Tal Cohen</strong>
+                <span class="role-tag">Co-CEO of Payward &amp; President of Nasdaq</span>
+              </td>
+              <td>
+                <strong>The Infrastructure Architects:</strong> Leading the NETs + xStocks partnership. Sethi notes that U.S. clearinghouses lock up <strong>$10B–$20B in collateral</strong> daily waiting for T+1 settlement; moving equities onto 24/7 onchain rails eliminates settlement lag while keeping issuer protections.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Andrew Cuomo &amp; Trabue Bland</strong>
+                <span class="role-tag">Co-Chairs, OKXICE</span>
+              </td>
+              <td>
+                <strong>The First-Mover Venue:</strong> Spearheading the live OKXICE rollout despite the 67 issuer opt-outs, thanking crypto-native first movers for proving live demand.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Seth Ginns &amp; Ran Grushkowsky</strong>
+                <span class="role-tag">Franklin Templeton &amp; MassPay</span>
+              </td>
+              <td>
+                <strong>The Corporate Voice:</strong> Explain that issuers aren't closed to blockchain permanently, but resist rushing into 24/7 trading before earnings-release rules and off-hours price discovery are settled.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Owen Lau</strong>
+                <span class="role-tag">Analyst, Clear Street</span>
+              </td>
+              <td>
+                <strong>The Wall Street Outlook:</strong> Notes that while immediate revenue from tokenized venues is modest, the structural shift toward 24/7 onchain equities is irreversible.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 4: Why Tokenization -->
+    <section class="editable-region">
+      <h2>4. "Why Tokenization?" (Finance Going Onchain)</h2>
+      <p style="color: var(--text-muted);">
+        Why Wall Street incumbents (NYSE, Nasdaq, BlackRock, Citi, BNY) are rebuilding financial plumbing on blockchains rather than treating crypto as a separate asset class:
+      </p>
+
+      <div class="pillars-grid">
+        <div class="pillar">
+          <span class="pillar-num">PILLAR 01</span>
+          <h3>Near Instant Settlement (T+0)</h3>
+          <p style="font-size: 0.92rem; color: var(--text-muted);">
+            Traditional U.S. markets operate on T+1 settlement, trapping $10B–$20B in clearinghouse collateral daily. Onchain settlement swaps cash (stablecoins/tokenized bank deposits) and shares simultaneously in seconds.
+          </p>
+        </div>
+        <div class="pillar">
+          <span class="pillar-num">PILLAR 02</span>
+          <h3>24/7 Global Accessibility</h3>
+          <p style="font-size: 0.92rem; color: var(--text-muted);">
+            Legacy exchanges close on weekends and nights. Tokenized rails allow global investors—especially in Asia and Europe—to trade U.S. equities continuously without waiting for New York market hours.
+          </p>
+        </div>
+        <div class="pillar">
+          <span class="pillar-num">PILLAR 03</span>
+          <h3>Programmable Compliance</h3>
+          <p style="font-size: 0.92rem; color: var(--text-muted);">
+            Smart contracts automate dividend payouts, proxy voting, and KYC/AML restrictions directly inside the token, while enabling seamless fractional ownership of high-priced shares.
+          </p>
+        </div>
+        <div class="pillar">
+          <span class="pillar-num">PILLAR 04</span>
+          <h3>Unified Collateral Mobility</h3>
+          <p style="font-size: 0.92rem; color: var(--text-muted);">
+            Institutions can use tokenized stocks and treasuries as real-time, 24/7 margin collateral across trading venues without moving cash through slower legacy banking wires.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Interactive Visualization -->
+    <section>
+      <h2>5. Interactive Architecture Comparison</h2>
+      <p style="margin-bottom: 1rem; color: var(--text-muted);">
+        Click any node below or use the filter buttons to compare the <strong>Third-Party Venue Model</strong> against the <strong>Issuer-Led Model</strong>.
+      </p>
+
+      <div class="diagram-controls">
+        <button class="active-tab" data-filter="all" onclick="setFilterMode('all', this)">Full Side-by-Side Comparison</button>
+        <button data-filter="risk" onclick="setFilterMode('risk', this)">Highlight Risk &amp; Pushback Points</button>
+        <button data-filter="rights" onclick="setFilterMode('rights', this)">Settlement &amp; Rights Flow</button>
+      </div>
+
+      <div class="architecture-grid">
+        <!-- Track A: Third-Party Venue Model -->
+        <div class="track track-third-party">
+          <div class="track-header">
+            <div>
+              <h3 style="margin-bottom: 0;">Track A: Third-Party Venue Model</h3>
+              <span style="font-size: 0.82rem; color: var(--text-muted);">e.g., OKXICE / Offshore Wrappers</span>
+            </div>
+            <span class="track-badge badge-rose">67 Issuer Objections</span>
+          </div>
+
+          <div class="node-list">
+            <div class="node" data-category="risk" data-title="Step 1 (Third-Party): Unsolicited Market Sourcing" data-detail="Third-party brokers or SPVs purchase underlying public shares on the open market without formal authorization or partnership from the issuing corporation.">
+              <div class="node-step">Step 1 • Sourcing</div>
+              <div class="node-title">Underlying Share Bought on Open Market (No Issuer Consent)</div>
+            </div>
+            <div class="connector">↓</div>
+            <div class="node" data-category="rights" data-title="Step 2 (Third-Party): Custodial SPV Wrapper" data-detail="Shares are locked in a custodial Special Purpose Vehicle (SPV), which mints a 1:1 synthetic or wrapped blockchain token. Direct shareholder voting rights and cap-table visibility are often severed.">
+              <div class="node-step">Step 2 • Tokenization</div>
+              <div class="node-title">Custodial SPV Mints Wrapped Token on Blockchain</div>
+            </div>
+            <div class="connector">↓</div>
+            <div class="node" data-category="risk" data-title="Step 3 (Third-Party): 24/7 Off-Hours Trading" data-detail="Tokens trade 24/7 on crypto-native venues. During weekends or overnight hours when primary exchanges are closed, thin liquidity can cause severe price dislocations (e.g., AMC tokens briefly trading at 60x spot price).">
+              <div class="node-step">Step 3 • Execution &amp; Liquidity</div>
+              <div class="node-title">24/7 Crypto Venue Trading (Thin Off-Hours Liquidity Risk)</div>
+            </div>
+            <div class="connector">↓</div>
+            <div class="node" data-category="risk" data-title="Step 4 (Third-Party): Corporate Pushback & Friction" data-detail="90% of initial target firms (67 companies including Goldman Sachs, Microsoft, Alphabet, and McDonald's) filed formal Notices of Issuer Objection over governance, disclosure timing, and brand risk.">
+              <div class="node-step">Step 4 • Market Outcome</div>
+              <div class="node-title">90% Corporate Opt-Out &amp; Fragmented Investor Relations</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Track B: Issuer-Led Model -->
+        <div class="track track-issuer-led">
+          <div class="track-header">
+            <div>
+              <h3 style="margin-bottom: 0;">Track B: Issuer-Led Model</h3>
+              <span style="font-size: 0.82rem; color: var(--text-muted);">Nasdaq + Payward (NETs) / Bullish + Equiniti</span>
+            </div>
+            <span class="track-badge badge-emerald">Launching Q2 2027</span>
+          </div>
+
+          <div class="node-list">
+            <div class="node" data-category="rights" data-title="Step 1 (Issuer-Led): Explicit Issuer Opt-In" data-detail="Public companies explicitly authorize tokenized representation of their shares, maintaining control over corporate actions, earnings windows, and shareholder communications.">
+              <div class="node-step">Step 1 • Authorization</div>
+              <div class="node-title">Public Company Issuer Approves Native Tokenization</div>
+            </div>
+            <div class="connector">↓</div>
+            <div class="node" data-category="rights" data-title="Step 2 (Issuer-Led): Regulated Transfer Agent & NETs" data-detail="Backed by Nasdaq's $100M investment in Payward, Nasdaq Equity Tokens (NETs) and official transfer agents (like Equiniti or Securitize) embed tokens directly into regulated shareholder registries—preserving voting and dividend rights.">
+              <div class="node-step">Step 2 • Registry &amp; Minting</div>
+              <div class="node-title">Integrated Transfer Agent / Nasdaq Equity Tokens (NETs)</div>
+            </div>
+            <div class="connector">↓</div>
+            <div class="node" data-category="rights" data-title="Step 3 (Issuer-Led): Equities Transformation Gateway" data-detail="An institutional transformation gateway bridges Nasdaq's regulated clearing rails with Payward's xStocks ecosystem, freeing up $10B–$20B in daily T+1 collateral via T+0 atomic settlement.">
+              <div class="node-step">Step 3 • Bridge &amp; Settlement</div>
+              <div class="node-title">Equities Transformation Gateway (T+0 Atomic Settlement)</div>
+            </div>
+            <div class="connector">↓</div>
+            <div class="node" data-category="safe" data-title="Step 4 (Issuer-Led): Regulated 24/7 Trading + Surveillance" data-detail="Tokens trade 24/7 on Payward's xStocks platform protected by Nasdaq's institutional market surveillance technology to detect manipulation and protect price integrity.">
+              <div class="node-step">Step 4 • Market Outcome</div>
+              <div class="node-title">Regulated 24/7 Trading + Nasdaq Surveillance (Zero Friction)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inspector Box -->
+      <div class="inspector-panel" id="inspectorPanel">
+        <div class="inspector-label" id="inspectorTitle">Interactive Node Inspector — Click any step above</div>
+        <p id="inspectorDetail" style="font-size: 0.94rem;">
+          Select any architectural node in Track A or Track B to inspect regulatory status, settlement mechanics, and key facts.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let isEditing = false;
+
+    function toggleEditMode() {
+      isEditing = !isEditing;
+      const regions = document.querySelectorAll('.editable-region');
+      const btn = document.getElementById('toggleEditBtn');
+      const dot = document.getElementById('editDot');
+      const statusText = document.getElementById('editStatusText');
+
+      regions.forEach(region => {
+        region.setAttribute('contenteditable', isEditing ? 'true' : 'false');
+      });
+
+      if (isEditing) {
+        btn.textContent = 'Finish Editing';
+        dot.classList.add('editing');
+        statusText.textContent = 'Edit Mode Active — Click any text section to customize, then click "Save & Download HTML"';
+      } else {
+        btn.textContent = 'Enable Editing';
+        dot.classList.remove('editing');
+        statusText.textContent = 'View Mode — Click "Enable Editing" to edit any text directly';
+      }
+    }
+
+    function downloadUpdatedHtml() {
+      // Temporarily turn off contenteditable outlines before serializing
+      const wasEditing = isEditing;
+      if (wasEditing) toggleEditMode();
+
+      const docClone = document.documentElement.cloneNode(true);
+      const htmlString = '<!DOCTYPE html>\n' + docClone.outerHTML;
+      const blob = new Blob([htmlString], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'tokenized-stocks-issuer-led-briefing.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      if (wasEditing) toggleEditMode();
+    }
+
+    // Interactive Diagram Logic
+    const nodes = document.querySelectorAll('.node');
+    const inspectorTitle = document.getElementById('inspectorTitle');
+    const inspectorDetail = document.getElementById('inspectorDetail');
+
+    nodes.forEach(node => {
+      node.addEventListener('click', () => {
+        nodes.forEach(n => n.classList.remove('selected'));
+        node.classList.add('selected');
+        inspectorTitle.textContent = node.getAttribute('data-title');
+        inspectorDetail.textContent = node.getAttribute('data-detail');
+      });
+    });
+
+    function setFilterMode(mode, btnEl) {
+      document.querySelectorAll('.diagram-controls button').forEach(b => b.classList.remove('active-tab'));
+      btnEl.classList.add('active-tab');
+
+      nodes.forEach(node => {
+        node.classList.remove('dimmed', 'highlight-risk', 'highlight-safe');
+        const cat = node.getAttribute('data-category');
+
+        if (mode === 'risk') {
+          if (cat === 'risk') {
+            node.classList.add('highlight-risk');
+          } else {
+            node.classList.add('dimmed');
+          }
+        } else if (mode === 'rights') {
+          if (cat === 'rights' || cat === 'safe') {
+            node.classList.add('highlight-safe');
+          } else {
+            node.classList.add('dimmed');
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
